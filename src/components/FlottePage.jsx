@@ -204,7 +204,7 @@ function TierDisplay({ tier }) {
         <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at center, transparent 50%, rgba(10,10,10,0.6) 100%)' }} />
 
         {hasModel ? (
-          <Scene3D modelPath={currentModelPath ? (isMobile ? currentModelPath.replace(".glb", "_mobile.glb") : currentModelPath) : null} />
+          <Scene3D modelPath={currentModelPath || null} />
         ) : (
           <NoModelPlaceholder tier={tier} />
         )}
