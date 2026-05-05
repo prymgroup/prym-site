@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FLEET } from '../../data/fleet'
 import VehicleScene from './VehicleScene'
+import VehicleSelector from './VehicleSelector'
 import TierSelector from './TierSelector'
 import Step1Mode from './steps/Step1Mode'
 import { Step2aTransfer, Step2bDisposal } from './steps/Step2Forms'
@@ -70,6 +71,7 @@ export default function BookingFlow() {
   const [transfer, setTransfer] = useState({ passengers: 1, luggage: 0 })
   const [disposal, setDisposal] = useState({ duration: 4 })
   const [tier, setTier] = useState(FLEET[1])
+  const [selectedModel, setSelectedModel] = useState(FLEET[1].models?.[0] || null)
   const [passenger, setPassenger] = useState({})
   const [ref, setRef] = useState(null)
   const isMobile = useIsMobile()
@@ -94,10 +96,11 @@ export default function BookingFlow() {
           {/* 3D scene — top half */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}
             style={{ height: '45vw', minHeight: 220, maxHeight: 300, background: 'linear-gradient(135deg,#050507 0%,#080810 100%)', position: 'relative', flexShrink: 0 }}>
-            <VehicleScene tier={tier} style={{ width: '100%', height: '100%' }} />
+            <VehicleScene tier={{...tier, modelPath: selectedModel?.modelPath || tier.modelPath}} style={{ width: '100%', height: '100%' }} />
           </motion.div>
           {/* TierSelector */}
-          <TierSelector selectedTier={tier} onSelect={setTier} />
+          <TierSelector selectedTier={tier} onSelect={(t) => { setTier(t); setSelectedModel(t.models?.[0] || null) }} />
+          <VehicleSelector tier={tier} selectedModel={selectedModel} onSelect={setSelectedModel} />
           {/* Info panel — scrollable below */}
           <div style={{ flex: 1, overflowY: 'auto', borderTop: '1px solid rgba(200,200,204,0.06)' }}>
             <Step3Vehicle selectedTier={tier} onNext={t => { setTier(t); setStep(4) }} onBack={() => setStep(2)} isMobile={true} />
@@ -108,11 +111,12 @@ export default function BookingFlow() {
         <div style={{ flex: 1, display: 'flex', flexDirection: 'row', overflow: 'hidden', minHeight: 0 }}>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}
             style={{ flex: '1 1 55%', background: 'linear-gradient(135deg,#050507 0%,#080810 100%)', position: 'relative' }}>
-            <VehicleScene tier={tier} style={{ width: '100%', height: '100%' }} />
+            <VehicleScene tier={{...tier, modelPath: selectedModel?.modelPath || tier.modelPath}} style={{ width: '100%', height: '100%' }} />
           </motion.div>
           <div style={{ flex: '0 0 380px', display: 'flex', flexDirection: 'column', overflowY: 'auto', borderLeft: '1px solid rgba(200,200,204,0.06)' }}>
             <Step3Vehicle selectedTier={tier} onNext={t => { setTier(t); setStep(4) }} onBack={() => setStep(2)} isMobile={false} />
-            <TierSelector selectedTier={tier} onSelect={setTier} />
+            <TierSelector selectedTier={tier} onSelect={(t) => { setTier(t); setSelectedModel(t.models?.[0] || null) }} />
+            <VehicleSelector tier={tier} selectedModel={selectedModel} onSelect={setSelectedModel} />
           </div>
         </div>
       ) : (

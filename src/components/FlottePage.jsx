@@ -176,7 +176,9 @@ function NoModelPlaceholder({ tier }) {
 // ── Main tier display ─────────────────────────────────────────────────────────
 function TierDisplay({ tier }) {
   const isMobile = window.innerWidth < 768
-  const hasModel = !!tier.modelPath
+  const [selectedModel, setSelectedModel] = useState(tier.models?.[0] || null)
+  const currentModelPath = selectedModel?.modelPath || tier.modelPath
+  const hasModel = !!currentModelPath
 
   return (
     <motion.div
@@ -202,7 +204,7 @@ function TierDisplay({ tier }) {
         <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at center, transparent 50%, rgba(10,10,10,0.6) 100%)' }} />
 
         {hasModel ? (
-          <Scene3D modelPath={tier.modelPath} />
+          <Scene3D modelPath={currentModelPath} />
         ) : (
           <NoModelPlaceholder tier={tier} />
         )}
@@ -245,6 +247,28 @@ function TierDisplay({ tier }) {
           <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:13, color:C.silver3, marginBottom:32 }}>
             {tier.vehicles.join(' · ')}
           </p>
+
+          {/* Vehicle switcher */}
+          {tier.models && tier.models.length > 1 && (
+            <div style={{ display:'flex', flexWrap:'wrap', gap:8, marginBottom:24 }}>
+              {tier.models.map(model => {
+                const active = (selectedModel?.name || tier.models[0].name) === model.name
+                return (
+                  <button key={model.name} onClick={() => setSelectedModel(model)}
+                    style={{
+                      fontFamily:'"Eurostile","Helvetica Neue",sans-serif', fontSize:9,
+                      letterSpacing:'0.2em', textTransform:'uppercase',
+                      padding:'7px 16px', cursor:'pointer', transition:'all 0.2s',
+                      background: active ? 'rgba(198,198,198,0.1)' : 'transparent',
+                      border: `1px solid ${active ? '#706f6f' : '#3c3c3b55'}`,
+                      color: active ? '#c6c6c6' : '#3c3c3b',
+                    }}>
+                    {model.name}
+                  </button>
+                )
+              })}
+            </div>
+          )}
 
           {/* Divider */}
           <div style={{ width:60, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:32 }} />
