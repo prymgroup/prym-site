@@ -95,7 +95,7 @@ export default function BookingFlow() {
         <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
           {/* 3D scene — top half */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6 }}
-            style={{ height: '45vw', minHeight: 220, maxHeight: 300, background: 'linear-gradient(135deg,#050507 0%,#080810 100%)', position: 'relative', flexShrink: 0 }}>
+            style={{ height: '40vh', minHeight: 260, maxHeight: 420, background: 'linear-gradient(135deg,#050507 0%,#080810 100%)', position: 'relative', flexShrink: 0 }}>
             <VehicleScene tier={{...tier, modelPath: selectedModel?.modelPath || tier.modelPath}} style={{ width: '100%', height: '100%' }} />
           </motion.div>
           {/* TierSelector */}

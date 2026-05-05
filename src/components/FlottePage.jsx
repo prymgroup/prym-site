@@ -197,7 +197,7 @@ function TierDisplay({ tier }) {
       <div style={{
         position: 'relative',
         background: `radial-gradient(ellipse at 40% 50%, #141416 0%, ${C.bg} 70%)`,
-        minHeight: isMobile ? '50vw' : 'auto',
+        minHeight: isMobile ? '40vh' : 'auto',
         order: isMobile ? 1 : 1,
       }}>
         {/* Vignette */}
