@@ -120,7 +120,7 @@ export default function VehicleScene({ tier }) {
         camera={{ fov: isMobile ? 55 : 45, near: 0.1, far: 100 }}
       >
         <Suspense fallback={<Loader />}>
-          <SceneInner modelPath={tier?.modelPath || null} isMobile={isMobile} />
+          <SceneInner modelPath={tier?.modelPath ? (isMobile ? tier.modelPath.replace(".glb", "_mobile.glb") : tier.modelPath) : null} isMobile={isMobile} />
         </Suspense>
       </Canvas>
     </div>
