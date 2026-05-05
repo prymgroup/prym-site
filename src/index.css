@@ -55,7 +55,7 @@ body {
 
 @media (hover: hover) and (pointer: fine) {
   body, a, button, input, [role="button"] {
-    cursor: none;
+    cursor: auto;
   }
 }
 

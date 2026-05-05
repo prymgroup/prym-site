@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import {
   motion,
   useScroll,
@@ -7,11 +7,18 @@ import {
 } from 'framer-motion'
 import Lenis from 'lenis'
 
-import HeroSection       from './components/HeroSection'
-import ManifestoSection  from './components/ManifestoSection'
-import ScrollSection     from './components/ScrollSection'
-import PromiseSection    from './components/PromiseSection'
+import HeroSection        from './components/HeroSection'
+import ManifestoSection   from './components/ManifestoSection'
+import ScrollSection      from './components/ScrollSection'
+import PromiseSection     from './components/PromiseSection'
 import LeadCaptureSection from './components/LeadCaptureSection'
+
+// Lazy-load the booking flow (don't load 3D deps on the landing page)
+const AProposPage = lazy(() => import('./components/AProposPage'))
+const EntreprisesPage = lazy(() => import('./components/EntreprisesPage'))
+const FlottePage = lazy(() => import('./components/FlottePage'))
+const ExperiencePage = lazy(() => import('./components/ExperiencePage'))
+const BookingFlow = lazy(() => import('./components/booking/BookingFlow'))
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
@@ -156,16 +163,14 @@ function TopBar() {
   )
 }
 
-/* ── App ────────────────────────────────────────────────────────── */
-export default function App() {
+/* ── Landing page ───────────────────────────────────────────────── */
+function LandingPage() {
   useLenis()
-
   return (
-    <div className="grain" style={{ backgroundColor: '#0a0a0a', position: 'relative', minHeight: '100vh' }}>
+    <div className="grain" style={{ cursor: "none", backgroundColor: '#0a0a0a', position: 'relative', minHeight: '100vh' }}>
       <CustomCursor />
       <ScrollProgress />
       <TopBar />
-
       <main style={{ position: 'relative', zIndex: 1 }}>
         <HeroSection />
         <ManifestoSection />
@@ -175,4 +180,105 @@ export default function App() {
       </main>
     </div>
   )
+}
+
+/* ── Booking loading fallback ───────────────────────────────────── */
+function BookingLoader() {
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: '#050507',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      gap: '16px',
+    }}>
+      <div style={{
+        fontFamily: "'Eurostile', 'Arial Narrow', sans-serif",
+        fontSize: '10px',
+        letterSpacing: '0.35em',
+        textTransform: 'uppercase',
+        color: 'rgba(200,200,204,0.4)',
+      }}>
+        PRYM
+      </div>
+      <div style={{
+        width: '120px',
+        height: '1px',
+        background: 'rgba(200,200,204,0.1)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <motion.div
+          style={{ position: 'absolute', inset: 0, background: 'rgba(200,200,204,0.5)', transformOrigin: 'left' }}
+          animate={{ scaleX: [0, 1] }}
+          transition={{ duration: 1.5, ease: 'easeInOut', repeat: Infinity }}
+        />
+      </div>
+    </div>
+  )
+}
+
+/* ── Simple path router ─────────────────────────────────────────── */
+function useCurrentPath() {
+  const [path, setPath] = useState(window.location.pathname)
+  useEffect(() => {
+    const handler = () => setPath(window.location.pathname)
+    window.addEventListener('popstate', handler)
+    return () => window.removeEventListener('popstate', handler)
+  }, [])
+  return path
+}
+
+/* ── App ────────────────────────────────────────────────────────── */
+export default function App() {
+  const path = useCurrentPath()
+  const isAPropos = path === '/a-propos' || path === '/a-propos/'
+  const isEntreprises = path === '/entreprises' || path === '/entreprises/'
+  const isFlotte = path === '/flotte' || path === '/flotte/'
+  const isExperience = path === '/experience' || path === '/experience/'
+  const isBooking = path === '/reserver' || path === '/reserver/'
+
+  if (isAPropos) {
+    return (
+      <Suspense fallback={<BookingLoader />}>
+        <AProposPage />
+      </Suspense>
+    )
+  }
+
+  if (isEntreprises) {
+    return (
+      <Suspense fallback={<BookingLoader />}>
+        <EntreprisesPage />
+      </Suspense>
+    )
+  }
+
+  if (isFlotte) {
+    return (
+      <Suspense fallback={<BookingLoader />}>
+        <FlottePage />
+      </Suspense>
+    )
+  }
+
+  if (isExperience) {
+    return (
+      <Suspense fallback={<BookingLoader />}>
+        <ExperiencePage />
+      </Suspense>
+    )
+  }
+
+  if (isBooking) {
+    return (
+      <Suspense fallback={<BookingLoader />}>
+        <BookingFlow />
+      </Suspense>
+    )
+  }
+
+  return <LandingPage />
 }
