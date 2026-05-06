@@ -62,11 +62,11 @@ function SceneContent({ modelPath, isMobile }) {
       const ctrl = orbitRef.current
       if (!ctrl) return
       if (isMobile) {
-        ctrl.object.position.set(3.5, 1.8, 4.5)
+        ctrl.object.position.set(3.5, 0.9, 5.5)
       } else {
         ctrl.object.position.set(-4.5, 2.2, 5.5)
       }
-      ctrl.target.set(0, 0.8, 0)
+      ctrl.target.set(0, isMobile ? 0.6 : 0.8, 0)
       ctrl.update()
     })
     return () => cancelAnimationFrame(raf)
@@ -169,7 +169,7 @@ function MobileNav() {
 
         <a href="/reserver" style={{
           fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.25em', textTransform: 'uppercase',
-          color: C.silver, border: `1px solid ${C.silver3}`, padding: '7px 14px',
+          color: C.silver, border: 'none', padding: '7px 14px',
           textDecoration: 'none',
         }}>
           Réserver
@@ -367,8 +367,8 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
               style={{
                 position: 'absolute', bottom: 20, left: 24, zIndex: 2,
                 pointerEvents: 'none',
-                fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.28em',
-                textTransform: 'uppercase', color: 'rgba(220,220,220,0.65)',
+                fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.1em',
+                textTransform: 'uppercase', color: '#E0E0E0',
               }}
             >
               {vehicleLabel.toUpperCase()}
@@ -392,7 +392,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
           {/* Tier pills — scrollable row */}
           <div style={{
             display: 'flex', gap: 6, overflowX: 'auto', scrollbarWidth: 'none',
-            marginBottom: 32, marginLeft: -24, marginRight: -24,
+            marginBottom: 40, marginLeft: -24, marginRight: -24,
             paddingLeft: 24, paddingRight: 24,
           }}>
             {FLEET.map(t => (
@@ -405,20 +405,10 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
             ))}
           </div>
 
-          {/* Tagline */}
-          <p style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.38em', textTransform:'uppercase', color:C.silver3, marginBottom:10 }}>
-            {tier.tagline}
-          </p>
-
           {/* Name */}
-          <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:26, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:6, lineHeight:1.05 }}>
+          <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:26, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:24, lineHeight:1.05 }}>
             {tier.name}
           </h2>
-
-          {/* Vehicles */}
-          <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:12, color:C.silver3, marginBottom:28 }}>
-            {tier.vehicles.join(' · ')}
-          </p>
 
           {/* Divider */}
           <div style={{ width:36, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:28 }} />
@@ -436,8 +426,8 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
             ))}
           </div>
 
-          {/* Amenities — plain text, no borders */}
-          <div style={{ display:'flex', flexWrap:'wrap', gap:'8px 22px', marginBottom:36 }}>
+          {/* Amenities — 2-col grid */}
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:36 }}>
             {tier.amenities.map(a => (
               <span key={a} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2 }}>
                 {a}
