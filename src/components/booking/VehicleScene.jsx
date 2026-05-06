@@ -108,9 +108,6 @@ export default function VehicleScene({ tier }) {
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'radial-gradient(ellipse at center, transparent 50%, rgba(5,5,7,0.5) 100%)' }} />
-      <div style={{ position: 'absolute', bottom: 12, left: '50%', transform: 'translateX(-50%)', zIndex: 2, pointerEvents: 'none', color: 'rgba(200,200,204,0.3)', fontFamily: 'monospace', fontSize: '8px', letterSpacing: '0.2em', whiteSpace: 'nowrap' }}>
-        GLISSER · ORBITER · ZOOMER
-      </div>
       <Canvas
         key={key}
         shadows
