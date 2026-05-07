@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import RevealOnScroll from './RevealOnScroll'
-import ScrambleText from './ScrambleText'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Environment, ContactShadows, Html, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
@@ -142,8 +141,9 @@ function HeroSection({ isMobile }) {
         </motion.p>
 
         <motion.h1
-          initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, filter: 'blur(14px)', y: 20 }}
+          animate={{ opacity: 1, filter: 'blur(0px)',  y: 0  }}
+          transition={{ delay: 0.5, duration: 2, ease: [0.16, 1, 0.3, 1] }}
           style={{
             fontFamily: FONT_EU, fontWeight: 300,
             fontSize: isMobile ? 'clamp(34px,10vw,54px)' : 'clamp(52px,7.5vw,116px)',
@@ -151,8 +151,9 @@ function HeroSection({ isMobile }) {
             color: C.white, lineHeight: 0.92,
             marginBottom: isMobile ? 24 : 40,
           }}>
-          {/* ScrambleText fires after the h1 fade-in begins (delay matches animation) */}
-          <ScrambleText text="LE MOUVEMENT, ÉLEVÉ AU RANG D'ART." delay={700} />
+          Le mouvement,<br />
+          <span style={{ color: C.silver }}>élevé au rang</span><br />
+          d'art.
         </motion.h1>
 
         <motion.p
