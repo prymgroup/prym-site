@@ -167,4 +167,13 @@ export default function VehicleScene({ tier }) {
 }
 
 import { FLEET } from '../../data/fleet'
-FLEET.forEach(t => { if (t.modelPath) useGLTF.preload(t.modelPath) })
+
+// Point drei's GLTFLoader at the Draco decoder so Draco-compressed GLBs
+// are decoded automatically. CDN decoder avoids bundling ~1 MB of wasm.
+useGLTF.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
+
+// Preload all fleet models so they're in cache before the user reaches step 3.
+FLEET.forEach(t => {
+  if (t.modelPath) useGLTF.preload(t.modelPath)
+  t.models?.forEach(m => { if (m.modelPath) useGLTF.preload(m.modelPath) })
+})

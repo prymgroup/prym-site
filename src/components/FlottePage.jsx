@@ -131,7 +131,13 @@ function Scene3D({ modelPath, isMobile }) {
   )
 }
 
-FLEET.forEach(t => { if (t.modelPath) useGLTF.preload(t.modelPath) })
+// Draco decoder CDN — must be set before any useGLTF call resolves.
+useGLTF.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
+
+FLEET.forEach(t => {
+  if (t.modelPath) useGLTF.preload(t.modelPath)
+  t.models?.forEach(m => { if (m.modelPath) useGLTF.preload(m.modelPath) })
+})
 
 function ChevronArrow({ direction, onClick, bottom }) {
   return (
