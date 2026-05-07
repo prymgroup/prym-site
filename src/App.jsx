@@ -12,6 +12,8 @@ import ManifestoSection   from './components/ManifestoSection'
 import ScrollSection      from './components/ScrollSection'
 import PromiseSection     from './components/PromiseSection'
 import LeadCaptureSection from './components/LeadCaptureSection'
+import MobileNavbar       from './components/MobileNavbar'
+import DesktopNav         from './components/DesktopNav'
 
 // Lazy-load the booking flow (don't load 3D deps on the landing page)
 const AProposPage = lazy(() => import('./components/AProposPage'))
@@ -19,6 +21,7 @@ const EntreprisesPage = lazy(() => import('./components/EntreprisesPage'))
 const FlottePage = lazy(() => import('./components/FlottePage'))
 const ExperiencePage = lazy(() => import('./components/ExperiencePage'))
 const BookingFlow = lazy(() => import('./components/booking/BookingFlow'))
+const HomePage    = lazy(() => import('./components/HomePage'))
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
@@ -164,13 +167,23 @@ function TopBar() {
 }
 
 /* ── Landing page ───────────────────────────────────────────────── */
+function useLandingIsMobile() {
+  const [m, setM] = useState(() => window.innerWidth < 768)
+  useEffect(() => {
+    const fn = () => setM(window.innerWidth < 768)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+  return m
+}
+
 function LandingPage() {
   useLenis()
+  const isMobile = useLandingIsMobile()
   return (
-    <div className="grain" style={{ cursor: "none", backgroundColor: '#0a0a0a', position: 'relative', minHeight: '100vh' }}>
-      <CustomCursor />
+    <div className="grain" style={{ backgroundColor: '#0a0a0a', position: 'relative', minHeight: '100vh' }}>
       <ScrollProgress />
-      <TopBar />
+      {isMobile ? <MobileNavbar /> : <DesktopNav />}
       <main style={{ position: 'relative', zIndex: 1 }}>
         <HeroSection />
         <ManifestoSection />
@@ -238,7 +251,8 @@ export default function App() {
   const isEntreprises = path === '/entreprises' || path === '/entreprises/'
   const isFlotte = path === '/flotte' || path === '/flotte/'
   const isExperience = path === '/experience' || path === '/experience/'
-  const isBooking = path === '/reserver' || path === '/reserver/'
+  const isBooking      = path === '/reserver'     || path === '/reserver/'
+  const isAfterTeasing = path === '/afterteasing'  || path === '/afterteasing/'
 
   if (isAPropos) {
     return (
@@ -276,6 +290,14 @@ export default function App() {
     return (
       <Suspense fallback={<BookingLoader />}>
         <BookingFlow />
+      </Suspense>
+    )
+  }
+
+  if (isAfterTeasing) {
+    return (
+      <Suspense fallback={<BookingLoader />}>
+        <HomePage />
       </Suspense>
     )
   }

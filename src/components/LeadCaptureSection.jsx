@@ -1,59 +1,57 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
+import { useLanguage } from '../context/LanguageContext'
+import { T } from '../i18n/translations'
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-/* ── Input field ────────────────────────────────────────────────── */
-function Field({ label, type = 'text', value, onChange, autoComplete }) {
+function useIsMobile() {
+  const [m, setM] = useState(() => window.innerWidth < 900)
+  useEffect(() => {
+    const fn = () => setM(window.innerWidth < 900)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+  return m
+}
+
+function Field({ label, type = 'text', value, onChange, autoComplete, isAR }) {
   const [focused, setFocused] = useState(false)
   return (
-    <div style={{ position: 'relative', paddingBottom: '0.6rem' }}>
-      <input
-        type={type}
-        value={value}
-        onChange={onChange}
-        placeholder={label}
-        autoComplete={autoComplete}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        style={{
-          width: '100%',
-          background: 'transparent',
-          border: 'none',
-          outline: 'none',
-          color: '#f6f6f6',
-          fontFamily: FONT,
-          fontSize: 'clamp(0.75rem, 1.3vw, 0.88rem)',
-          letterSpacing: '0.1em',
-          padding: '0.4rem 0',
-          borderBottom: `1px solid ${focused ? '#c6c6c6' : '#3c3c3b'}`,
-          transition: 'border-color 0.35s',
-        }}
-      />
-    </div>
+    <input
+      type={type} value={value} onChange={onChange} placeholder={label}
+      autoComplete={autoComplete} className="prym-field"
+      onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
+      style={{
+        width: '100%', background: 'transparent', border: 'none', outline: 'none',
+        color: '#f6f6f6', fontFamily: FONT,
+        fontSize: 'clamp(0.8rem, 1.4vw, 0.92rem)',
+        letterSpacing: isAR ? '0.03em' : '0.14em',
+        padding: '0.6rem 0',
+        borderBottom: `1px solid ${focused ? '#ffffff' : '#333'}`,
+        transition: 'border-color 0.35s',
+        direction: isAR ? 'rtl' : 'ltr',
+        textAlign: isAR ? 'right' : 'left',
+      }}
+    />
   )
 }
 
-/* ── Magnetic arrow ─────────────────────────────────────────────── */
-function MagneticArrow({ status }) {
+function MagneticArrow({ status, isMobile }) {
   const ref = useRef(null)
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
+  const [arrowHover, setArrowHover] = useState(false)
+  const x = useMotionValue(0); const y = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 180, damping: 16, mass: 0.5 })
   const sy = useSpring(y, { stiffness: 180, damping: 16, mass: 0.5 })
 
   const handleMove = useCallback((e) => {
-    const el = ref.current
-    if (!el) return
+    const el = ref.current; if (!el) return
     const rect = el.getBoundingClientRect()
-    const cx = rect.left + rect.width / 2
-    const cy = rect.top + rect.height / 2
-    const dx = e.clientX - cx
-    const dy = e.clientY - cy
-    if (Math.hypot(dx, dy) < 100) { x.set(dx * 0.4); y.set(dy * 0.4) }
-    else { x.set(0); y.set(0) }
+    const dx = e.clientX - (rect.left + rect.width / 2)
+    const dy = e.clientY - (rect.top + rect.height / 2)
+    if (Math.hypot(dx, dy) < 100) { x.set(dx * 0.4); y.set(dy * 0.4) } else { x.set(0); y.set(0) }
   }, [x, y])
 
   useEffect(() => {
@@ -62,36 +60,26 @@ function MagneticArrow({ status }) {
   }, [handleMove])
 
   return (
-    <motion.button
-      ref={ref}
-      type="submit"
-      aria-label="Soumettre"
-      onMouseLeave={() => { x.set(0); y.set(0) }}
+    <motion.button ref={ref} type="submit" aria-label="Soumettre"
+      onMouseEnter={() => setArrowHover(true)}
+      onMouseLeave={() => { setArrowHover(false); x.set(0); y.set(0) }}
       style={{
-        x: sx, y: sy,
-        background: 'none', border: 'none',
-        padding: '0.4rem 0.6rem',
-        display: 'inline-flex', alignItems: 'center',
-        willChange: 'transform', flexShrink: 0,
-        alignSelf: 'flex-end',
-      }}
-      whileHover={{ scale: 1.15 }}
-      transition={{ duration: 0.3 }}
-    >
+        x: sx, y: sy, background: 'none', border: 'none', cursor: 'pointer',
+        padding: isMobile ? '1rem 0 1rem 1rem' : '0.4rem 0.6rem',
+        display: 'inline-flex', alignItems: 'center', willChange: 'transform', flexShrink: 0, alignSelf: 'flex-end',
+      }}>
       <AnimatePresence mode="wait">
         {status === 'loading' ? (
           <motion.svg key="spin" width="22" height="22" viewBox="0 0 22 22" fill="none"
             initial={{ opacity: 0 }} animate={{ opacity: 1, rotate: 360 }} exit={{ opacity: 0 }}
             transition={{ opacity: { duration: 0.2 }, rotate: { duration: 1, repeat: Infinity, ease: 'linear' } }}>
-            <circle cx="11" cy="11" r="8" stroke="#c6c6c6" strokeWidth="1"
-              strokeDasharray="30" strokeDashoffset="10" strokeLinecap="round" />
+            <circle cx="11" cy="11" r="8" stroke="#c6c6c6" strokeWidth="1" strokeDasharray="30" strokeDashoffset="10" strokeLinecap="round" />
           </motion.svg>
         ) : (
           <motion.svg key="arrow" width="32" height="10" viewBox="0 0 32 10" fill="none"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}>
-            <path d="M0 5H30M30 5L25.5 1M30 5L25.5 9"
-              stroke="#c6c6c6" strokeWidth="0.85" strokeLinecap="square" />
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+            style={{ transform: arrowHover ? 'translateX(6px)' : 'translateX(0)', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}>
+            <path d="M0 5H30M30 5L25.5 1M30 5L25.5 9" stroke="#c6c6c6" strokeWidth="0.85" strokeLinecap="square" />
           </motion.svg>
         )}
       </AnimatePresence>
@@ -99,277 +87,170 @@ function MagneticArrow({ status }) {
   )
 }
 
-/* ── Tab switcher ───────────────────────────────────────────────── */
-function TabSwitch({ mode, onChange }) {
-  const tabs = [
-    { id: 'b2c', label: 'Particulier' },
-    { id: 'b2b', label: 'Entreprise' },
-  ]
+function TabSwitch({ mode, onChange, labels }) {
+  const [hovered, setHovered] = useState(null)
+  const tabs = [{ id: 'b2c', label: labels.b2c }, { id: 'b2b', label: labels.b2b }]
   return (
-    <div style={{ display: 'flex', gap: '2.4rem', position: 'relative' }}>
-      {tabs.map(tab => (
-        <button
-          key={tab.id}
-          onClick={() => onChange(tab.id)}
-          style={{
-            background: 'none', border: 'none',
-            fontFamily: FONT,
-            fontSize: '0.62rem',
-            letterSpacing: '0.36em',
-            textTransform: 'uppercase',
-            color: mode === tab.id ? '#c6c6c6' : '#3c3c3b',
-            padding: '0 0 0.6rem',
-            position: 'relative',
-            transition: 'color 0.35s',
-          }}
-        >
-          {tab.label}
-          {mode === tab.id && (
-            <motion.div
-              layoutId="tab-underline"
-              style={{
-                position: 'absolute',
-                bottom: 0, left: 0, right: 0,
-                height: 1,
-                backgroundColor: '#706f6f',
-              }}
-              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            />
-          )}
-        </button>
-      ))}
+    <div style={{ display: 'flex', gap: '2.4rem' }}>
+      {tabs.map(tab => {
+        const active = mode === tab.id
+        return (
+          <button key={tab.id} onClick={() => onChange(tab.id)}
+            onMouseEnter={() => setHovered(tab.id)} onMouseLeave={() => setHovered(null)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer', fontFamily: FONT,
+              fontSize: '0.62rem', letterSpacing: '0.36em', textTransform: 'uppercase',
+              fontWeight: active ? 500 : 300,
+              color: active ? '#ffffff' : (hovered === tab.id ? '#ffffff' : '#444'),
+              padding: 0, transition: 'color 0.35s',
+            }}>
+            {tab.label}
+          </button>
+        )
+      })}
     </div>
   )
 }
 
-/* ── B2C Form ───────────────────────────────────────────────────── */
-function B2CForm({ onSuccess }) {
+function B2CForm({ onSuccess, isMobile, t, isAR }) {
   const [fields, setFields] = useState({ prenom: '', nom: '', email: '' })
   const [status, setStatus] = useState('idle')
-
-  const set = key => e => {
-    setFields(f => ({ ...f, [key]: e.target.value }))
-    if (status === 'error') setStatus('idle')
-  }
-
+  const set = key => e => { setFields(f => ({ ...f, [key]: e.target.value })); if (status === 'error') setStatus('idle') }
   const handleSubmit = async e => {
     e.preventDefault()
     if (status === 'loading' || status === 'success') return
     if (!fields.prenom.trim() || !fields.nom.trim() || !EMAIL_RE.test(fields.email.trim())) {
-      setStatus('error')
-      setTimeout(() => setStatus('idle'), 2400)
-      return
+      setStatus('error'); setTimeout(() => setStatus('idle'), 2400); return
     }
     setStatus('loading')
     await new Promise(r => setTimeout(r, 1500))
-    setStatus('success')
-    onSuccess()
+    setStatus('success'); onSuccess()
   }
-
   return (
-    <form onSubmit={handleSubmit}
-      style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', width: '100%' }}>
-      <Field label="Prénom" value={fields.prenom} onChange={set('prenom')} autoComplete="given-name" />
-      <Field label="Nom" value={fields.nom} onChange={set('nom')} autoComplete="family-name" />
-      <Field label="Adresse email" type="email" value={fields.email} onChange={set('email')} autoComplete="email" />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.6rem' }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
+      <Field label={t.b2c.prenom} value={fields.prenom} onChange={set('prenom')} autoComplete="given-name"  isAR={isAR} />
+      <Field label={t.b2c.nom}    value={fields.nom}    onChange={set('nom')}    autoComplete="family-name" isAR={isAR} />
+      <Field label={t.b2c.email}  value={fields.email}  onChange={set('email')}  autoComplete="email" type="email" isAR={isAR} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: isMobile ? '1.2rem' : '0.6rem' }}>
         <AnimatePresence>
           {status === 'error' && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em',
-                color: '#706f6f', textTransform: 'uppercase' }}>
-              Champs incomplets ou email invalide.
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: '#706f6f', textTransform: isAR ? 'none' : 'uppercase' }}>
+              {t.error}
             </motion.span>
           )}
         </AnimatePresence>
-        <div style={{ marginLeft: 'auto' }}>
-          <MagneticArrow status={status} />
+        <div style={{ marginInlineStart: 'auto' }}>
+          <MagneticArrow status={status} isMobile={isMobile} />
         </div>
       </div>
     </form>
   )
 }
 
-/* ── B2B Form ───────────────────────────────────────────────────── */
-function B2BForm({ onSuccess }) {
+function B2BForm({ onSuccess, isMobile, t, isAR }) {
   const [fields, setFields] = useState({ email: '', societe: '', fonction: '' })
   const [status, setStatus] = useState('idle')
-
-  const set = key => e => {
-    setFields(f => ({ ...f, [key]: e.target.value }))
-    if (status === 'error') setStatus('idle')
-  }
-
+  const set = key => e => { setFields(f => ({ ...f, [key]: e.target.value })); if (status === 'error') setStatus('idle') }
   const handleSubmit = async e => {
     e.preventDefault()
     if (status === 'loading' || status === 'success') return
     if (!EMAIL_RE.test(fields.email.trim()) || !fields.societe.trim() || !fields.fonction.trim()) {
-      setStatus('error')
-      setTimeout(() => setStatus('idle'), 2400)
-      return
+      setStatus('error'); setTimeout(() => setStatus('idle'), 2400); return
     }
     setStatus('loading')
     await new Promise(r => setTimeout(r, 1500))
-    setStatus('success')
-    onSuccess()
+    setStatus('success'); onSuccess()
   }
-
   return (
-    <form onSubmit={handleSubmit}
-      style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', width: '100%' }}>
-      <Field label="Adresse email" type="email" value={fields.email} onChange={set('email')} autoComplete="email" />
-      <Field label="Société" value={fields.societe} onChange={set('societe')} autoComplete="organization" />
-      <Field label="Fonction" value={fields.fonction} onChange={set('fonction')} autoComplete="organization-title" />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.6rem' }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
+      <Field label={t.b2b.email}   value={fields.email}   onChange={set('email')}   autoComplete="email" type="email" isAR={isAR} />
+      <Field label={t.b2b.societe} value={fields.societe} onChange={set('societe')} autoComplete="organization"       isAR={isAR} />
+      <Field label={t.b2b.fonction} value={fields.fonction} onChange={set('fonction')} autoComplete="organization-title" isAR={isAR} />
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: isMobile ? '1.2rem' : '0.6rem' }}>
         <AnimatePresence>
           {status === 'error' && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em',
-                color: '#706f6f', textTransform: 'uppercase' }}>
-              Champs incomplets ou email invalide.
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: '#706f6f', textTransform: isAR ? 'none' : 'uppercase' }}>
+              {t.error}
             </motion.span>
           )}
         </AnimatePresence>
-        <div style={{ marginLeft: 'auto' }}>
-          <MagneticArrow status={status} />
+        <div style={{ marginInlineStart: 'auto' }}>
+          <MagneticArrow status={status} isMobile={isMobile} />
         </div>
       </div>
     </form>
   )
 }
 
-/* ── Main component ─────────────────────────────────────────────── */
 export default function LeadCaptureSection() {
+  const { lang } = useLanguage()
+  const t = T[lang].teasing.lead
+  const isAR = lang === 'AR'
   const [mode, setMode] = useState('b2c')
   const [success, setSuccess] = useState(false)
   const [cardRef, cardInView] = useInView(0.15)
+  const isMobile = useIsMobile()
 
-  const handleModeChange = (m) => {
-    setMode(m)
-    setSuccess(false)
-  }
+  const handleModeChange = (m) => { setMode(m); setSuccess(false) }
 
   return (
-    <section
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 'clamp(5rem, 10vh, 8rem) clamp(1.25rem, 5vw, 3rem)',
-        backgroundColor: '#0a0a0a',
-        position: 'relative',
-      }}
-    >
-      <motion.div
-        ref={cardRef}
+    <section style={{
+      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      padding: isMobile ? '5rem 2rem 4rem' : 'clamp(5rem, 10vh, 8rem) clamp(1.25rem, 5vw, 3rem)',
+      backgroundColor: '#000', position: 'relative',
+      direction: isAR ? 'rtl' : 'ltr',
+    }}>
+      <motion.div ref={cardRef}
         initial={{ opacity: 0, y: 50 }}
         animate={cardInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
         transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          width: '100%',
-          maxWidth: 560,
-          position: 'relative',
-          padding: 'clamp(2.4rem, 6vw, 4rem) clamp(1.8rem, 5vw, 3.6rem)',
-          background: 'rgba(246,246,246,0.03)',
-          border: '1px solid rgba(198,198,198,0.1)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 1px 0 rgba(246,246,246,0.04) inset, 0 32px 80px rgba(0,0,0,0.5)',
+          width: '100%', maxWidth: isMobile ? '100%' : 560, position: 'relative',
+          padding: isMobile ? 0 : 'clamp(2.4rem, 6vw, 4rem) clamp(1.8rem, 5vw, 3.6rem)',
         }}
       >
-        {/* Top accent */}
-        <div style={{
-          position: 'absolute', top: 0, left: '20%', right: '20%', height: 1,
-          background: 'linear-gradient(90deg, transparent, rgba(198,198,198,0.25), transparent)',
-        }} />
-
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(1.4rem, 3.5vh, 2.2rem)' }}>
-
-          {/* Label */}
-          <p style={{
-            fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.44em',
-            color: '#3c3c3b', textTransform: 'uppercase', textAlign: 'center', margin: 0,
-          }}>
-            Accès Prioritaire — Conciergerie Privée
+          <p style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.44em', color: '#3c3c3b', textTransform: isAR ? 'none' : 'uppercase', margin: 0 }}>
+            {t.label}
           </p>
-
-          {/* Intro */}
-          <p style={{
-            fontFamily: FONT, fontSize: 'clamp(0.7rem, 1.2vw, 0.84rem)',
-            letterSpacing: '0.06em', color: '#706f6f', lineHeight: 1.7,
-            textAlign: 'center', margin: 0,
-          }}>
-            L'accès à notre flotte initiale sera restreint.
-            Déposez vos coordonnées pour un accès prioritaire.
+          <p style={{ fontFamily: FONT, fontSize: 'clamp(0.7rem, 1.2vw, 0.84rem)', letterSpacing: isAR ? '0.02em' : '0.06em', color: '#706f6f', lineHeight: 1.7, margin: 0, direction: isAR ? 'rtl' : 'ltr' }}>
+            {t.intro}
           </p>
-
-          {/* Tab switcher */}
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <TabSwitch mode={mode} onChange={handleModeChange} />
-          </div>
-
-          {/* Form area */}
+          <div><TabSwitch mode={mode} onChange={handleModeChange} labels={t.tabs} /></div>
           <AnimatePresence mode="wait">
             {success ? (
-              <motion.p
-                key="success"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
+              <motion.p key="success"
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  fontFamily: FONT, fontSize: '0.72rem', letterSpacing: '0.38em',
-                  color: '#c6c6c6', textTransform: 'uppercase',
-                  textAlign: 'center', padding: '1.4rem 0', margin: 0,
-                }}
-              >
-                Accès demandé.
+                style={{ fontFamily: FONT, fontSize: '0.72rem', letterSpacing: '0.38em', color: '#c6c6c6', textTransform: isAR ? 'none' : 'uppercase', textAlign: 'center', padding: '1.4rem 0', margin: 0 }}>
+                {t.success}
               </motion.p>
             ) : (
-              <motion.div
-                key={mode}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              >
+              <motion.div key={mode}
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}>
                 {mode === 'b2c'
-                  ? <B2CForm onSuccess={() => setSuccess(true)} />
-                  : <B2BForm onSuccess={() => setSuccess(true)} />
+                  ? <B2CForm onSuccess={() => setSuccess(true)} isMobile={isMobile} t={t} isAR={isAR} />
+                  : <B2BForm onSuccess={() => setSuccess(true)} isMobile={isMobile} t={t} isAR={isAR} />
                 }
               </motion.div>
             )}
           </AnimatePresence>
-
-          {/* Discretion */}
-          <p style={{
-            fontFamily: FONT, fontSize: '0.5rem', letterSpacing: '0.22em',
-            color: '#3c3c3b', textAlign: 'center', textTransform: 'uppercase', margin: 0,
-          }}>
-            Discrétion absolue. Aucune communication secondaire.
+          <p style={{ fontFamily: FONT, fontSize: '0.5rem', letterSpacing: '0.22em', color: '#3c3c3b', textTransform: isAR ? 'none' : 'uppercase', margin: 0 }}>
+            {t.discretion}
           </p>
         </div>
       </motion.div>
 
-      {/* Footer */}
       <motion.footer
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.5 }}
-        transition={{ delay: 0.6, duration: 1.6 }}
-        style={{
-          position: 'absolute', bottom: '2rem', left: 0, right: 0,
-          textAlign: 'center', padding: '0 1rem',
-        }}
-      >
-        <p style={{
-          fontFamily: FONT, fontSize: 'clamp(0.48rem, 1vw, 0.58rem)',
-          letterSpacing: '0.34em', color: '#3c3c3b',
-          textTransform: 'uppercase', margin: 0,
-        }}>
-          PRYM Executive Transport &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Casablanca
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.5 }} transition={{ delay: 0.6, duration: 1.6 }}
+        style={{ position: 'absolute', bottom: '2rem', left: 0, right: 0, padding: '0 2rem', textAlign: 'center' }}>
+        <p style={{ fontFamily: FONT, fontSize: 'clamp(0.48rem, 1vw, 0.58rem)', letterSpacing: '0.34em', color: '#3c3c3b', textTransform: isAR ? 'none' : 'uppercase', margin: 0 }}>
+          {t.footer}
         </p>
       </motion.footer>
     </section>

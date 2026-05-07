@@ -21,6 +21,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'Nexa';
+  src: url('/fonts/Nexa-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nexa';
+  src: url('/fonts/NexaBlack.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ─── CSS VARIABLES ────────────────────────────────────────────── */
 :root {
   --prym-black:   #0a0a0a;
@@ -73,6 +89,12 @@ input::placeholder {
   color: var(--prym-surface);
   letter-spacing: 0.1em;
   font-family: var(--font-prym);
+}
+
+.prym-field::placeholder {
+  color: #666;
+  letter-spacing: 0.18em;
+  font-weight: 300;
 }
 
 input:-webkit-autofill {

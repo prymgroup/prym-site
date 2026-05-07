@@ -4,9 +4,12 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
 import { FLEET } from '../data/fleet'
 import * as THREE from 'three'
+import MobileNavbar from './MobileNavbar'
+import DesktopNav from './DesktopNav'
+import { useLanguage } from '../context/LanguageContext'
+import { T } from '../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
-const FONT_SE = 'Georgia,"Times New Roman",serif'
 const C = {
   bg: '#0a0a0a', bg2: '#0e0e0f',
   silver: '#c6c6c6', silver2: '#706f6f', silver3: '#3c3c3b',
@@ -17,13 +20,12 @@ function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   useEffect(() => {
     const fn = () => setIsMobile(window.innerWidth < 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
+    window.addEventListener('resize', fn); return () => window.removeEventListener('resize', fn)
   }, [])
   return isMobile
 }
 
-// ── 3D Model ─────────────────────────────────────────────────────────────────
+// ── 3D Model ──────────────────────────────────────────────────────────────────
 function VehicleModel({ path }) {
   const { scene } = useGLTF(path)
   const ref = useRef()
@@ -43,11 +45,11 @@ function VehicleModel({ path }) {
   return <group ref={ref}><primitive object={clone} /></group>
 }
 
-function Loader3D() {
+function Loader3D({ label }) {
   return (
     <Html center>
       <div style={{ color: 'rgba(198,198,198,0.3)', fontFamily: FONT_EU, fontSize: '9px', letterSpacing: '0.3em' }}>
-        CHARGEMENT
+        {label}
       </div>
     </Html>
   )
@@ -55,19 +57,13 @@ function Loader3D() {
 
 function SceneContent({ modelPath, isMobile }) {
   const orbitRef = useRef()
-
   useEffect(() => {
     const raf = requestAnimationFrame(() => {
-      const ctrl = orbitRef.current
-      if (!ctrl) return
-      // Same 3/4 front angle at mirror height for both breakpoints
-      ctrl.object.position.set(3.5, 0.9, 5.5)
-      ctrl.target.set(0, 0.6, 0)
-      ctrl.update()
+      const ctrl = orbitRef.current; if (!ctrl) return
+      ctrl.object.position.set(3.5, 0.9, 5.5); ctrl.target.set(0, 0.6, 0); ctrl.update()
     })
     return () => cancelAnimationFrame(raf)
   }, [isMobile])
-
   return (
     <>
       <directionalLight position={[6, 8, -4]} intensity={2.5} color="#fff5e8" castShadow />
@@ -76,7 +72,7 @@ function SceneContent({ modelPath, isMobile }) {
       <ambientLight intensity={0.15} />
       <ContactShadows position={[0, -0.01, 0]} opacity={0.5} scale={20} blur={2.5} far={8} color="#000" />
       <Environment preset="studio" />
-      <Suspense fallback={<Loader3D />}>
+      <Suspense fallback={<Loader3D label="..." />}>
         <VehicleModel path={modelPath} />
       </Suspense>
       <OrbitControls ref={orbitRef} enablePan={false}
@@ -95,37 +91,28 @@ function Scene3D({ modelPath, isMobile }) {
     <Canvas key={key} shadows dpr={[1, 2]}
       gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
       style={{ background: 'transparent' }} camera={{ fov, near: 0.1, far: 100 }}>
-      <Suspense fallback={<Loader3D />}>
+      <Suspense fallback={<Loader3D label="..." />}>
         <SceneContent modelPath={modelPath} isMobile={isMobile} />
       </Suspense>
     </Canvas>
   )
 }
 
-// ── Preload ───────────────────────────────────────────────────────────────────
 FLEET.forEach(t => { if (t.modelPath) useGLTF.preload(t.modelPath) })
 
-// ── Chevron arrow ─────────────────────────────────────────────────────────────
 function ChevronArrow({ direction, onClick, bottom }) {
   return (
-    <motion.button
-      onClick={onClick}
-      whileHover={{ opacity: 1 }}
-      whileTap={{ opacity: 0.4 }}
+    <motion.button onClick={onClick} whileHover={{ opacity: 1 }} whileTap={{ opacity: 0.4 }}
       style={{
         position: 'absolute',
         ...(bottom
           ? { bottom: 28, [direction === 'left' ? 'left' : 'right']: 32 }
           : { top: '50%', transform: 'translateY(-50%)', [direction === 'left' ? 'left' : 'right']: 16 }
         ),
-        zIndex: 10, background: 'none', border: 'none',
-        cursor: 'pointer', padding: 16,
-        color: 'rgba(198,198,198,0.35)',
-        opacity: 0.35,
-        transition: 'opacity 0.4s ease',
+        zIndex: 10, background: 'none', border: 'none', cursor: 'pointer', padding: 16,
+        color: 'rgba(198,198,198,0.35)', opacity: 0.35, transition: 'opacity 0.4s ease',
         WebkitTapHighlightColor: 'transparent',
-      }}
-    >
+      }}>
       <svg width="10" height="22" viewBox="0 0 10 22" fill="none">
         {direction === 'left'
           ? <polyline points="8,1 2,11 8,21" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -136,122 +123,13 @@ function ChevronArrow({ direction, onClick, bottom }) {
   )
 }
 
-// ── Mobile Nav ────────────────────────────────────────────────────────────────
-function MobileNav() {
-  const [open, setOpen] = useState(false)
-  const links = [
-    ['Flotte', '/flotte'],
-    ['Expérience', '/experience'],
-    ['Entreprises', '/entreprises'],
-    ['À propos', '/a-propos'],
-  ]
+function TierPill({ tier, active, onClick, layoutId, domRef }) {
   return (
-    <>
-      <nav style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200,
-        height: 48,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '0 20px',
-        background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(12px)',
-        borderBottom: `1px solid ${C.silver3}22`,
-      }}>
-        <button onClick={() => setOpen(true)}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px 4px', color: C.silver, WebkitTapHighlightColor: 'transparent', lineHeight: 0 }}>
-          <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
-            <line x1="0" y1="1" x2="22" y2="1" stroke="currentColor" strokeWidth="0.8"/>
-            <line x1="0" y1="7" x2="22" y2="7" stroke="currentColor" strokeWidth="0.8"/>
-            <line x1="0" y1="13" x2="22" y2="13" stroke="currentColor" strokeWidth="0.8"/>
-          </svg>
-        </button>
-
-        <a href="/" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', textDecoration: 'none' }}>
-          <span style={{ fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.white, fontWeight: 300 }}>PRYM</span>
-        </a>
-
-        <a href="/reserver" style={{
-          fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.25em', textTransform: 'uppercase',
-          color: C.silver, border: 'none', padding: '7px 14px',
-          textDecoration: 'none',
-        }}>
-          Réserver
-        </a>
-      </nav>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(10,10,10,0.97)', display: 'flex', flexDirection: 'column', padding: '80px 32px 48px' }}
-          >
-            <button onClick={() => setOpen(false)}
-              style={{ position: 'absolute', top: 14, right: 20, background: 'none', border: 'none', cursor: 'pointer', color: C.silver3, padding: 8, fontFamily: FONT_EU, fontSize: 16, WebkitTapHighlightColor: 'transparent', lineHeight: 1 }}>
-              ✕
-            </button>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 36 }}>
-              {links.map(([label, href]) => (
-                <a key={href} href={href}
-                  style={{ fontFamily: FONT_EU, fontSize: 24, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.white, textDecoration: 'none', fontWeight: 300 }}>
-                  {label}
-                </a>
-              ))}
-            </div>
-            <a href="/reserver"
-              style={{ marginTop: 'auto', display: 'block', textAlign: 'center', fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.bg, background: C.silver, padding: '18px 40px', textDecoration: 'none' }}>
-              Réserver
-            </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  )
-}
-
-// ── Desktop Nav ───────────────────────────────────────────────────────────────
-function DesktopNav() {
-  return (
-    <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-      padding: '0 clamp(24px,5vw,72px)',
-      height: 64,
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      background: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(12px)',
-      borderBottom: `1px solid ${C.silver3}18`,
-    }}>
-      <a href="/" style={{ textDecoration: 'none' }}>
-        <img src="/logos/logo-slogan-white.svg" alt="PRYM" style={{ height: 40, opacity: 0.9 }}
-          onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }} />
-        <span style={{ display:'none', fontFamily:FONT_EU, fontSize:13, letterSpacing:'0.35em', textTransform:'uppercase', color:C.white, fontWeight:300 }}>PRYM</span>
-      </a>
-      <div style={{ display:'flex', gap:'clamp(24px,3vw,48px)', alignItems:'center' }}>
-        {[['Expérience','/experience'],['Entreprises','/entreprises'],['À propos','/a-propos']].map(([l,h]) => (
-          <a key={h} href={h}
-            style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3, textDecoration:'none', transition:'color 0.3s ease' }}
-            onMouseEnter={e=>e.target.style.color=C.silver}
-            onMouseLeave={e=>e.target.style.color=C.silver3}>{l}</a>
-        ))}
-        <a href="/reserver"
-          style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:C.white, border:`1px solid ${C.silver3}`, padding:'10px 24px', textDecoration:'none', transition:'all 0.4s ease' }}
-          onMouseEnter={e=>{ e.currentTarget.style.borderColor=C.silver; e.currentTarget.style.background='rgba(198,198,198,0.06)' }}
-          onMouseLeave={e=>{ e.currentTarget.style.borderColor=C.silver3; e.currentTarget.style.background='transparent' }}>
-          Réserver
-        </a>
-      </div>
-    </nav>
-  )
-}
-
-// ── Tier pill ─────────────────────────────────────────────────────────────────
-function TierPill({ tier, active, onClick, layoutId }) {
-  return (
-    <motion.button onClick={onClick} whileTap={{ scale: 0.97 }}
+    <motion.button ref={domRef} onClick={onClick} whileTap={{ scale: 0.97 }}
       style={{
         background: active ? 'rgba(198,198,198,0.08)' : 'transparent',
         border: `1px solid ${active ? C.silver3 : C.silver3+'44'}`,
-        padding: '8px 16px',
-        cursor: 'pointer',
+        padding: '8px 16px', cursor: 'pointer',
         fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.25em',
         textTransform: 'uppercase', color: active ? C.silver : C.silver3,
         transition: 'all 0.3s ease', whiteSpace: 'nowrap',
@@ -268,8 +146,7 @@ function TierPill({ tier, active, onClick, layoutId }) {
   )
 }
 
-// ── No model placeholder ──────────────────────────────────────────────────────
-function NoModelPlaceholder({ tier }) {
+function NoModelPlaceholder({ tier, label }) {
   return (
     <div style={{ width:'100%', height:'100%', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:24 }}>
       <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:1 }}
@@ -293,21 +170,22 @@ function NoModelPlaceholder({ tier }) {
         </svg>
       </motion.div>
       <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>
-        Visuel disponible sur demande
+        {label}
       </p>
     </div>
   )
 }
 
-// ── Tier display ──────────────────────────────────────────────────────────────
-function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
+function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
   const [modelIdx, setModelIdx] = useState(0)
   const [selectedModel, setSelectedModel] = useState(tier.models?.[0] || null)
+  const pillRefs = useRef({})
 
+  useEffect(() => { setModelIdx(0); setSelectedModel(tier.models?.[0] || null) }, [tier.id])
   useEffect(() => {
-    setModelIdx(0)
-    setSelectedModel(tier.models?.[0] || null)
-  }, [tier.id])
+    const el = pillRefs.current[activeTier.id]
+    if (el) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+  }, [activeTier.id])
 
   const currentModelPath = selectedModel?.modelPath || tier.modelPath
   const hasModel = !!currentModelPath
@@ -325,33 +203,20 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
     setModelIdx(newIdx); setSelectedModel(tier.models[newIdx])
   }
 
-  // ── Mobile layout ──
   if (isMobile) {
     return (
-      <motion.div
-        key={tier.id}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.4 }}
-        style={{ display: 'flex', flexDirection: 'column' }}
-      >
+      <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.4 }}
+        style={{ display:'flex', flexDirection:'column' }}>
         <div style={{
-          position: 'relative', width: '100%',
-          height: 'calc(100vh - 170px)',
-          background: `radial-gradient(ellipse at 40% 50%, #141416 0%, ${C.bg} 70%)`,
-          overflow: 'hidden', flexShrink: 0,
+          position:'relative', width:'100%', height:'calc(100vh - 170px)',
+          background:`radial-gradient(ellipse at 40% 50%, #141416 0%, ${C.bg} 70%)`,
+          overflow:'hidden', flexShrink:0,
         }}>
           <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at center, transparent 55%, rgba(10,10,10,0.55) 100%)' }} />
-          {hasModel ? <Scene3D modelPath={currentModelPath} isMobile={true} /> : <NoModelPlaceholder tier={tier} />}
-          {canNavigate && (
-            <>
-              <ChevronArrow direction="left" onClick={prevModel} />
-              <ChevronArrow direction="right" onClick={nextModel} />
-            </>
-          )}
+          {hasModel ? <Scene3D modelPath={currentModelPath} isMobile={true} /> : <NoModelPlaceholder tier={tier} label={tf.noVisual} />}
+          {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
           <AnimatePresence mode="wait">
-            <motion.div key={vehicleLabel} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}
+            <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
               style={{ position:'absolute', bottom:20, left:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0' }}>
               {vehicleLabel.toUpperCase()}
             </motion.div>
@@ -362,7 +227,8 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
         <div style={{ padding:'28px 24px 48px', background:C.bg }}>
           <div style={{ display:'flex', gap:6, overflowX:'auto', scrollbarWidth:'none', marginBottom:40, marginLeft:-24, marginRight:-24, paddingLeft:24, paddingRight:24 }}>
             {FLEET.map(t => (
-              <TierPill key={t.id} tier={t} active={activeTier.id===t.id} onClick={() => setActiveTier(t)} layoutId="pill-active-mobile" />
+              <TierPill key={t.id} tier={t} active={activeTier.id===t.id} onClick={() => setActiveTier(t)} layoutId="pill-active-mobile"
+                domRef={el => { pillRefs.current[t.id] = el }} />
             ))}
           </div>
           <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:26, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:24, lineHeight:1.05 }}>
@@ -370,7 +236,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
           </h2>
           <div style={{ width:36, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:28 }} />
           <div style={{ display:'flex', gap:36, marginBottom:28 }}>
-            {[{label:'Passagers',value:tier.capacity.passengers},{label:'Bagages',value:tier.capacity.luggage}].map(({label,value}) => (
+            {[{label:tf.passengers,value:tier.capacity.passengers},{label:tf.luggage,value:tier.capacity.luggage}].map(({label,value}) => (
               <div key={label}>
                 <p style={{ fontFamily:FONT_EU, fontSize:26, letterSpacing:'0.05em', color:C.white, lineHeight:1, marginBottom:5 }}>{value}</p>
                 <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
@@ -384,163 +250,77 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
           </div>
           <a href={`/reserver?tier=${tier.id}`}
             style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:C.bg, background:C.silver, padding:'17px 32px', textDecoration:'none' }}>
-            Réserver ce véhicule
+            {tf.book}
           </a>
         </div>
       </motion.div>
     )
   }
 
-  // ── Desktop layout — asymmetric 32/68 ──
   return (
-    <motion.div
-      key={tier.id}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
-      style={{
-        display: 'grid',
-        gridTemplateColumns: '32% 68%',
-        height: 'calc(100vh - 64px)',
-        overflow: 'hidden',
-      }}
-    >
-      {/* ── Left — Info panel ── */}
-      <div style={{
-        display: 'flex', flexDirection: 'column', justifyContent: 'center',
-        padding: '48px 48px 48px 64px',
-        borderRight: `1px solid ${C.silver3}18`,
-        overflowY: 'auto', scrollbarWidth: 'none',
-      }}>
-        <motion.div
-          initial={{ opacity: 0, x: -16 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          {/* Tier category pills */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 48 }}>
+    <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}
+      style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden' }}>
+      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:`1px solid ${C.silver3}18`, overflowY:'auto', scrollbarWidth:'none' }}>
+        <motion.div initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.6, delay:0.1 }}>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:48 }}>
             {FLEET.map(t => (
-              <TierPill key={t.id} tier={t} active={activeTier.id === t.id} onClick={() => setActiveTier(t)} layoutId="pill-active-desktop" />
+              <TierPill key={t.id} tier={t} active={activeTier.id===t.id} onClick={() => setActiveTier(t)} layoutId="pill-active-desktop" />
             ))}
           </div>
 
-          {/* Tier name */}
           <AnimatePresence mode="wait">
-            <motion.h2
-              key={tier.id + '-name'}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.4 }}
-              style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(28px,2.8vw,48px)', letterSpacing: '0.08em', textTransform: 'uppercase', color: C.white, marginBottom: 14, lineHeight: 1.0 }}>
+            <motion.h2 key={tier.id+'-name'} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:0.4}}
+              style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(28px,2.8vw,48px)', letterSpacing:'0.08em', textTransform:'uppercase', color:C.white, marginBottom:14, lineHeight:1.0 }}>
               {tier.name}
             </motion.h2>
           </AnimatePresence>
 
-          {/* Vehicle model label */}
           <AnimatePresence mode="wait">
-            <motion.p
-              key={vehicleLabel}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#E0E0E0', marginBottom: 36 }}>
+            <motion.p key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
+              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0', marginBottom:36 }}>
               {vehicleLabel.toUpperCase()}
             </motion.p>
           </AnimatePresence>
 
-          {/* Divider */}
-          <div style={{ width: 40, height: 1, background: `linear-gradient(90deg,${C.silver3},transparent)`, marginBottom: 36 }} />
+          <div style={{ width:40, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:36 }} />
 
-          {/* Capacity stats */}
-          <div style={{ display: 'flex', gap: 40, marginBottom: 36 }}>
-            {[
-              { label: 'Passagers', value: tier.capacity.passengers },
-              { label: 'Bagages', value: tier.capacity.luggage },
-            ].map(({ label, value }) => (
+          <div style={{ display:'flex', gap:40, marginBottom:36 }}>
+            {[{label:tf.passengers,value:tier.capacity.passengers},{label:tf.luggage,value:tier.capacity.luggage}].map(({label,value}) => (
               <div key={label}>
-                <p style={{ fontFamily: FONT_EU, fontSize: 'clamp(28px,2.5vw,40px)', letterSpacing: '0.04em', color: C.white, lineHeight: 1, marginBottom: 6 }}>{value}</p>
-                <p style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver3 }}>{label}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:'clamp(28px,2.5vw,40px)', letterSpacing:'0.04em', color:C.white, lineHeight:1, marginBottom:6 }}>{value}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
               </div>
             ))}
           </div>
 
-          {/* Amenities — 2-col grid, hover opacity */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 48 }}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:48 }}>
             {tier.amenities.map(a => (
               <span key={a}
-                style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.18em', textTransform: 'uppercase', color: C.silver2, opacity: 0.55, transition: 'opacity 0.4s ease', cursor: 'default' }}
-                onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                onMouseLeave={e => e.currentTarget.style.opacity = 0.55}>
+                style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2, opacity:0.55, transition:'opacity 0.4s ease', cursor:'default' }}
+                onMouseEnter={e => e.currentTarget.style.opacity=1}
+                onMouseLeave={e => e.currentTarget.style.opacity=0.55}>
                 {a}
               </span>
             ))}
           </div>
 
-          {/* CTA — ghost hover premium */}
           <a href={`/reserver?tier=${tier.id}`}
-            style={{
-              display: 'inline-block',
-              fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.35em', textTransform: 'uppercase',
-              color: C.silver, background: 'transparent',
-              border: `1px solid ${C.silver3}`,
-              padding: '16px 40px',
-              textDecoration: 'none', transition: 'all 0.4s ease',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.background = '#1A1A1A'
-              e.currentTarget.style.borderColor = C.silver2
-              e.currentTarget.style.color = C.white
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.borderColor = C.silver3
-              e.currentTarget.style.color = C.silver
-            }}>
-            Réserver ce véhicule
+            style={{ display:'inline-block', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:C.silver, background:'transparent', border:`1px solid ${C.silver3}`, padding:'16px 40px', textDecoration:'none', transition:'all 0.4s ease' }}
+            onMouseEnter={e => { e.currentTarget.style.background='#1A1A1A'; e.currentTarget.style.borderColor=C.silver2; e.currentTarget.style.color=C.white }}
+            onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor=C.silver3; e.currentTarget.style.color=C.silver }}>
+            {tf.book}
           </a>
         </motion.div>
       </div>
 
-      {/* ── Right — 3D canvas ── */}
-      <div style={{
-        position: 'relative',
-        background: `radial-gradient(ellipse at 60% 50%, #111114 0%, ${C.bg} 75%)`,
-        overflow: 'hidden',
-      }}>
-        {/* Subtle left-edge fade to blend with info panel */}
+      <div style={{ position:'relative', background:`radial-gradient(ellipse at 60% 50%, #111114 0%, ${C.bg} 75%)`, overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'linear-gradient(to right, rgba(10,10,10,0.15) 0%, transparent 18%, transparent 85%, rgba(10,10,10,0.3) 100%)' }} />
         <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(10,10,10,0.45) 100%)' }} />
-
-        {hasModel
-          ? <Scene3D modelPath={currentModelPath} isMobile={false} />
-          : <NoModelPlaceholder tier={tier} />
-        }
-
-        {/* Chevron navigation — vertically centered */}
-        {canNavigate && (
-          <>
-            <ChevronArrow direction="left" onClick={prevModel} />
-            <ChevronArrow direction="right" onClick={nextModel} />
-          </>
-        )}
-
-        {/* Vehicle label bottom-left */}
+        {hasModel ? <Scene3D modelPath={currentModelPath} isMobile={false} /> : <NoModelPlaceholder tier={tier} label={tf.noVisual} />}
+        {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
         <AnimatePresence mode="wait">
-          <motion.div
-            key={vehicleLabel}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            style={{
-              position: 'absolute', bottom: 28, left: 32, zIndex: 2,
-              pointerEvents: 'none',
-              fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.1em',
-              textTransform: 'uppercase', color: '#E0E0E0',
-            }}>
+          <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
+            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0' }}>
             {vehicleLabel.toUpperCase()}
           </motion.div>
         </AnimatePresence>
@@ -549,10 +329,11 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier }) {
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 export default function FlottePage() {
   const [activeTier, setActiveTier] = useState(FLEET[1])
   const isMobile = useIsMobile()
+  const { lang } = useLanguage()
+  const tf = T[lang].flotte
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -560,45 +341,29 @@ export default function FlottePage() {
     document.querySelector('meta[name="description"]')?.setAttribute('content', 'Découvrez la flotte PRYM : Select, Executive, Signature, Voyage, Lounge, Suite. Mercedes, Audi, BMW, Sprinter VIP. Chauffeur privé luxe au Maroc.')
     const params = new URLSearchParams(window.location.search)
     const tierParam = params.get('tier')
-    if (tierParam) {
-      const found = FLEET.find(t => t.id === tierParam)
-      if (found) setActiveTier(found)
-    }
+    if (tierParam) { const found = FLEET.find(t => t.id === tierParam); if (found) setActiveTier(found) }
   }, [])
 
   return (
-    <div style={{ background: C.bg, color: C.white, overflowX: 'hidden', height: isMobile ? 'auto' : '100vh', overflow: isMobile ? 'auto' : 'hidden' }}>
-      {isMobile ? <MobileNav /> : <DesktopNav />}
-
+    <div style={{ background:C.bg, color:C.white, overflowX:'hidden', height:isMobile?'auto':'100vh', overflow:isMobile?'auto':'hidden' }}>
+      {isMobile ? <MobileNavbar /> : <DesktopNav />}
       <div style={{ paddingTop: isMobile ? 48 : 64 }}>
         <AnimatePresence mode="wait">
-          <TierDisplay
-            key={activeTier.id}
-            tier={activeTier}
-            isMobile={isMobile}
-            activeTier={activeTier}
-            setActiveTier={setActiveTier}
-          />
+          <TierDisplay key={activeTier.id} tier={activeTier} isMobile={isMobile} activeTier={activeTier} setActiveTier={setActiveTier} tf={tf} />
         </AnimatePresence>
       </div>
 
-      {/* Footer CTA — mobile only (desktop is self-contained) */}
       {isMobile && (
-        <section style={{
-          padding: '48px 24px',
-          textAlign: 'left',
-          borderTop: `1px solid ${C.silver3}22`,
-          background: C.bg2,
-        }}>
+        <section style={{ padding:'48px 24px', textAlign:'left', borderTop:`1px solid ${C.silver3}22`, background:C.bg2 }}>
           <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3, marginBottom:16 }}>
-            Comptes Entreprises
+            {tf.corporate}
           </p>
           <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:20, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:28 }}>
-            Vous avez des besoins réguliers ?
+            {tf.regularNeeds}
           </h2>
           <a href="/entreprises"
             style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.35em', textTransform:'uppercase', color:C.silver, border:`1px solid ${C.silver3}`, padding:'14px 40px', textDecoration:'none' }}>
-            Nous contacter
+            {tf.contact}
           </a>
         </section>
       )}

@@ -6,6 +6,13 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   globalIgnores(['dist']),
+  // Node.js API routes
+  {
+    files: ['api/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -23,7 +30,16 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      // Allow unused vars that start with _ or uppercase, plus JSX namespace vars (motion, useThree, etc.)
+      'no-unused-vars': ['error', {
+        varsIgnorePattern: '^[A-Z_]|^(motion|useThree)$',
+        caughtErrorsIgnorePattern: '^_',
+        args: 'none',
+      }],
+      // R3F pattern: re-keying Canvas on tier/model change via setState in effect is intentional
+      'react-hooks/set-state-in-effect': 'off',
+      // Context files export both provider component and hook — acceptable pattern
+      'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
   },
 ])

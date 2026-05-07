@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import MobileNavbar from './MobileNavbar'
+import DesktopNav from './DesktopNav'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
-const FONT_SE = 'Georgia,"Times New Roman",serif'
+const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const C = {
-  bg: '#0a0a0a', bg2: '#0e0e0f',
+  bg: '#0a0a0a',
   silver: '#c6c6c6', silver2: '#706f6f', silver3: '#3c3c3b',
   white: '#f6f6f6',
 }
 
 const IS = {
-  width: '100%', background: 'rgba(255,255,255,0.03)',
-  border: `1px solid rgba(60,60,59,0.6)`, borderRadius: 0,
-  padding: '14px 16px', color: C.white,
+  width: '100%', background: 'transparent',
+  border: 'none', borderBottom: '1px solid #333', borderRadius: 0,
+  padding: '12px 0', color: C.white,
   fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.08em',
-  outline: 'none', transition: 'border-color 0.2s', boxSizing: 'border-box',
+  outline: 'none', transition: 'border-bottom-color 0.25s', boxSizing: 'border-box',
   appearance: 'none', WebkitAppearance: 'none',
 }
 
@@ -24,33 +26,6 @@ const LS = {
   marginBottom: 8, display: 'block',
 }
 
-function Nav() {
-  return (
-    <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-      padding: '20px clamp(24px,6vw,80px)',
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      background: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(12px)',
-      borderBottom: `1px solid ${C.silver3}22`,
-    }}>
-      <a href="/" style={{ textDecoration: 'none' }}>
-        <img src="/logos/logo-slogan-white.svg" alt="PRYM" style={{ height: 44, opacity: 0.9 }}
-          onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }} />
-        <span style={{ display:'none', fontFamily:FONT_EU, fontSize:13, letterSpacing:'0.35em', textTransform:'uppercase', color:C.white, fontWeight:300 }}>PRYM</span>
-      </a>
-      <div style={{ display:'flex', gap:'clamp(16px,4vw,40px)', alignItems:'center' }}>
-        {[['La Flotte','/flotte'],['Expérience','/experience'],['À propos','/a-propos']].map(([l,h]) => (
-          <a key={h} href={h} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3, textDecoration:'none', transition:'color 0.2s' }}
-            onMouseEnter={e=>e.target.style.color=C.silver} onMouseLeave={e=>e.target.style.color=C.silver3}>{l}</a>
-        ))}
-        <a href="/reserver" style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:C.bg, background:C.silver, padding:'10px 20px', textDecoration:'none', transition:'all 0.2s' }}
-          onMouseEnter={e=>e.target.style.background=C.white} onMouseLeave={e=>e.target.style.background=C.silver}>
-          Réserver
-        </a>
-      </div>
-    </nav>
-  )
-}
 
 // ── Avantages ─────────────────────────────────────────────────────────────────
 const AVANTAGES = [
@@ -105,7 +80,7 @@ const BESOINS = [
   'Délégations & VIP', 'Navettes régulières', 'Voyages inter-villes',
 ]
 
-function ContactForm() {
+function ContactForm({ isMobile }) {
   const [form, setForm] = useState({
     company: '', name: '', role: '', email: '', phone: '',
     volume: '', besoins: [], message: '', consent: false,
@@ -136,13 +111,13 @@ function ContactForm() {
     }
   }
 
-  const focusStyle = k => ({ ...IS, borderColor: focus === k ? C.silver2 : 'rgba(60,60,59,0.6)' })
+  const focusStyle = k => ({ ...IS, borderBottomColor: focus === k ? C.silver2 : '#333' })
 
   if (status === 'sent') {
     return (
       <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
-        style={{ textAlign:'center', padding:'60px 0' }}>
-        <div style={{ width:48, height:1, background:C.silver, margin:'0 auto 32px' }} />
+        style={{ padding:'60px 0' }}>
+        <div style={{ width:48, height:1, background:C.silver, marginBottom:32 }} />
         <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3, marginBottom:16 }}>
           Demande reçue
         </p>
@@ -157,10 +132,10 @@ function ContactForm() {
   }
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
+    <div style={{ display:'flex', flexDirection:'column', gap:28 }}>
 
       {/* Company + Name */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:16 }}>
+      <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(200px,1fr))', gap: isMobile ? 28 : 16 }}>
         <div>
           <label style={LS}>Entreprise *</label>
           <input style={focusStyle('company')} placeholder="Raison sociale" value={form.company}
@@ -174,7 +149,7 @@ function ContactForm() {
       </div>
 
       {/* Role + Phone */}
-      <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:16 }}>
+      <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(200px,1fr))', gap: isMobile ? 28 : 16 }}>
         <div>
           <label style={LS}>Fonction</label>
           <input style={focusStyle('role')} placeholder="Directeur, DRH, Office Manager..." value={form.role}
@@ -195,9 +170,9 @@ function ContactForm() {
       </div>
 
       {/* Volume */}
-      <div>
+      <div style={{ position:'relative' }}>
         <label style={LS}>Volume estimé *</label>
-        <select style={{ ...focusStyle('volume'), cursor:'pointer', colorScheme:'dark' }}
+        <select style={{ ...focusStyle('volume'), cursor:'pointer', colorScheme:'dark', paddingRight:24 }}
           value={form.volume} onChange={set('volume')}
           onFocus={()=>setFocus('volume')} onBlur={()=>setFocus(null)}>
           {VOLUMES.map(v => (
@@ -206,22 +181,23 @@ function ContactForm() {
             </option>
           ))}
         </select>
+        <span style={{ position:'absolute', right:0, bottom:14, fontSize:9, color:C.silver3, pointerEvents:'none' }}>▾</span>
       </div>
 
       {/* Besoins */}
       <div>
-        <label style={{ ...LS, marginBottom:12 }}>Besoins (sélection multiple)</label>
-        <div style={{ display:'flex', flexWrap:'wrap', gap:8 }}>
+        <label style={{ ...LS, marginBottom:16 }}>Besoins (sélection multiple)</label>
+        <div style={{ display:'flex', flexWrap:'wrap', gap:'10px 24px' }}>
           {BESOINS.map(b => {
             const active = form.besoins.includes(b)
             return (
               <button key={b} onClick={()=>toggleBesoin(b)}
                 style={{
-                  fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.15em', textTransform:'uppercase',
-                  padding:'8px 16px', cursor:'pointer', transition:'all 0.2s',
-                  background: active ? 'rgba(198,198,198,0.1)' : 'transparent',
-                  border: `1px solid ${active ? C.silver2 : C.silver3+'55'}`,
-                  color: active ? C.silver : C.silver3,
+                  fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
+                  padding: '4px 0', cursor: 'pointer', transition: 'color 0.2s',
+                  background: 'none', border: 'none',
+                  color: active ? C.white : C.silver3,
+                  fontWeight: active ? 500 : 300,
                 }}>
                 {b}
               </button>
@@ -233,7 +209,7 @@ function ContactForm() {
       {/* Message */}
       <div>
         <label style={LS}>Message (optionnel)</label>
-        <textarea style={{ ...focusStyle('message'), minHeight:100, resize:'vertical', lineHeight:1.7 }}
+        <textarea style={{ ...focusStyle('message'), minHeight:100, resize:'none', lineHeight:1.7 }}
           placeholder="Décrivez votre contexte, vos besoins spécifiques, vos contraintes..."
           value={form.message} onChange={set('message')}
           onFocus={()=>setFocus('message')} onBlur={()=>setFocus(null)} />
@@ -243,7 +219,7 @@ function ContactForm() {
       <label style={{ display:'flex', gap:12, alignItems:'flex-start', cursor:'pointer' }}>
         <input type="checkbox" checked={form.consent}
           onChange={e=>setForm(f=>({...f,consent:e.target.checked}))}
-          style={{ marginTop:3, accentColor:C.silver, width:14, height:14, flexShrink:0 }} />
+          style={{ marginTop:3, accentColor:'#444', width:14, height:14, flexShrink:0, cursor:'pointer' }} />
         <span style={{ fontSize:11, color:C.silver3, lineHeight:1.7, fontFamily:FONT_SE, fontStyle:'italic' }}>
           J'accepte d'être contacté par un conseiller PRYM pour étudier ma demande. Les informations partagées restent strictement confidentielles.
         </span>
@@ -264,7 +240,7 @@ function ContactForm() {
       </button>
 
       {status === 'error' && (
-        <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:12, color:'rgba(200,100,100,0.7)', textAlign:'center' }}>
+        <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:12, color:'rgba(200,100,100,0.7)' }}>
           Une erreur est survenue. Veuillez nous contacter directement.
         </p>
       )}
@@ -273,22 +249,37 @@ function ContactForm() {
 }
 
 // ── Page ──────────────────────────────────────────────────────────────────────
+function useIsMobile() {
+  const [m, setM] = useState(() => window.innerWidth < 768)
+  useEffect(() => {
+    const fn = () => setM(window.innerWidth < 768)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+  return m
+}
+
 export default function EntreprisesPage() {
+  const isMobile = useIsMobile()
   useEffect(() => {
     window.scrollTo(0, 0)
     document.title = 'Comptes Entreprises PRYM — Mobilité Executive Maroc'
     document.querySelector('meta[name="description"]')?.setAttribute('content', 'PRYM propose aux entreprises un service de mobilité executive sur mesure : chauffeur attitré, facturation mensuelle, NDA étendu, priorité de disponibilité. Casablanca, Rabat, Marrakech.')
   }, [])
 
+  const SP = isMobile
+    ? '80px clamp(24px,5vw,40px)'
+    : 'clamp(120px,14vw,180px) clamp(24px,6vw,80px)'
+
   return (
     <div style={{ background:C.bg, minHeight:'100vh', color:C.white }}>
-      <Nav />
+      {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
       {/* Hero */}
       <section style={{
-        padding:'clamp(140px,18vw,200px) clamp(24px,6vw,80px) clamp(60px,8vw,100px)',
-        background:`radial-gradient(ellipse at 50% 80%, #141416 0%, ${C.bg} 65%)`,
-        borderBottom:`1px solid ${C.silver3}22`,
+        padding: 'clamp(140px,18vw,200px) clamp(24px,6vw,80px) clamp(60px,8vw,100px)',
+        background: `radial-gradient(ellipse at 50% 80%, #141416 0%, ${C.bg} 65%)`,
+        borderBottom: `1px solid ${C.silver3}22`,
       }}>
         <motion.p initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:0.2,duration:0.8}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.45em',textTransform:'uppercase',color:C.silver3,marginBottom:20}}>
@@ -306,22 +297,21 @@ export default function EntreprisesPage() {
       </section>
 
       {/* Avantages */}
-      <section style={{padding:'clamp(60px,8vw,100px) clamp(24px,6vw,80px)', borderBottom:`1px solid ${C.silver3}22`}}>
+      <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}22` }}>
         <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7}}
-          style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom:48,textAlign:'center'}}>
+          style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 40 : 64}}>
           Ce que PRYM entreprise inclut
         </motion.p>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))',gap:24,maxWidth:1100,margin:'0 auto'}}>
-          {AVANTAGES.map((a,i) => (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(280px,1fr))',
+          gap: isMobile ? 40 : 'clamp(40px,5vw,64px)',
+          maxWidth: 1100, margin: '0 auto',
+        }}>
+          {AVANTAGES.map((a, i) => (
             <motion.div key={a.n}
               initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}}
-              viewport={{once:true,margin:'-40px'}} transition={{delay:i*0.08,duration:0.7}}
-              style={{
-                border:`1px solid ${C.silver3}33`, padding:'32px 28px',
-                position:'relative', background:C.bg2,
-              }}>
-              <div style={{position:'absolute',top:0,left:0,width:20,height:1,background:C.silver2}} />
-              <div style={{position:'absolute',top:0,left:0,width:1,height:20,background:C.silver2}} />
+              viewport={{once:true,margin:'-40px'}} transition={{delay:i*0.08,duration:0.7}}>
               <p style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.35em',textTransform:'uppercase',color:C.silver3,marginBottom:12}}>
                 {a.n}
               </p>
@@ -337,17 +327,21 @@ export default function EntreprisesPage() {
       </section>
 
       {/* Qui nous fait confiance */}
-      <section style={{padding:'clamp(60px,8vw,100px) clamp(24px,6vw,80px)',borderBottom:`1px solid ${C.silver3}22`,background:C.bg2}}>
+      <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}22` }}>
         <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7}}
-          style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom:48,textAlign:'center'}}>
+          style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 40 : 64}}>
           Ils font confiance à PRYM
         </motion.p>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:16,maxWidth:900,margin:'0 auto'}}>
-          {CLIENTS.map((c,i) => (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(220px,1fr))',
+          gap: isMobile ? 40 : 'clamp(32px,4vw,56px)',
+          maxWidth: 900, margin: '0 auto',
+        }}>
+          {CLIENTS.map((c, i) => (
             <motion.div key={c.label}
               initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}}
-              viewport={{once:true}} transition={{delay:i*0.1,duration:0.6}}
-              style={{padding:'24px',border:`1px solid ${C.silver3}33`}}>
+              viewport={{once:true}} transition={{delay:i*0.1,duration:0.6}}>
               <p style={{fontFamily:FONT_EU,fontSize:10,letterSpacing:'0.2em',textTransform:'uppercase',color:C.silver,marginBottom:10}}>
                 {c.label}
               </p>
@@ -361,12 +355,14 @@ export default function EntreprisesPage() {
 
       {/* Formulaire */}
       <section style={{
-        padding:'clamp(60px,8vw,100px) clamp(24px,6vw,80px)',
-        display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:'clamp(40px,6vw,80px)',
-        maxWidth:1100, margin:'0 auto',
+        padding: SP,
+        display: 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(300px,1fr))',
+        gap: isMobile ? 48 : 'clamp(40px,6vw,80px)',
+        maxWidth: 1100, margin: '0 auto',
       }}>
         {/* Left — intro */}
-        <div style={{paddingTop:8}}>
+        <div style={{ paddingTop: 8 }}>
           <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7}}
             style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom:20}}>
             Ouvrir un compte
@@ -380,15 +376,15 @@ export default function EntreprisesPage() {
             style={{fontFamily:FONT_SE,fontStyle:'italic',fontSize:13,color:C.silver2,lineHeight:1.9,marginBottom:32}}>
             Remplissez ce formulaire et un conseiller PRYM vous contactera sous 24 heures pour construire ensemble une offre adaptée à vos besoins.
           </motion.p>
-          <div style={{display:'flex',flexDirection:'column',gap:12}}>
+          <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
             {[
               ['◎', 'Aucun engagement initial'],
               ['◎', 'Offre personnalisée sous 24h'],
               ['◎', 'Contrat NDA inclus'],
-            ].map(([icon,text]) => (
-              <div key={text} style={{display:'flex',gap:12,alignItems:'center'}}>
-                <span style={{fontFamily:FONT_EU,fontSize:10,color:C.silver3}}>{icon}</span>
-                <span style={{fontFamily:FONT_SE,fontStyle:'italic',fontSize:13,color:C.silver2}}>{text}</span>
+            ].map(([icon, text]) => (
+              <div key={text} style={{ display:'flex', gap:12, alignItems:'center' }}>
+                <span style={{ fontFamily:FONT_EU, fontSize:10, color:C.silver3 }}>{icon}</span>
+                <span style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:13, color:C.silver2 }}>{text}</span>
               </div>
             ))}
           </div>
@@ -396,13 +392,13 @@ export default function EntreprisesPage() {
 
         {/* Right — form */}
         <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.8,delay:0.15}}>
-          <ContactForm />
+          <ContactForm isMobile={isMobile} />
         </motion.div>
       </section>
 
       {/* Footer note */}
-      <div style={{borderTop:`1px solid ${C.silver3}22`,padding:'32px clamp(24px,6vw,80px)',textAlign:'center',background:C.bg2}}>
-        <p style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3}}>
+      <div style={{ borderTop:`1px solid ${C.silver3}22`, padding:'32px clamp(24px,6vw,80px)' }}>
+        <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3 }}>
           Driven by Excellence — prym.ma
         </p>
       </div>

@@ -31,7 +31,7 @@ export default function VehicleSelector({ tier, selectedModel, onSelect }) {
             Véhicule
           </span>
           <div style={{ width: 1, height: 14, background: 'rgba(200,200,204,0.1)', flexShrink: 0 }} />
-          {tier.models.map((model, i) => {
+          {tier.models.map((model) => {
             const active = selectedModel?.name === model.name
             return (
               <motion.button
