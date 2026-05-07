@@ -53,7 +53,8 @@ export const FLEET = [
     tagline: 'L\'espace pour vos équipes',
     vehicles: ['Mercedes Vito', 'Ford Tourneo'],
     models: [
-      { name: 'Mercedes Vito', modelPath: '/models/voyage_vito.glb' },
+      { name: 'Mercedes Vito',  modelPath: '/models/voyage_vito.glb' },
+      { name: 'Ford Tourneo',   modelPath: null },
     ],
     modelPath: '/models/voyage_vito.glb',
     capacity: { passengers: 7, luggage: 6 },

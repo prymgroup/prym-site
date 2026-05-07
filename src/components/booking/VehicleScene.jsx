@@ -1,7 +1,18 @@
-import { Suspense, useRef, useEffect, useState, useCallback } from 'react'
+import { Suspense, useRef, useEffect, useState, useCallback, Component } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
 import * as THREE from 'three'
+
+// Catches useGLTF errors (e.g. 404 in production) so a missing GLB never
+// crashes the whole page. key=modelPath resets the boundary on tier switch.
+class ModelErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false } }
+  static getDerivedStateFromError() { return { hasError: true } }
+  render() {
+    if (this.state.hasError) return this.props.fallback ?? null
+    return this.props.children
+  }
+}
 
 function VehicleModel({ path }) {
   const { scene } = useGLTF(path)
@@ -121,27 +132,37 @@ export default function VehicleScene({ tier }) {
     return () => obs.disconnect()
   }, [observerCb])
 
-  return (
-    <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
-      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'radial-gradient(ellipse at center, transparent 50%, rgba(5,5,7,0.5) 100%)' }} />
-      <Canvas
-        key={key}
-        shadows
-        // Demand mode when off-screen: R3F stops the render loop entirely,
-        // freeing GPU for the rest of the page.
-        frameloop={inView ? 'always' : 'demand'}
-        // Cap mobile at 1.5× — retina mobile screens gain nothing from 2× on a
-        // WebGL canvas and the fill-rate cost is significant.
-        dpr={isMobile ? [1, 1.5] : [1, 2]}
-        gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
-        style={{ background: 'transparent' }}
-        camera={{ fov: isMobile ? 55 : 45, near: 0.1, far: 100 }}
-      >
-        <Suspense fallback={<Loader />}>
-          <SceneInner modelPath={tier?.modelPath || null} isMobile={isMobile} />
-        </Suspense>
-      </Canvas>
+  const modelPath = tier?.modelPath || null
+
+  const errorFallback = (
+    <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+      <span style={{ fontFamily:'"Eurostile","Arial Narrow",sans-serif', fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(200,200,204,0.25)' }}>
+        Modèle en cours de préparation
+      </span>
     </div>
+  )
+
+  return (
+    // key=modelPath resets the boundary whenever the active model changes,
+    // so a previously errored tier does not stay stuck in fallback state.
+    <ModelErrorBoundary key={modelPath} fallback={errorFallback}>
+      <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'radial-gradient(ellipse at center, transparent 50%, rgba(5,5,7,0.5) 100%)' }} />
+        <Canvas
+          key={key}
+          shadows
+          frameloop={inView ? 'always' : 'demand'}
+          dpr={isMobile ? [1, 1.5] : [1, 2]}
+          gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
+          style={{ background: 'transparent' }}
+          camera={{ fov: isMobile ? 55 : 45, near: 0.1, far: 100 }}
+        >
+          <Suspense fallback={<Loader />}>
+            <SceneInner modelPath={modelPath} isMobile={isMobile} />
+          </Suspense>
+        </Canvas>
+      </div>
+    </ModelErrorBoundary>
   )
 }
 

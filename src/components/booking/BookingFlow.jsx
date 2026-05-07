@@ -169,7 +169,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
           </AnimatePresence>
           <div style={{ width:32, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:20 }} />
           <div style={{ display:'flex', gap:28, marginBottom:20 }}>
-            {[{label: tb.passengers, value:tier.capacity.passengers},{label: tb.luggage, value:tier.capacity.luggage}].map(({label,value}) => (
+            {[{label: tb.passengers, value:tier.capacity?.passengers ?? '—'},{label: tb.luggage, value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
                 <p style={{ fontFamily:FONT_EU, fontSize:22, color:C.white, lineHeight:1, marginBottom:4 }}>{value}</p>
                 <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
@@ -177,7 +177,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
             ))}
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:24 }}>
-            {tier.amenities.map(a => (
+            {(tier.amenities ?? []).map(a => (
               <span key={a} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.15em', textTransform:'uppercase', color:C.silver2 }}>{a}</span>
             ))}
           </div>
@@ -225,7 +225,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
           <div style={{ width:36, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:32 }} />
 
           <div style={{ display:'flex', gap:36, marginBottom:32 }}>
-            {[{label: tb.passengers, value:tier.capacity.passengers},{label: tb.luggage, value:tier.capacity.luggage}].map(({label,value}) => (
+            {[{label: tb.passengers, value:tier.capacity?.passengers ?? '—'},{label: tb.luggage, value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
                 <p style={{ fontFamily:FONT_EU, fontSize:'clamp(24px,2.2vw,36px)', letterSpacing:'0.04em', color:C.white, lineHeight:1, marginBottom:5 }}>{value}</p>
                 <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
@@ -234,7 +234,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:11, marginBottom:44 }}>
-            {tier.amenities.map(a => (
+            {(tier.amenities ?? []).map(a => (
               <span key={a}
                 style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2, opacity:0.55, transition:'opacity 0.4s', cursor:'default' }}
                 onMouseEnter={e => e.currentTarget.style.opacity=1}

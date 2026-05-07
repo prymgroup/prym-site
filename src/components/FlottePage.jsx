@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, useRef, useCallback } from 'react'
+import { useState, useEffect, Suspense, useRef, useCallback, Component } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
@@ -14,6 +14,17 @@ const C = {
   bg: '#0a0a0a', bg2: '#0e0e0f',
   silver: '#c6c6c6', silver2: '#706f6f', silver3: '#3c3c3b',
   white: '#f6f6f6',
+}
+
+// Catches useGLTF errors (404 in production for uncommitted GLBs).
+// key=modelPath resets the boundary when the active tier changes.
+class ModelErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false } }
+  static getDerivedStateFromError() { return { hasError: true } }
+  render() {
+    if (this.state.hasError) return this.props.fallback ?? null
+    return this.props.children
+  }
 }
 
 function useIsMobile() {
@@ -235,7 +246,11 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           overflow:'hidden', flexShrink:0,
         }}>
           <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at center, transparent 55%, rgba(10,10,10,0.55) 100%)' }} />
-          {hasModel ? <Scene3D modelPath={currentModelPath} isMobile={true} /> : <NoModelPlaceholder tier={tier} label={tf.noVisual} />}
+          {hasModel
+            ? <ModelErrorBoundary key={currentModelPath} fallback={<NoModelPlaceholder tier={tier} label={tf.noVisual} />}>
+                <Scene3D modelPath={currentModelPath} isMobile={true} />
+              </ModelErrorBoundary>
+            : <NoModelPlaceholder tier={tier} label={tf.noVisual} />}
           {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
           <AnimatePresence mode="wait">
             <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
@@ -258,7 +273,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           </h2>
           <div style={{ width:36, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:28 }} />
           <div style={{ display:'flex', gap:36, marginBottom:28 }}>
-            {[{label:tf.passengers,value:tier.capacity.passengers},{label:tf.luggage,value:tier.capacity.luggage}].map(({label,value}) => (
+            {[{label:tf.passengers,value:tier.capacity?.passengers ?? '—'},{label:tf.luggage,value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
                 <p style={{ fontFamily:FONT_EU, fontSize:26, letterSpacing:'0.05em', color:C.white, lineHeight:1, marginBottom:5 }}>{value}</p>
                 <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
@@ -266,7 +281,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
             ))}
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:36 }}>
-            {tier.amenities.map(a => (
+            {(tier.amenities ?? []).map(a => (
               <span key={a} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2 }}>{a}</span>
             ))}
           </div>
@@ -307,7 +322,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           <div style={{ width:40, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:36 }} />
 
           <div style={{ display:'flex', gap:40, marginBottom:36 }}>
-            {[{label:tf.passengers,value:tier.capacity.passengers},{label:tf.luggage,value:tier.capacity.luggage}].map(({label,value}) => (
+            {[{label:tf.passengers,value:tier.capacity?.passengers ?? '—'},{label:tf.luggage,value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
                 <p style={{ fontFamily:FONT_EU, fontSize:'clamp(28px,2.5vw,40px)', letterSpacing:'0.04em', color:C.white, lineHeight:1, marginBottom:6 }}>{value}</p>
                 <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
@@ -316,7 +331,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:48 }}>
-            {tier.amenities.map(a => (
+            {(tier.amenities ?? []).map(a => (
               <span key={a}
                 style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2, opacity:0.55, transition:'opacity 0.4s ease', cursor:'default' }}
                 onMouseEnter={e => e.currentTarget.style.opacity=1}
@@ -338,7 +353,11 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
       <div style={{ position:'relative', background:`radial-gradient(ellipse at 60% 50%, #111114 0%, ${C.bg} 75%)`, overflow:'hidden' }}>
         <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'linear-gradient(to right, rgba(10,10,10,0.15) 0%, transparent 18%, transparent 85%, rgba(10,10,10,0.3) 100%)' }} />
         <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(10,10,10,0.45) 100%)' }} />
-        {hasModel ? <Scene3D modelPath={currentModelPath} isMobile={false} /> : <NoModelPlaceholder tier={tier} label={tf.noVisual} />}
+        {hasModel
+          ? <ModelErrorBoundary key={currentModelPath} fallback={<NoModelPlaceholder tier={tier} label={tf.noVisual} />}>
+              <Scene3D modelPath={currentModelPath} isMobile={false} />
+            </ModelErrorBoundary>
+          : <NoModelPlaceholder tier={tier} label={tf.noVisual} />}
         {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
         <AnimatePresence mode="wait">
           <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
