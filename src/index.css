@@ -70,9 +70,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Hide the system cursor on pointer:fine (mouse) devices only.
+   cursor: none is inherited, but interactive elements override it
+   by default so we must be explicit. Touch/coarse devices are
+   excluded — they never see this block, so the system cursor
+   (and tap highlights) are fully preserved on mobile/tablet. */
 @media (hover: hover) and (pointer: fine) {
-  body, a, button, input, [role="button"] {
-    cursor: auto;
+  *, *::before, *::after,
+  a, button, input, select, textarea, [role="button"] {
+    cursor: none !important;
   }
 }
 
