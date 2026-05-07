@@ -104,6 +104,19 @@ input:-webkit-autofill {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* ─── HEADINGS ─────────────────────────────────────────────────── */
+h1, h2, h3 {
+  font-family: var(--font-prym);
+  font-weight: 300;
+  text-transform: uppercase;
+  color: var(--prym-light);
+  margin: 0;
+  line-height: 1.15;
+}
+h1 { letter-spacing: 0.06em; }
+h2 { letter-spacing: 0.08em; }
+h3 { letter-spacing: 0.14em; }
+
 /* ─── FILM GRAIN ────────────────────────────────────────────────── */
 .grain::before {
   content: '';

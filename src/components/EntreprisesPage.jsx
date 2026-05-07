@@ -121,7 +121,7 @@ function ContactForm({ isMobile }) {
         <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3, marginBottom:16 }}>
           Demande reçue
         </p>
-        <h3 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:24, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:16 }}>
+        <h3 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(16px,1.8vw,24px)', letterSpacing:'0.14em', textTransform:'uppercase', color:C.white, marginBottom:16 }}>
           Nous vous contactons sous 24h.
         </h3>
         <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:13, color:C.silver2, lineHeight:1.8 }}>
@@ -286,7 +286,7 @@ export default function EntreprisesPage() {
           Comptes Entreprises
         </motion.p>
         <motion.h1 initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:0.4,duration:0.9,ease:[0.22,1,0.36,1]}}
-          style={{fontFamily:FONT_EU,fontWeight:300,fontSize:'clamp(28px,5vw,60px)',letterSpacing:'0.1em',textTransform:'uppercase',color:C.white,lineHeight:1.05,marginBottom:24,maxWidth:700}}>
+          style={{fontFamily:FONT_EU,fontWeight:300,fontSize:'clamp(28px,5vw,60px)',letterSpacing:'0.06em',textTransform:'uppercase',color:C.white,lineHeight:1.05,marginBottom:24,maxWidth:700}}>
           La mobilité executive,<br />
           <span style={{color:C.silver}}>sans friction.</span>
         </motion.h1>
@@ -315,7 +315,7 @@ export default function EntreprisesPage() {
               <p style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.35em',textTransform:'uppercase',color:C.silver3,marginBottom:12}}>
                 {a.n}
               </p>
-              <h3 style={{fontFamily:FONT_EU,fontWeight:300,fontSize:16,letterSpacing:'0.15em',textTransform:'uppercase',color:C.white,marginBottom:16}}>
+              <h3 style={{fontFamily:FONT_EU,fontWeight:300,fontSize:'clamp(16px,1.8vw,20px)',letterSpacing:'0.14em',textTransform:'uppercase',color:C.white,marginBottom:16}}>
                 {a.title}
               </h3>
               <p style={{fontFamily:FONT_SE,fontStyle:'italic',fontSize:13,color:C.silver2,lineHeight:1.8}}>
