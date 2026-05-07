@@ -297,7 +297,7 @@ export default function EntreprisesPage() {
       </section>
 
       {/* Avantages */}
-      <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}22` }}>
+      <section style={{ padding: SP }}>
         <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 40 : 64}}>
           Ce que PRYM entreprise inclut
@@ -325,6 +325,51 @@ export default function EntreprisesPage() {
           ))}
         </div>
       </section>
+
+      {/* ── Image placeholder — Détail flotte / Service B2B ─────────────────── */}
+      <motion.div
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: '-60px' }} transition={{ duration: 1.2 }}
+        style={{
+          width: '100%',
+          height: 'max(400px, 50vh)',
+          marginTop:    'clamp(80px,12vw,140px)',
+          marginBottom: 'clamp(80px,12vw,140px)',
+          background: '#0d0d0f',
+          position: 'relative',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        {/* Depth gradient */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at 40% 55%, #141418 0%, #080808 70%)',
+        }} />
+        {/* Subtle vertical line texture */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(60,60,59,0.05) 120px)',
+        }} />
+        {/* Dev caption — centered */}
+        <span style={{
+          position: 'relative', zIndex: 1,
+          fontFamily: FONT_EU, fontSize: 8,
+          letterSpacing: '0.4em', textTransform: 'uppercase',
+          color: C.silver3, opacity: 0.45,
+        }}>
+          Visuel : Détail flotte / Service B2B
+        </span>
+        {/* Bottom-left slot label */}
+        <span style={{
+          position: 'absolute', bottom: 'clamp(16px,3vw,28px)', left: 'clamp(24px,6vw,80px)',
+          fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.3em',
+          textTransform: 'uppercase', color: C.silver3, opacity: 0.3,
+        }}>
+          PRYM Corporate — Service B2B
+        </span>
+      </motion.div>
 
       {/* Qui nous fait confiance */}
       <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}22` }}>
