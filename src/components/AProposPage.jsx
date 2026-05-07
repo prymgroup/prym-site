@@ -105,64 +105,29 @@ export default function AProposPage() {
         </div>
       </section>
 
-      {/* ── Chiffres clés ────────────────────────────────────────────────── */}
+      {/* ── Notre Philosophie ───────────────────────────────────────────── */}
       <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}18` }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
-            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.5em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 'clamp(56px,8vw,100px)' }}>
-            {ta.stats.eyebrow}
-          </motion.p>
+        <div style={{
+          display: isMobile ? 'flex' : 'grid',
+          flexDirection: 'column',
+          gridTemplateColumns: 'repeat(12,1fr)',
+          gap: isMobile ? '40px 0' : '0 clamp(24px,3vw,56px)',
+          maxWidth: 1400, margin: '0 auto',
+        }}>
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
+            style={{ gridColumn: isMobile ? undefined : '1 / span 4' }}>
+            <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.5em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 24 }}>
+              Notre Philosophie
+            </p>
+            <div style={{ width: 40, height: 1, background: `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver3},transparent)` }} />
+          </motion.div>
 
-          <div style={{ width: '100%', height: 1, background: `${C.silver3}30`, marginBottom: 'clamp(40px,5vw,72px)' }} />
-
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: isMobile ? 'clamp(32px,5vw,56px) clamp(24px,4vw,40px)' : '0 clamp(24px,4vw,64px)' }}>
-            {ta.stats.items.map((c, i) => (
-              <motion.div key={c.label}
-                initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.7 }}>
-                <p style={{ fontFamily: FONT_EU, fontSize: 'clamp(36px,5vw,64px)', letterSpacing: '0.02em', color: C.white, marginBottom: 16, lineHeight: 1, fontWeight: 300 }}>
-                  {c.value}
-                </p>
-                <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver, marginBottom: 8 }}>
-                  {c.label}
-                </p>
-                <p style={{ fontFamily: FONT_SE, fontSize: 12, color: C.silver3 }}>
-                  {c.sub}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-
-          <div style={{ width: '100%', height: 1, background: `${C.silver3}30`, marginTop: 'clamp(40px,5vw,72px)' }} />
-        </div>
-      </section>
-
-      {/* ── Trois piliers ─────────────────────────────────────────────────── */}
-      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}18` }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-          <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7 }}
-            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.5em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 'clamp(56px,8vw,100px)' }}>
-            {ta.pillars.eyebrow}
-          </motion.p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3,1fr)', gap: isMobile ? '40px 0' : '0 clamp(32px,5vw,80px)' }}>
-            {ta.pillars.items.map((v, i) => (
-              <motion.div key={v.n}
-                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }} transition={{ delay: i * 0.12, duration: 0.8 }}>
-                <div style={{ width: '100%', height: 1, background: `${C.silver3}40`, marginBottom: 32 }} />
-                <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.4em', textTransform: 'uppercase', color: C.silver3, marginBottom: 20 }}>
-                  {v.n}
-                </p>
-                <h3 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(16px,1.8vw,20px)', letterSpacing: isAR ? '0.02em' : '0.14em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 28, lineHeight: 1.25 }}>
-                  {v.title}
-                </h3>
-                <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.pearl, lineHeight: 1.9 }}>
-                  {v.body}
-                </p>
-              </motion.div>
-            ))}
-          </div>
+          <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.15 }}
+            style={{ gridColumn: isMobile ? undefined : '6 / span 7' }}>
+            <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px,1.5vw,18px)', color: C.pearl, lineHeight: 1.9 }}>
+              L'industrie du transport de direction s'était endormie sur ses acquis. PRYM est née d'une volonté radicale : redéfinir le standard. Moins de bruit, plus de justesse. Une approche architecturale du service où chaque détail a été pensé pour disparaître au profit de votre tranquillité.
+            </p>
+          </motion.div>
         </div>
       </section>
 
