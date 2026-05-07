@@ -175,7 +175,7 @@ function HeroSection({ isMobile }) {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ delay: 1.0, duration: 0.9 }}
           style={{
-            fontFamily: FONT_SE, fontStyle: 'italic',
+            fontFamily: FONT_SE,
             fontSize: 'clamp(13px,1.3vw,16px)', color: C.silver2,
             lineHeight: 1.9, maxWidth: 420,
             marginBottom: isMobile ? 44 : 60,
@@ -273,7 +273,7 @@ function SectionFlotte({ isMobile }) {
           L'objet<br />de désir.
         </h2>
         <p style={{
-          fontFamily: FONT_SE, fontStyle: 'italic',
+          fontFamily: FONT_SE,
           fontSize: 'clamp(13px,1.2vw,15px)', color: C.silver2,
           lineHeight: 1.9, maxWidth: 300, marginBottom: 44,
         }}>
@@ -381,7 +381,7 @@ function SectionExperience({ isMobile }) {
           la précision<br />chirurgicale.
         </h2>
         <p style={{
-          fontFamily: FONT_SE, fontStyle: 'italic',
+          fontFamily: FONT_SE,
           fontSize: 'clamp(12px,1.1vw,14px)', color: C.silver2,
           lineHeight: 1.9, marginBottom: 36,
         }}>
@@ -432,7 +432,7 @@ function SectionB2B({ isMobile }) {
           notre standard.
         </h2>
         <p style={{
-          fontFamily: FONT_SE, fontStyle: 'italic',
+          fontFamily: FONT_SE,
           fontSize: 'clamp(13px,1.3vw,16px)', color: C.silver2,
           lineHeight: 1.9, maxWidth: 480, marginBottom: 56,
         }}>

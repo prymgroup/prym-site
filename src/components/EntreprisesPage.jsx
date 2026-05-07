@@ -291,7 +291,7 @@ export default function EntreprisesPage() {
           <span style={{color:C.silver}}>sans friction.</span>
         </motion.h1>
         <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.8,duration:0.8}}
-          style={{fontFamily:FONT_SE,fontStyle:'italic',fontSize:'clamp(13px,1.6vw,16px)',color:C.silver2,lineHeight:1.9,maxWidth:520}}>
+          style={{fontFamily:FONT_SE,fontSize:'clamp(13px,1.6vw,16px)',color:C.silver2,lineHeight:1.9,maxWidth:520}}>
           PRYM propose aux entreprises un service de mobilité executive sur mesure. Un seul interlocuteur, une facturation centralisée, et le standard PRYM pour chaque trajet de vos équipes.
         </motion.p>
       </section>
