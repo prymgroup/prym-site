@@ -1,69 +1,42 @@
 /**
- * CustomCursor — quiet-luxury cursor with mix-blend-difference.
+ * CustomCursor — zero-lag, zero-state quiet-luxury cursor.
  *
- * • Pure white 16×16 circle (w-4 h-4 rounded-full bg-white)
- * • mix-blend-difference: acts as a negative lens — inverts whatever
- *   text or background sits beneath the cursor circle.
- * • rAF loop with lerp drives the transform directly on the DOM node —
- *   zero React re-renders, zero virtual-DOM diffing, GPU-composited only.
- * • Completely disabled on touch/pointer:coarse devices so the system
- *   cursor is fully restored and no phantom element floats on screen.
+ * • IS_TOUCH resolved at module-load time — no useState, no re-renders ever
+ * • mousemove handler writes translate3d directly to the DOM node
+ *   synchronously — no rAF buffer, no lerp, no React reconciler in the path
+ * • translate3d(x, y, 0) forces GPU compositing on every browser
+ * • mix-blend-difference: white circle acts as a negative lens over content
+ * • Completely absent on touch/coarse-pointer devices — no element, no handler
  */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
-const HALF = 8      // half of w-4 (16px) — used to center the dot on the pointer
-const LERP = 0.18   // interpolation factor — higher = snappier, lower = more trailing
+// Evaluated once at import time — pointer capability never changes mid-session
+const IS_TOUCH = typeof window !== 'undefined' &&
+  window.matchMedia('(pointer: coarse)').matches
+
+const HALF = 8  // half of w-4 (16 px) — centers the dot on the hot-spot
 
 export default function CustomCursor() {
   const elRef = useRef(null)
 
-  // Lazy-initialise once: checks pointer type before first render so
-  // touch devices never receive the cursor element at all — no flash.
-  const [isTouch] = useState(
-    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
-  )
-
   useEffect(() => {
-    if (isTouch) return
+    if (IS_TOUCH) return
+    const el = elRef.current
+    if (!el) return
 
-    let rafId
-    let targetX  = -100
-    let targetY  = -100
-    let currentX = -100
-    let currentY = -100
-
-    // Passive listener — never blocks the main thread scroll pipeline
-    const onMove = (e) => {
-      targetX = e.clientX
-      targetY = e.clientY
-    }
-
-    const tick = () => {
-      // Lerp: smooth trailing without noticeable lag at LERP = 0.18
-      currentX += (targetX - currentX) * LERP
-      currentY += (targetY - currentY) * LERP
-
-      // Direct DOM mutation — bypasses React reconciler entirely
-      if (elRef.current) {
-        elRef.current.style.transform =
-          `translate(${currentX - HALF}px, ${currentY - HALF}px)`
-      }
-
-      rafId = requestAnimationFrame(tick)
+    // Passive: never blocks scroll or touch pipeline
+    const onMove = ({ clientX: x, clientY: y }) => {
+      // Single synchronous style write — bypasses React entirely
+      el.style.transform = `translate3d(${x - HALF}px,${y - HALF}px,0)`
     }
 
     window.addEventListener('mousemove', onMove, { passive: true })
-    rafId = requestAnimationFrame(tick)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [])
 
-    return () => {
-      window.removeEventListener('mousemove', onMove)
-      cancelAnimationFrame(rafId)
-    }
-  }, [isTouch])
-
-  // Touch devices: render nothing — restores the native system cursor
-  if (isTouch) return null
+  // Touch devices: no element, no event listener — system cursor untouched
+  if (IS_TOUCH) return null
 
   return (
     <div
@@ -72,8 +45,7 @@ export default function CustomCursor() {
       style={{
         mixBlendMode : 'difference',
         willChange   : 'transform',
-        // Start well offscreen so it never flashes at (0, 0)
-        transform    : `translate(${-HALF - 100}px, ${-HALF - 100}px)`,
+        transform    : `translate3d(${-HALF - 100}px,${-HALF - 100}px,0)`,
       }}
     />
   )
