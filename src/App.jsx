@@ -13,7 +13,7 @@ import PromiseSection     from './components/PromiseSection'
 import LeadCaptureSection from './components/LeadCaptureSection'
 import MobileNavbar       from './components/MobileNavbar'
 import DesktopNav         from './components/DesktopNav'
-import CustomCursor       from './components/CustomCursor'
+import SmartCursor        from './components/SmartCursor'
 
 // Lazy-load the booking flow (don't load 3D deps on the landing page)
 const AProposPage = lazy(() => import('./components/AProposPage'))
@@ -207,8 +207,8 @@ export default function App() {
 
   return (
     <>
-      {/* Custom cursor — self-disables on touch/pointer:coarse devices */}
-      <CustomCursor />
+      {/* SmartCursor — renders only when pointer:fine + motion-ok + cores > 4 */}
+      <SmartCursor />
       {renderPage()}
     </>
   )
