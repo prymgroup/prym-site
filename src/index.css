@@ -104,6 +104,15 @@ input:-webkit-autofill {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* ─── BODY TEXT ────────────────────────────────────────────────── */
+/* Default for all paragraphs: readable silver, relaxed leading.
+   Inline color overrides in components still take precedence.
+   h1/h2/h3 are explicitly excluded — they stay pure prym-light. */
+p {
+  color: #a3a3a3;
+  line-height: 1.625;
+}
+
 /* ─── HEADINGS ─────────────────────────────────────────────────── */
 h1, h2, h3 {
   font-family: var(--font-prym);
