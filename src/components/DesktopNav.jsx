@@ -62,7 +62,7 @@ export default function DesktopNav() {
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
       padding: '0 clamp(24px,5vw,72px)', height: 64,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      background: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(12px)',
+      background: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(12px)', willChange: 'transform',
       borderBottom: `1px solid ${C.silver3}18`,
     }}>
       {/* Logo */}

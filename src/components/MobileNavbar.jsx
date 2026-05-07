@@ -71,7 +71,7 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200, height: 48,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 20px',
-        background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(12px)',
+        background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(12px)', willChange: 'transform',
         borderBottom: `1px solid ${C.silver3}22`,
       }}>
         <button onClick={() => setOpen(true)} aria-label="Ouvrir le menu"

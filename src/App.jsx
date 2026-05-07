@@ -28,6 +28,13 @@ const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 /* ── Lenis smooth scroll ────────────────────────────────────────── */
 function useLenis() {
   useEffect(() => {
+    // Skip on touch devices (mobile/tablet) and when user prefers reduced motion.
+    // Lenis adds JS-driven scroll momentum on top of native scroll — on touch
+    // devices this doubles the scroll handling and causes dropped frames.
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const isTouch = window.matchMedia('(pointer: coarse)').matches
+    if (prefersReduced || isTouch) return
+
     const lenis = new Lenis({
       duration: 1.4,
       easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),

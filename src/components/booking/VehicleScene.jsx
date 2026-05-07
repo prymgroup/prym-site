@@ -1,4 +1,4 @@
-import { Suspense, useRef, useEffect, useState } from 'react'
+import { Suspense, useRef, useEffect, useState, useCallback } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
 import * as THREE from 'three'
@@ -96,6 +96,10 @@ function SceneInner({ modelPath, isMobile }) {
 export default function VehicleScene({ tier }) {
   const [key, setKey] = useState(0)
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  // Pause WebGL rendering when canvas is scrolled out of view — saves GPU on
+  // mobile and mid-page booking flows where the canvas is off-screen.
+  const [inView, setInView] = useState(true)
+  const containerRef = useRef()
 
   useEffect(() => {
     const fn = () => setIsMobile(window.innerWidth < 768)
@@ -105,13 +109,30 @@ export default function VehicleScene({ tier }) {
 
   useEffect(() => { setKey(k => k + 1) }, [tier?.id])
 
+  const observerCb = useCallback(([entry]) => {
+    setInView(entry.isIntersecting)
+  }, [])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const obs = new IntersectionObserver(observerCb, { threshold: 0 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [observerCb])
+
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
       <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'radial-gradient(ellipse at center, transparent 50%, rgba(5,5,7,0.5) 100%)' }} />
       <Canvas
         key={key}
         shadows
-        dpr={[1, 2]}
+        // Demand mode when off-screen: R3F stops the render loop entirely,
+        // freeing GPU for the rest of the page.
+        frameloop={inView ? 'always' : 'demand'}
+        // Cap mobile at 1.5× — retina mobile screens gain nothing from 2× on a
+        // WebGL canvas and the fill-rate cost is significant.
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
         gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
         style={{ background: 'transparent' }}
         camera={{ fov: isMobile ? 55 : 45, near: 0.1, far: 100 }}

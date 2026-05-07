@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense, useRef } from 'react'
+import { useState, useEffect, Suspense, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
@@ -85,16 +85,38 @@ function SceneContent({ modelPath, isMobile }) {
 
 function Scene3D({ modelPath, isMobile }) {
   const [key, setKey] = useState(0)
+  const [inView, setInView] = useState(true)
+  const containerRef = useRef()
+
   useEffect(() => { setKey(k => k + 1) }, [modelPath])
+
+  const observerCb = useCallback(([entry]) => {
+    setInView(entry.isIntersecting)
+  }, [])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const obs = new IntersectionObserver(observerCb, { threshold: 0 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [observerCb])
+
   const fov = isMobile ? 65 : 42
   return (
-    <Canvas key={key} shadows dpr={[1, 2]}
-      gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
-      style={{ background: 'transparent' }} camera={{ fov, near: 0.1, far: 100 }}>
-      <Suspense fallback={<Loader3D label="..." />}>
-        <SceneContent modelPath={modelPath} isMobile={isMobile} />
-      </Suspense>
-    </Canvas>
+    // Wrapper fills the parent (position:relative + overflow:hidden) so the
+    // IntersectionObserver has a real DOM node to watch.
+    <div ref={containerRef} style={{ position: 'absolute', inset: 0 }}>
+      <Canvas key={key} shadows
+        frameloop={inView ? 'always' : 'demand'}
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
+        style={{ background: 'transparent' }} camera={{ fov, near: 0.1, far: 100 }}>
+        <Suspense fallback={<Loader3D label="..." />}>
+          <SceneContent modelPath={modelPath} isMobile={isMobile} />
+        </Suspense>
+      </Canvas>
+    </div>
   )
 }
 
