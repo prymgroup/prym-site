@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import RevealOnScroll from './RevealOnScroll'
 import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
 import { useLanguage } from '../context/LanguageContext'
@@ -214,11 +215,13 @@ export default function AProposPage() {
         </motion.div>
       </section>
 
-      <div style={{ borderTop: `1px solid ${C.silver3}18`, padding: `28px ${GUTTER}`, background: C.bg }}>
-        <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
-          {ta.footer}
-        </p>
-      </div>
+      <RevealOnScroll delay={0.1}>
+        <div style={{ borderTop: `1px solid ${C.silver3}18`, padding: `28px ${GUTTER}`, background: C.bg }}>
+          <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
+            {ta.footer}
+          </p>
+        </div>
+      </RevealOnScroll>
     </div>
   )
 }

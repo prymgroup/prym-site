@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, Suspense } from 'react'
 import { motion } from 'framer-motion'
+import RevealOnScroll from './RevealOnScroll'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Environment, ContactShadows, Html, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
@@ -344,20 +345,22 @@ function SectionCTA({ isMobile }) {
 /* ── Footer ────────────────────────────────────────────────────────────────── */
 function PageFooter() {
   return (
-    <footer style={{
-      background: C.bg,
-      padding: `32px ${GX}`,
-      borderTop: `1px solid ${C.silver3}18`,
-      display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      flexWrap: 'wrap', gap: 12,
-    }}>
-      <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.38em', textTransform: 'uppercase', color: C.silver3, margin: 0 }}>
-        PRYM Executive Transport &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Casablanca
-      </p>
-      <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase', color: C.silver3, margin: 0 }}>
-        prym.ma
-      </p>
-    </footer>
+    <RevealOnScroll delay={0.1} y={12}>
+      <footer style={{
+        background: C.bg,
+        padding: `32px ${GX}`,
+        borderTop: `1px solid ${C.silver3}18`,
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        flexWrap: 'wrap', gap: 12,
+      }}>
+        <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.38em', textTransform: 'uppercase', color: C.silver3, margin: 0 }}>
+          PRYM Executive Transport &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Casablanca
+        </p>
+        <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase', color: C.silver3, margin: 0 }}>
+          prym.ma
+        </p>
+      </footer>
+    </RevealOnScroll>
   )
 }
 

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
+import RevealOnScroll from './RevealOnScroll'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
@@ -298,7 +299,7 @@ export default function EntreprisesPage() {
 
       {/* Avantages */}
       <section style={{ padding: SP }}>
-        <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7}}
+        <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 40 : 64}}>
           Ce que PRYM entreprise inclut
         </motion.p>
@@ -373,7 +374,7 @@ export default function EntreprisesPage() {
 
       {/* Qui nous fait confiance */}
       <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}22` }}>
-        <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7}}
+        <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 40 : 64}}>
           Ils font confiance à PRYM
         </motion.p>
@@ -406,9 +407,10 @@ export default function EntreprisesPage() {
         gap: isMobile ? 48 : 'clamp(40px,6vw,80px)',
         maxWidth: 1100, margin: '0 auto',
       }}>
+        <RevealOnScroll y={32}>
         {/* Left — intro */}
         <div style={{ paddingTop: 8 }}>
-          <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7}}
+          <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
             style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom:20}}>
             Ouvrir un compte
           </motion.p>
@@ -439,14 +441,17 @@ export default function EntreprisesPage() {
         <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.8,delay:0.15}}>
           <ContactForm isMobile={isMobile} />
         </motion.div>
+        </RevealOnScroll>
       </section>
 
       {/* Footer note */}
-      <div style={{ borderTop:`1px solid ${C.silver3}22`, padding:'32px clamp(24px,6vw,80px)' }}>
-        <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3 }}>
-          Driven by Excellence — prym.ma
-        </p>
-      </div>
+      <RevealOnScroll delay={0.1}>
+        <div style={{ borderTop:`1px solid ${C.silver3}22`, padding:'32px clamp(24px,6vw,80px)' }}>
+          <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3 }}>
+            Driven by Excellence — prym.ma
+          </p>
+        </div>
+      </RevealOnScroll>
     </div>
   )
 }

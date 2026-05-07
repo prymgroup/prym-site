@@ -4,6 +4,7 @@ import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
+import RevealOnScroll from './RevealOnScroll'
 
 const FONT_EU = '"Eurostile", "Russo One", "Helvetica Neue", Arial, sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
@@ -186,11 +187,7 @@ function Hero({ t, isAR }) {
 
 function Sec({ children, isMobile }) {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-      style={{ padding: `${SEC_V} ${GUTTER}`, borderTop: '1px solid #111', background: C.bg }}
-    >
+    <section style={{ padding: `${SEC_V} ${GUTTER}`, borderTop: '1px solid #111', background: C.bg }}>
       <div style={{
         display: isMobile ? 'flex' : 'grid',
         flexDirection: 'column',
@@ -201,28 +198,41 @@ function Sec({ children, isMobile }) {
       }}>
         {children}
       </div>
-    </motion.section>
+    </section>
   )
 }
 
 function Narrative({ n, label, title, body, isAR }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', direction: isAR ? 'rtl' : 'ltr', textAlign: isAR ? 'right' : 'left' }}>
-      <span style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.3em', color: C.silver3, display: 'block', marginBottom: 28 }}>
-        {String(n).padStart(2, '0')} —
-      </span>
-      {label && (
-        <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver2, marginBottom: 16 }}>
-          {label}
+
+      {/* number + optional label */}
+      <RevealOnScroll delay={0} y={16} style={{ marginBottom: 28 }}>
+        <span style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.3em', color: C.silver3, display: 'block', marginBottom: label ? 16 : 0 }}>
+          {String(n).padStart(2, '0')} —
+        </span>
+        {label && (
+          <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver2 }}>
+            {label}
+          </p>
+        )}
+      </RevealOnScroll>
+
+      {/* heading + rule */}
+      <RevealOnScroll delay={0.1} y={20} style={{ marginBottom: 'clamp(28px, 4vw, 36px)' }}>
+        <h2 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(22px, 2.6vw, 32px)', letterSpacing: isAR ? '0.02em' : '0.08em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 'clamp(28px, 4vw, 36px)', lineHeight: 1.18 }}>
+          {title.split('\n').map((l, i, a) => <span key={i}>{l}{i < a.length - 1 && <br />}</span>)}
+        </h2>
+        <div style={{ width: 48, height: 1, background: C.silver3 }} />
+      </RevealOnScroll>
+
+      {/* body text */}
+      <RevealOnScroll delay={0.22} y={16}>
+        <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px, 1.35vw, 15px)', color: C.body, lineHeight: 1.9 }}>
+          {body}
         </p>
-      )}
-      <h2 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(22px, 2.6vw, 32px)', letterSpacing: isAR ? '0.02em' : '0.08em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 'clamp(28px, 4vw, 36px)', lineHeight: 1.18 }}>
-        {title.split('\n').map((l, i, a) => <span key={i}>{l}{i < a.length - 1 && <br />}</span>)}
-      </h2>
-      <div style={{ width: 48, height: 1, background: C.silver3, marginBottom: 'clamp(28px, 4vw, 36px)' }} />
-      <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px, 1.35vw, 15px)', color: C.body, lineHeight: 1.9 }}>
-        {body}
-      </p>
+      </RevealOnScroll>
+
     </div>
   )
 }
