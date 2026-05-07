@@ -31,47 +31,6 @@ function useIsMobile() {
   return m
 }
 
-function DetailItem({ label, value, isAR }) {
-  return (
-    <div style={{ direction: isAR ? 'rtl' : 'ltr', textAlign: isAR ? 'right' : 'left' }}>
-      <p style={{
-        fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.28em',
-        textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 10,
-      }}>
-        {label}
-      </p>
-      <p style={{
-        fontFamily: FONT_SE, fontSize: 13, color: C.body,
-        lineHeight: 1.8, whiteSpace: 'pre-line',
-      }}>
-        {value}
-      </p>
-    </div>
-  )
-}
-
-function PhotoSlot({ caption }) {
-  return (
-    <div style={{
-      width: '100%',
-      height: 'max(40vh, 260px)',
-      background: 'linear-gradient(180deg, #0d0d10 0%, #080808 100%)',
-      display: 'flex',
-      alignItems: 'flex-end',
-      padding: `0 ${GUTTER} clamp(24px, 4vw, 48px)`,
-      marginTop: 'clamp(60px, 8vw, 100px)',
-      marginBottom: 'clamp(60px, 8vw, 100px)',
-    }}>
-      <span style={{
-        fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.4em',
-        textTransform: 'uppercase', color: C.silver3, opacity: 0.45,
-      }}>
-        {caption}
-      </span>
-    </div>
-  )
-}
-
 function OlfactifVisual({ notes, credit, isAR }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -109,7 +68,7 @@ function TempDisplay({ label, sub, isAR }) {
     >
       <p style={{
         fontFamily: FONT_EU, fontWeight: 300,
-        fontSize: 'clamp(96px, 24vw, 130px)',
+        fontSize: 'clamp(80px, 18vw, 120px)',
         letterSpacing: '-0.02em', color: C.white, lineHeight: 1,
       }}>
         21°
@@ -137,9 +96,7 @@ function NDAList({ title, items, protect, isAR }) {
       </p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {items.map((item) => (
-          <div key={item} style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          }}>
+          <div key={item} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexDirection: isAR ? 'row-reverse' : 'row' }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%', border: `1px solid ${C.silver3}`, flexShrink: 0 }} />
               <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body }}>
@@ -270,6 +227,121 @@ function Narrative({ n, label, title, body, isAR }) {
   )
 }
 
+/* ── 50/50 Split — Image placeholder ↔ 21° + NDA ─────────────────────────── */
+function SplitSection({ s, isAR, isMobile }) {
+  return (
+    <motion.section
+      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: '-60px' }} transition={{ duration: 1 }}
+      style={{ borderTop: '1px solid #111', background: C.bg }}
+    >
+      <div style={{
+        display: isMobile ? 'flex' : 'grid',
+        flexDirection: 'column',
+        gridTemplateColumns: '1fr 1fr',
+        minHeight: isMobile ? 'auto' : 640,
+      }}>
+
+        {/* Left — image placeholder */}
+        <div style={{
+          background: '#0d0d0f',
+          height: isMobile ? '72vw' : 'auto',
+          minHeight: isMobile ? 280 : 640,
+          position: 'relative',
+          overflow: 'hidden',
+          display: 'flex',
+          alignItems: 'flex-end',
+          padding: 'clamp(20px,3vw,40px)',
+        }}>
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'radial-gradient(ellipse at 35% 55%, #141418 0%, #080808 70%)',
+          }} />
+          {/* Subtle vertical line texture */}
+          <div style={{
+            position: 'absolute', inset: 0, pointerEvents: 'none',
+            background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(60,60,59,0.06) 120px)',
+          }} />
+          <span style={{
+            position: 'relative', zIndex: 1,
+            fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.38em',
+            textTransform: 'uppercase', color: C.silver3, opacity: 0.45,
+          }}>
+            Intérieur PRYM Signature — Cuir nappa
+          </span>
+        </div>
+
+        {/* Right — 21° + NDA, vertically centered with breathing room */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          gap: 'clamp(52px, 9vw, 88px)',
+          padding: isMobile
+            ? `clamp(64px,14vw,80px) ${GUTTER}`
+            : `clamp(80px,10vw,120px) clamp(56px,7vw,96px)`,
+        }}>
+          <TempDisplay label={s[3].tempLabel} sub={s[3].tempSub} isAR={isAR} />
+          <NDAList title={s[4].ndaTitle} items={s[4].ndaItems} protect={s[4].ndaProtect} isAR={isAR} />
+        </div>
+
+      </div>
+    </motion.section>
+  )
+}
+
+/* ── Full Screen Quote ─────────────────────────────────────────────────────── */
+function FullScreenQuote() {
+  return (
+    <motion.section
+      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: '-100px' }} transition={{ duration: 1.4 }}
+      style={{
+        minHeight: '80vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: `clamp(80px, 12vw, 140px) ${GUTTER}`,
+        background: `radial-gradient(ellipse at 50% 50%, #0e0e12 0%, ${C.bg} 70%)`,
+        borderTop: '1px solid #111',
+        position: 'relative',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Background numeral — purely decorative */}
+      <span aria-hidden style={{
+        position: 'absolute',
+        fontFamily: FONT_EU, fontWeight: 300,
+        fontSize: 'clamp(160px, 35vw, 420px)',
+        letterSpacing: '-0.04em',
+        color: 'rgba(60,60,59,0.07)',
+        lineHeight: 1,
+        userSelect: 'none',
+        pointerEvents: 'none',
+        bottom: '-0.15em',
+        right: GUTTER,
+      }}>
+        PRYM
+      </span>
+
+      <p style={{
+        position: 'relative', zIndex: 1,
+        fontFamily: FONT_EU, fontWeight: 300,
+        fontSize: 'clamp(28px, 5.5vw, 72px)',
+        letterSpacing: '0.06em',
+        textTransform: 'uppercase',
+        color: C.white,
+        lineHeight: 1.2,
+        textAlign: 'center',
+        maxWidth: 1100,
+      }}>
+        Le silence est notre<br />
+        <span style={{ color: C.silver }}>plus grand luxe.</span>
+      </p>
+    </motion.section>
+  )
+}
+
 function Closing({ t, isAR }) {
   return (
     <motion.section
@@ -315,8 +387,7 @@ export default function ExperiencePage() {
     document.title = 'L\'Expérience — PRYM Executive Transport'
   }, [])
 
-  const tc  = (col) => ({ gridColumn: isMobile ? undefined : col })
-  const mb  = (px)  => ({ marginBottom: isMobile ? 0 : px })
+  const tc = (col) => ({ gridColumn: isMobile ? undefined : col })
 
   return (
     <div style={{ background: C.bg, minHeight: '100vh', color: C.white }}>
@@ -326,19 +397,19 @@ export default function ExperiencePage() {
 
       {/* 01 — CHAUFFEUR */}
       <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 4'), ...mb(48) }}>
+        <div style={{ ...tc('1 / span 5') }}>
           <Narrative n={s[0].n} label={s[0].label} title={s[0].title} body={s[0].body} isAR={isAR} />
         </div>
-        <div style={{ ...tc('6 / span 7') }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 36 : 'clamp(24px,3vw,32px)' }}>
-            {s[0].details.map(d => <DetailItem key={d.label} label={d.label} value={d.value} isAR={isAR} />)}
-          </div>
+        <div style={{ ...tc('7 / span 6'), display: 'flex', alignItems: 'center' }}>
+          <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(15px,1.5vw,17px)', color: C.silver2, lineHeight: 2, borderLeft: `1px solid ${C.silver3}`, paddingLeft: 'clamp(24px,3vw,40px)' }}>
+            {s[0].details?.[0]?.value ?? s[0].body}
+          </p>
         </div>
       </Sec>
 
       {/* 02 — SIGNATURE OLFACTIVE */}
       <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 5'), order: isMobile ? 2 : 1, ...mb(48) }}>
+        <div style={{ ...tc('1 / span 5'), order: isMobile ? 2 : 1 }}>
           <OlfactifVisual notes={s[1].fragranceNotes} credit={s[1].fragranceCredit} isAR={isAR} />
         </div>
         <div style={{ ...tc('7 / span 6'), order: isMobile ? 1 : 2 }}>
@@ -346,61 +417,19 @@ export default function ExperiencePage() {
         </div>
       </Sec>
 
-      <PhotoSlot caption={te.photoCaptions[0]} />
+      {/* 50/50 — Image placeholder + 21° & NDA */}
+      <SplitSection s={s} isAR={isAR} isMobile={isMobile} />
 
-      {/* 03 — L'EAU, LA SERVIETTE */}
-      <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 4'), ...mb(48) }}>
-          <Narrative n={s[2].n} label={s[2].label} title={s[2].title} body={s[2].body} isAR={isAR} />
-        </div>
-        <div style={{ ...tc('6 / span 6'), display: 'flex', flexDirection: 'column', gap: 'clamp(20px,3vw,36px)' }}>
-          {s[2].details.map(d => <DetailItem key={d.label} label={d.label} value={d.value} isAR={isAR} />)}
-        </div>
-      </Sec>
-
-      {/* 04 — TEMPÉRATURE */}
-      <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 4'), order: isMobile ? 2 : 1, ...mb(48) }}>
-          <TempDisplay label={s[3].tempLabel} sub={s[3].tempSub} isAR={isAR} />
-        </div>
-        <div style={{ ...tc('6 / span 7'), order: isMobile ? 1 : 2 }}>
-          <Narrative n={s[3].n} label={s[3].label} title={s[3].title} body={s[3].body} isAR={isAR} />
-        </div>
-      </Sec>
-
-      <PhotoSlot caption={te.photoCaptions[1]} />
-
-      {/* 05 — NDA / DISCRÉTION */}
-      <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 4'), ...mb(48) }}>
-          <Narrative n={s[4].n} label={s[4].label} title={s[4].title} body={s[4].body} isAR={isAR} />
-        </div>
-        <div style={{ ...tc('6 / span 6') }}>
-          <NDAList title={s[4].ndaTitle} items={s[4].ndaItems} protect={s[4].ndaProtect} isAR={isAR} />
-        </div>
-      </Sec>
+      {/* Full Screen Quote */}
+      <FullScreenQuote />
 
       {/* 06 — PONCTUALITÉ */}
       <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 5'), order: isMobile ? 2 : 1, ...mb(48) }}>
+        <div style={{ ...tc('1 / span 5'), order: isMobile ? 2 : 1 }}>
           <Timeline steps={s[5].timeline} isAR={isAR} />
         </div>
         <div style={{ ...tc('7 / span 6'), order: isMobile ? 1 : 2 }}>
           <Narrative n={s[5].n} label={s[5].label} title={s[5].title} body={s[5].body} isAR={isAR} />
-        </div>
-      </Sec>
-
-      <PhotoSlot caption={te.photoCaptions[2]} />
-
-      {/* 07 — PERSONNALISATION */}
-      <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 4'), ...mb(48) }}>
-          <Narrative n={s[6].n} label={s[6].label} title={s[6].title} body={s[6].body} isAR={isAR} />
-        </div>
-        <div style={{ ...tc('6 / span 7') }}>
-          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 36 : 'clamp(24px,3vw,32px)' }}>
-            {s[6].details.map(d => <DetailItem key={d.label} label={d.label} value={d.value} isAR={isAR} />)}
-          </div>
         </div>
       </Sec>
 
