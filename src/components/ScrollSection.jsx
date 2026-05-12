@@ -5,8 +5,6 @@ import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
-const TEXT = '#1A1A1A'   // rich charcoal
-const BG   = '#F8F7F4'   // warm off-white
 
 function WordReveal({ text, lang, delay = 0 }) {
   const [ref, inView] = useInView(0.3)
@@ -20,7 +18,7 @@ function WordReveal({ text, lang, delay = 0 }) {
         fontSize: 'clamp(2.4rem, 7vw, 7.5rem)',
         letterSpacing: isAR ? '0.04em' : '0.15em',
         textTransform: isAR ? 'none' : 'uppercase',
-        color: TEXT, lineHeight: 1.05,
+        color: 'var(--c-text)', lineHeight: 1.05,
         display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0 0.32em',
         direction: isAR ? 'rtl' : 'ltr',
       }}
@@ -57,7 +55,8 @@ export default function ScrollSection() {
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       padding: '0 clamp(1.5rem, 6vw, 5rem)',
-      backgroundColor: BG, position: 'relative',
+      backgroundColor: 'var(--c-bg)', position: 'relative',
+      transition: 'background-color 0.3s ease',
     }}>
       <motion.div style={{
         y, opacity, filter: blurFilter,

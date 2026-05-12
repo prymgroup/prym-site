@@ -4,13 +4,12 @@ import { T } from '../i18n/translations'
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
-// ── Warm Light Mode palette ───────────────────────────────────────────────
 const C = {
-  bg      : '#F8F7F4',   // warm off-white
-  text    : '#1A1A1A',   // rich charcoal
-  mid     : '#6B6867',   // warm stone-600
-  soft    : '#A09A90',   // warm stone-400
-  accent  : '#D6D0C4',   // champagne — decorative lines / scroll indicator
+  bg     : 'var(--c-bg)',
+  text   : 'var(--c-text)',
+  mid    : 'var(--c-silver)',
+  soft   : 'var(--c-silver2)',
+  accent : 'var(--c-silver3)',
 }
 
 export default function HeroSection() {
@@ -30,12 +29,13 @@ export default function HeroSection() {
       height: '100vh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       position: 'relative', overflow: 'hidden',
-      backgroundColor: C.bg,
+      backgroundColor: 'var(--c-bg)',
+      transition: 'background-color 0.3s ease',
     }}>
       {/* Subtle warm radial highlight */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse 60% 50% at 50% 48%, rgba(214,208,196,0.28) 0%, transparent 70%)',
+        background: 'radial-gradient(ellipse 60% 50% at 50% 48%, rgba(214,208,196,0.18) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
@@ -45,32 +45,20 @@ export default function HeroSection() {
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         willChange: 'transform, opacity, filter',
       }}>
-        {/* ── Logo — dark charcoal gradient mask on warm white background ─── */}
-        <div style={{ position: 'relative', width: 'clamp(240px, 34vw, 520px)' }}>
-          {/* Spacer — keeps layout height; logo rendered via mask below */}
-          <img
-            src="/logos/logo-slogan-white.svg"
-            alt="PRYM Executive Transport"
-            draggable={false}
-            style={{ width: '100%', height: 'auto', display: 'block', opacity: 0 }}
-          />
-          {/* Dark charcoal shimmer gradient masked to the SVG shape */}
-          <motion.div
-            initial={{ clipPath: 'inset(100% 0 0% 0)' }}
-            animate={{ clipPath: 'inset(0% 0 0% 0)' }}
-            transition={{ duration: 1.6, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
-            style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(170deg, #1c1c1a 0%, #3a3835 22%, #1a1a18 42%, #2a2825 50%, #1a1a18 60%, #3a3835 78%, #1c1c1a 100%)',
-              WebkitMaskImage  : 'url(/logos/logo-slogan-white.svg)',
-              maskImage        : 'url(/logos/logo-slogan-white.svg)',
-              WebkitMaskRepeat : 'no-repeat', maskRepeat : 'no-repeat',
-              WebkitMaskSize   : 'contain',   maskSize   : 'contain',
-              WebkitMaskPosition: 'center',   maskPosition: 'center',
-              willChange: 'clip-path',
-            }}
-          />
-        </div>
+        {/* ── Logo — native silver chrome, wipe-in reveal ───────────────── */}
+        <motion.img
+          src="/logos/silver-logo-full.svg"
+          alt="PRYM Executive Transport"
+          draggable={false}
+          initial={{ clipPath: 'inset(100% 0 0% 0)' }}
+          animate={{ clipPath: 'inset(0% 0 0% 0)' }}
+          transition={{ duration: 1.6, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
+          style={{
+            width: 'clamp(240px, 34vw, 520px)',
+            height: 'auto', display: 'block',
+            willChange: 'clip-path',
+          }}
+        />
 
         {/* Tagline */}
         <motion.p

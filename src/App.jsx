@@ -123,7 +123,7 @@ function LandingPage() {
   useLenis()
   const isMobile = useLandingIsMobile()
   return (
-    <div className="grain" style={{ backgroundColor: '#FDFBF7', position: 'relative', minHeight: '100vh' }}>
+    <div className="grain" style={{ backgroundColor: 'var(--c-bg)', position: 'relative', minHeight: '100vh' }}>
       <ScrollProgress />
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
       <main style={{ position: 'relative', zIndex: 1 }}>

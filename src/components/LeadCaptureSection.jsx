@@ -7,15 +7,14 @@ import { T } from '../i18n/translations'
 const FONT     = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-// ── Warm Light Mode palette ───────────────────────────────────────────────
 const C = {
-  bg          : '#F8F7F4',  // warm off-white
-  text        : '#1A1A1A',  // rich charcoal — primary text, active tab, field value
-  mid         : '#6B6867',  // warm stone-600 — intro / label text
-  soft        : '#A09A90',  // warm stone-400 — muted labels, error, footer
-  accent      : '#D6D0C4',  // champagne — decorative
-  borderIdle  : '#C8C2B8',  // input bottom border — resting
-  borderFocus : '#1A1A1A',  // input bottom border — focused
+  bg          : 'var(--c-bg)',
+  text        : 'var(--c-text)',
+  mid         : 'var(--c-silver)',
+  soft        : 'var(--c-silver2)',
+  accent      : 'var(--c-silver3)',
+  borderIdle  : 'var(--c-silver3)',
+  borderFocus : 'var(--c-text)',
 }
 
 function useIsMobile() {
@@ -37,11 +36,11 @@ function Field({ label, type = 'text', value, onChange, autoComplete, isAR }) {
       onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
       style={{
         width: '100%', background: 'transparent', border: 'none', outline: 'none',
-        color: C.text, fontFamily: FONT,
+        color: 'var(--c-text)', fontFamily: FONT,
         fontSize: 'clamp(0.8rem, 1.4vw, 0.92rem)',
         letterSpacing: isAR ? '0.03em' : '0.14em',
         padding: '0.6rem 0',
-        borderBottom: `1px solid ${focused ? C.borderFocus : C.borderIdle}`,
+        borderBottom: focused ? '1px solid var(--c-text)' : '1px solid var(--c-silver3)',
         transition: 'border-color 0.35s',
         direction: isAR ? 'rtl' : 'ltr',
         textAlign: isAR ? 'right' : 'left',
@@ -87,7 +86,7 @@ function MagneticArrow({ status, isMobile }) {
             initial={{ opacity: 0 }} animate={{ opacity: 1, rotate: 360 }} exit={{ opacity: 0 }}
             transition={{ opacity: { duration: 0.2 }, rotate: { duration: 1, repeat: Infinity, ease: 'linear' } }}>
             <circle cx="11" cy="11" r="8"
-              stroke={C.soft} strokeWidth="1"
+              stroke="var(--c-silver2)" strokeWidth="1"
               strokeDasharray="30" strokeDashoffset="10" strokeLinecap="round" />
           </motion.svg>
         ) : (
@@ -99,7 +98,7 @@ function MagneticArrow({ status, isMobile }) {
               transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)',
             }}>
             <path d="M0 5H30M30 5L25.5 1M30 5L25.5 9"
-              stroke={C.text} strokeWidth="0.85" strokeLinecap="square" />
+              stroke="var(--c-text)" strokeWidth="0.85" strokeLinecap="square" />
           </motion.svg>
         )}
       </AnimatePresence>
@@ -122,7 +121,7 @@ function TabSwitch({ mode, onChange, labels }) {
               background: 'none', border: 'none', cursor: 'pointer', fontFamily: FONT,
               fontSize: '0.62rem', letterSpacing: '0.36em', textTransform: 'uppercase',
               fontWeight: active ? 500 : 300,
-              color: active ? C.text : (hovered === tab.id ? C.text : C.soft),
+              color: active ? 'var(--c-text)' : (hovered === tab.id ? 'var(--c-text)' : 'var(--c-silver2)'),
               padding: 0, transition: 'color 0.35s',
             }}>
             {tab.label}
@@ -160,7 +159,7 @@ function B2CForm({ onSuccess, isMobile, t, isAR }) {
         <AnimatePresence>
           {status === 'error' && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: C.soft, textTransform: isAR ? 'none' : 'uppercase' }}>
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
               {t.error}
             </motion.span>
           )}
@@ -200,7 +199,7 @@ function B2BForm({ onSuccess, isMobile, t, isAR }) {
         <AnimatePresence>
           {status === 'error' && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: C.soft, textTransform: isAR ? 'none' : 'uppercase' }}>
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
               {t.error}
             </motion.span>
           )}
@@ -229,7 +228,8 @@ export default function LeadCaptureSection() {
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       padding: isMobile ? '5rem 2rem 4rem' : 'clamp(5rem, 10vh, 8rem) clamp(1.25rem, 5vw, 3rem)',
-      backgroundColor: C.bg, position: 'relative',
+      backgroundColor: 'var(--c-bg)', position: 'relative',
+      transition: 'background-color 0.3s ease',
       direction: isAR ? 'rtl' : 'ltr',
     }}>
       <motion.div ref={cardRef}
@@ -246,7 +246,7 @@ export default function LeadCaptureSection() {
           {/* Section eyebrow */}
           <p style={{
             fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.44em',
-            color: C.soft, textTransform: isAR ? 'none' : 'uppercase', margin: 0,
+            color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase', margin: 0,
           }}>
             {t.label}
           </p>
@@ -255,7 +255,7 @@ export default function LeadCaptureSection() {
           <p style={{
             fontFamily: FONT, fontSize: 'clamp(0.7rem, 1.2vw, 0.84rem)',
             letterSpacing: isAR ? '0.02em' : '0.06em',
-            color: C.mid, lineHeight: 1.7, margin: 0,
+            color: 'var(--c-silver)', lineHeight: 1.7, margin: 0,
             direction: isAR ? 'rtl' : 'ltr',
           }}>
             {t.intro}
@@ -264,7 +264,7 @@ export default function LeadCaptureSection() {
           <div><TabSwitch mode={mode} onChange={handleModeChange} labels={t.tabs} /></div>
 
           {/* Thin separator */}
-          <div style={{ width: '100%', height: 1, backgroundColor: C.accent }} />
+          <div style={{ width: '100%', height: 1, backgroundColor: 'var(--c-border)' }} />
 
           <AnimatePresence mode="wait">
             {success ? (
@@ -273,7 +273,7 @@ export default function LeadCaptureSection() {
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
                 style={{
                   fontFamily: FONT, fontSize: '0.72rem', letterSpacing: '0.38em',
-                  color: C.text, textTransform: isAR ? 'none' : 'uppercase',
+                  color: 'var(--c-text)', textTransform: isAR ? 'none' : 'uppercase',
                   textAlign: 'center', padding: '1.4rem 0', margin: 0,
                 }}>
                 {t.success}
@@ -293,7 +293,7 @@ export default function LeadCaptureSection() {
           {/* Discretion note */}
           <p style={{
             fontFamily: FONT, fontSize: '0.5rem', letterSpacing: '0.22em',
-            color: C.soft, textTransform: isAR ? 'none' : 'uppercase', margin: 0,
+            color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase', margin: 0,
           }}>
             {t.discretion}
           </p>
@@ -307,7 +307,7 @@ export default function LeadCaptureSection() {
         style={{ position: 'absolute', bottom: '2rem', left: 0, right: 0, padding: '0 2rem', textAlign: 'center' }}>
         <p style={{
           fontFamily: FONT, fontSize: 'clamp(0.48rem, 1vw, 0.58rem)', letterSpacing: '0.34em',
-          color: C.soft, textTransform: isAR ? 'none' : 'uppercase', margin: 0,
+          color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase', margin: 0,
         }}>
           {t.footer}
         </p>

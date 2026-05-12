@@ -6,12 +6,6 @@ import { T } from '../i18n/translations'
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
-const C = {
-  bg     : '#F8F7F4',  // warm off-white
-  text   : '#1A1A1A',  // rich charcoal — promise lines
-  accent : '#D6D0C4',  // champagne — decorative em-dash
-}
-
 function PromiseLine({ text, lang, index }) {
   const [ref, inView] = useInView(0.4)
   const isAR = lang === 'AR'
@@ -33,7 +27,7 @@ function PromiseLine({ text, lang, index }) {
       <span style={{
         fontFamily: FONT,
         fontSize: 'clamp(0.8rem, 1.6vw, 1.1rem)',
-        color: C.accent,
+        color: 'var(--c-silver3)',
         lineHeight: 1, flexShrink: 0, letterSpacing: '0.05em',
       }}>
         —
@@ -43,7 +37,7 @@ function PromiseLine({ text, lang, index }) {
         fontSize: 'clamp(0.9rem, 1.8vw, 1.4rem)',
         letterSpacing: isAR ? '0.03em' : '0.12em',
         textTransform: isAR ? 'none' : 'uppercase',
-        color: C.text, lineHeight: 1.4,
+        color: 'var(--c-text)', lineHeight: 1.4,
         direction: isAR ? 'rtl' : 'ltr',
       }}>
         {text}
@@ -65,7 +59,8 @@ export default function PromiseSection() {
     <section ref={sectionRef} style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '0 clamp(2rem, 8vw, 8rem)',
-      backgroundColor: C.bg, position: 'relative',
+      backgroundColor: 'var(--c-bg)', position: 'relative',
+      transition: 'background-color 0.3s ease',
     }}>
       <motion.div style={{
         y, opacity,
