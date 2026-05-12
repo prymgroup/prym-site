@@ -33,12 +33,12 @@ function LangSwitcher() {
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.18em',
-              color: lang === l ? 'var(--c-text)' : 'rgba(26,26,26,0.38)',
+              color: lang === l ? 'var(--c-text)' : 'var(--c-lang-muted)',
               fontWeight: lang === l ? 500 : 300,
               padding: '2px 0', transition: 'color 0.2s ease', lineHeight: 1,
             }}
             onMouseEnter={e => { if (lang !== l) e.currentTarget.style.color = 'var(--c-silver2)' }}
-            onMouseLeave={e => { if (lang !== l) e.currentTarget.style.color = 'rgba(26,26,26,0.38)' }}
+            onMouseLeave={e => { if (lang !== l) e.currentTarget.style.color = 'var(--c-lang-muted)' }}
           >
             {l}
           </button>
@@ -57,7 +57,7 @@ export default function DesktopNav() {
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
       padding: '0 clamp(24px,5vw,72px)', height: 64,
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      background: 'rgba(253,251,247,0.92)',
+      background: 'var(--c-nav-bg)',
       backdropFilter: 'blur(16px)',
       willChange: 'transform',
       borderBottom: '1px solid var(--c-border)',

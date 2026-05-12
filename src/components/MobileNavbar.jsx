@@ -6,13 +6,12 @@ import ThemeToggle from './ThemeToggle'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
-// Warm luxury light-mode palette
 const C = {
-  bg:      '#FDFBF7',
-  text:    '#1A1A1A',
-  silver:  '#6B6867',
-  silver2: '#9E9890',
-  silver3: '#B0AA9F',
+  bg:      'var(--c-bg)',
+  text:    'var(--c-text)',
+  silver:  'var(--c-silver)',
+  silver2: 'var(--c-silver2)',
+  silver3: 'var(--c-silver3)',
 }
 
 const ROUTE_LINKS = [
@@ -33,7 +32,7 @@ function LangSwitcher() {
           {i > 0 && (
             <span style={{
               fontFamily: FONT_EU, fontSize: 10,
-              color: 'rgba(176,170,159,0.5)',
+              color: 'var(--c-border-faint)',
               padding: '0 8px', userSelect: 'none', lineHeight: 1,
             }}>
               |
@@ -44,7 +43,7 @@ function LangSwitcher() {
             style={{
               background: 'none', border: 'none',
               fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.2em',
-              color: lang === l ? C.text : 'rgba(26,26,26,0.38)',
+              color: lang === l ? C.text : 'var(--c-lang-muted)',
               fontWeight: lang === l ? 500 : 300,
               padding: '4px 0', transition: 'color 0.2s ease', lineHeight: 1,
               WebkitTapHighlightColor: 'transparent',
@@ -71,10 +70,10 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200, height: 48,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 20px',
-        background: 'rgba(253,251,247,0.94)',
+        background: 'var(--c-nav-bar-bg)',
         backdropFilter: 'blur(16px)',
         willChange: 'transform',
-        borderBottom: '1px solid #E0DDD8',
+        borderBottom: '1px solid var(--c-border)',
       }}>
         {/* Hamburger — dark strokes on light bar */}
         <button onClick={() => setOpen(true)} aria-label="Ouvrir le menu"
@@ -109,7 +108,7 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
             transition={{ duration: 0.25 }}
             style={{
               position: 'fixed', inset: 0, zIndex: 300,
-              background: 'rgba(253,251,247,0.98)',
+              background: 'var(--c-nav-overlay)',
               backdropFilter: 'blur(20px)',
               display: 'flex', flexDirection: 'column',
               padding: '80px 32px 48px',
@@ -135,17 +134,17 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
             </div>
 
             {/* Language + theme */}
-            <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid rgba(176,170,159,0.25)' }}>
+            <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid var(--c-border-faint)' }}>
               <p style={{
                 fontFamily: FONT_EU, fontSize: 6, letterSpacing: '0.3em',
-                color: 'rgba(26,26,26,0.28)', textTransform: 'uppercase',
+                color: 'var(--c-lang-muted)', textTransform: 'uppercase',
                 margin: '0 0 14px',
               }}>
                 {t.nav.lang}
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 <LangSwitcher />
-                <span style={{ width: 1, height: 12, background: 'rgba(176,170,159,0.4)', flexShrink: 0 }} />
+                <span style={{ width: 1, height: 12, background: 'var(--c-pill-border)', flexShrink: 0 }} />
                 <ThemeToggle />
               </div>
             </div>

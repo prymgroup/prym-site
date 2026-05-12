@@ -75,6 +75,12 @@
   --c-loader:       #9E9890;
   --c-hover-text:   #FDFBF7;
 
+  /* nav backgrounds */
+  --c-nav-bg:       rgba(253,251,247,0.92);
+  --c-nav-bar-bg:   rgba(253,251,247,0.94);
+  --c-nav-overlay:  rgba(253,251,247,0.98);
+  --c-lang-muted:   rgba(26,26,26,0.35);
+
   /* section-level backgrounds — flat in light mode */
   --c-hero-bg:      #FDFBF7;
   --c-quote-bg:     #FDFBF7;
@@ -112,6 +118,12 @@ html.dark {
   --c-label:        #e0e0e0;
   --c-loader:       #c6c6c6;
   --c-hover-text:   #f6f6f6;
+
+  /* nav backgrounds — dark mode */
+  --c-nav-bg:       rgba(10,10,10,0.92);
+  --c-nav-bar-bg:   rgba(10,10,10,0.94);
+  --c-nav-overlay:  rgba(10,10,10,0.98);
+  --c-lang-muted:   rgba(198,198,198,0.35);
 
   /* section-level backgrounds — dark mode */
   --c-hero-bg:      radial-gradient(ellipse at 30% 60%, #141416 0%, #0a0a0a 70%);
