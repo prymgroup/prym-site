@@ -62,7 +62,7 @@ function ScrollProgress() {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0,
         height: 1,
-        backgroundColor: '#3c3c3b',
+        backgroundColor: '#B0AA9F',
         transformOrigin: 'left',
         scaleX,
         zIndex: 50,
@@ -89,7 +89,7 @@ function TopBar() {
         fontFamily: FONT,
         fontSize: '0.6rem',
         letterSpacing: '0.38em',
-        color: '#706f6f',
+        color: '#9E9890',
         textTransform: 'uppercase',
       }}>
         PRYM
@@ -98,7 +98,7 @@ function TopBar() {
         fontFamily: FONT,
         fontSize: '0.56rem',
         letterSpacing: '0.32em',
-        color: '#3c3c3b',
+        color: '#B0AA9F',
         textTransform: 'uppercase',
       }}>
         — 2026 —
@@ -122,7 +122,7 @@ function LandingPage() {
   useLenis()
   const isMobile = useLandingIsMobile()
   return (
-    <div className="grain" style={{ backgroundColor: '#0a0a0a', position: 'relative', minHeight: '100vh' }}>
+    <div className="grain" style={{ backgroundColor: '#FDFBF7', position: 'relative', minHeight: '100vh' }}>
       <ScrollProgress />
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
       <main style={{ position: 'relative', zIndex: 1 }}>
@@ -141,7 +141,7 @@ function BookingLoader() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#050507',
+      background: '#FDFBF7',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -153,19 +153,19 @@ function BookingLoader() {
         fontSize: '10px',
         letterSpacing: '0.35em',
         textTransform: 'uppercase',
-        color: 'rgba(200,200,204,0.4)',
+        color: 'rgba(26,26,26,0.3)',
       }}>
         PRYM
       </div>
       <div style={{
         width: '120px',
         height: '1px',
-        background: 'rgba(200,200,204,0.1)',
+        background: 'rgba(26,26,26,0.08)',
         position: 'relative',
         overflow: 'hidden',
       }}>
         <motion.div
-          style={{ position: 'absolute', inset: 0, background: 'rgba(200,200,204,0.5)', transformOrigin: 'left' }}
+          style={{ position: 'absolute', inset: 0, background: 'rgba(26,26,26,0.25)', transformOrigin: 'left' }}
           animate={{ scaleX: [0, 1] }}
           transition={{ duration: 1.5, ease: 'easeInOut', repeat: Infinity }}
         />

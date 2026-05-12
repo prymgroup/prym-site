@@ -10,9 +10,11 @@ import MobileNavbar from './MobileNavbar'
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const C = {
-  bg: '#000000',
-  silver: '#c6c6c6', silver2: '#706f6f', silver3: '#3c3c3b',
-  white: '#f6f6f6',
+  bg:      '#FDFBF7',
+  silver:  '#6B6867',
+  silver2: '#9E9890',
+  silver3: '#B0AA9F',
+  white:   '#1A1A1A',
 }
 const GX  = 'clamp(24px,6vw,80px)'
 const GXM = 'clamp(24px,5vw,40px)'
@@ -59,7 +61,7 @@ function SignatureModel() {
 function Scene3DLoader() {
   return (
     <Html center>
-      <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', color: 'rgba(198,198,198,0.25)' }}>
+      <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', color: 'rgba(26,26,26,0.2)' }}>
         CHARGEMENT
       </span>
     </Html>
@@ -120,12 +122,12 @@ function HeroSection({ isMobile }) {
 
       {/* Video placeholder */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 65% 35%, #161618 0%, #000 68%)' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, #0d0d10 0%, #000 55%)', opacity: 0.85 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 65% 35%, #EDE9E3 0%, #FDFBF7 68%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, #EAE6DE 0%, #FDFBF7 55%)', opacity: 0.55 }} />
         <span style={{
           position: 'absolute', bottom: 20, right: isMobile ? 20 : 40,
           fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.28em',
-          textTransform: 'uppercase', color: 'rgba(60,60,59,0.4)',
+          textTransform: 'uppercase', color: 'rgba(176,170,159,0.6)',
         }}>
           Video background — 1920×1080 — opacity 20%
         </span>
@@ -182,7 +184,7 @@ function HeroSection({ isMobile }) {
               padding: isMobile ? '13px 32px' : '18px 56px',
               transition: 'all 0.4s ease', display: 'inline-block',
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = C.silver; e.currentTarget.style.background = 'rgba(198,198,198,0.06)' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = C.silver; e.currentTarget.style.background = 'rgba(26,26,26,0.05)' }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = C.silver3; e.currentTarget.style.background = 'transparent' }}>
             Réserver
           </a>
@@ -298,7 +300,7 @@ function SectionCTA({ isMobile }) {
       viewport={{ once: true, margin: '-80px' }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
       style={{
         background: C.bg,
-        borderTop: `1px solid ${C.silver3}18`,
+        borderTop: `1px solid ${C.silver3}50`,
         padding: isMobile
           ? `clamp(100px,18vw,140px) ${GXM}`
           : `clamp(140px,18vw,220px) ${GX}`,
@@ -350,7 +352,7 @@ function PageFooter() {
       <footer style={{
         background: C.bg,
         padding: `32px ${GX}`,
-        borderTop: `1px solid ${C.silver3}18`,
+        borderTop: `1px solid ${C.silver3}50`,
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         flexWrap: 'wrap', gap: 12,
       }}>

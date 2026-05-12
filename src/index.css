@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
-/* ─── PRYM BRAND THEME ─────────────────────────────────────────── */
+/* ─── PRYM BRAND THEME — WARM LUXURY LIGHT MODE ──────────────────── */
 @theme {
-  --color-prym-black:   #0a0a0a;
-  --color-prym-dark:    #1d1d1b;
-  --color-prym-surface: #3c3c3b;
-  --color-prym-muted:   #706f6f;
-  --color-prym-silver:  #c6c6c6;
-  --color-prym-light:   #f6f6f6;
+  --color-prym-black:   #FDFBF7;   /* alabaster — main background        */
+  --color-prym-dark:    #F2EFE9;   /* warm surface                       */
+  --color-prym-surface: #B0AA9F;   /* warm taupe — eyebrows / borders    */
+  --color-prym-muted:   #9E9890;   /* warm stone-400 — muted text        */
+  --color-prym-silver:  #6B6867;   /* warm stone-600 — secondary text    */
+  --color-prym-light:   #1A1A1A;   /* charcoal — primary headings / text */
 
   --font-display: 'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* ─── LOCAL FONTS ──────────────────────────────────────────────── */
+/* ─── LOCAL FONTS ──────────────────────────────────────────────────── */
 @font-face {
   font-family: 'Eurostile';
   src: url('/fonts/Eurostile MN Regular.ttf') format('truetype');
@@ -37,18 +37,18 @@
   font-display: swap;
 }
 
-/* ─── CSS VARIABLES ────────────────────────────────────────────── */
+/* ─── CSS VARIABLES ────────────────────────────────────────────────── */
 :root {
-  --prym-black:   #0a0a0a;
-  --prym-dark:    #1d1d1b;
-  --prym-surface: #3c3c3b;
-  --prym-muted:   #706f6f;
-  --prym-silver:  #c6c6c6;
-  --prym-light:   #f6f6f6;
+  --prym-black:   #FDFBF7;   /* alabaster background                    */
+  --prym-dark:    #F2EFE9;   /* warm surface                            */
+  --prym-surface: #B0AA9F;   /* warm taupe                              */
+  --prym-muted:   #9E9890;   /* warm stone-400                          */
+  --prym-silver:  #6B6867;   /* warm stone-600                          */
+  --prym-light:   #1A1A1A;   /* charcoal — primary text                 */
   --font-prym:    'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* ─── BASE ─────────────────────────────────────────────────────── */
+/* ─── BASE ─────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -56,25 +56,18 @@
 }
 
 html {
-  /* scroll-behavior: smooth removed — conflicts with Lenis (double-smoothing on desktop,
-     janky native override on mobile). Lenis handles smoothing on pointer:fine devices. */
-  background: var(--prym-black);
+  background: #FDFBF7;
 }
 
 body {
-  background: var(--prym-black);
-  color: var(--prym-light);
+  background: #FDFBF7;
+  color: #1A1A1A;
   font-family: var(--font-prym);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Hide the system cursor on pointer:fine (mouse) devices only.
-   cursor: none is inherited, but interactive elements override it
-   by default so we must be explicit. Touch/coarse devices are
-   excluded — they never see this block, so the system cursor
-   (and tap highlights) are fully preserved on mobile/tablet. */
 @media (hover: hover) and (pointer: fine) {
   *, *::before, *::after,
   a, button, input, select, textarea, [role="button"] {
@@ -83,8 +76,8 @@ body {
 }
 
 ::selection {
-  background: rgba(198, 198, 198, 0.18);
-  color: var(--prym-light);
+  background: rgba(176,170,159,0.22);
+  color: #1A1A1A;
 }
 
 ::-webkit-scrollbar {
@@ -93,38 +86,35 @@ body {
 }
 
 input::placeholder {
-  color: var(--prym-surface);
+  color: #B0AA9F;
   letter-spacing: 0.1em;
   font-family: var(--font-prym);
 }
 
 .prym-field::placeholder {
-  color: #A09A90;   /* warm stone-400 — legible on #F8F7F4 light bg */
+  color: #B0AA9F;   /* warm taupe — legible on alabaster */
   letter-spacing: 0.18em;
   font-weight: 300;
 }
 
 input:-webkit-autofill {
-  -webkit-text-fill-color: var(--prym-light);
+  -webkit-text-fill-color: #1A1A1A;
   -webkit-box-shadow: 0 0 0px 1000px transparent inset;
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* ─── BODY TEXT ────────────────────────────────────────────────── */
-/* Default for all paragraphs: readable silver, relaxed leading.
-   Inline color overrides in components still take precedence.
-   h1/h2/h3 are explicitly excluded — they stay pure prym-light. */
+/* ─── BODY TEXT ────────────────────────────────────────────────────── */
 p {
-  color: #a3a3a3;
+  color: #6B6867;
   line-height: 1.625;
 }
 
-/* ─── HEADINGS ─────────────────────────────────────────────────── */
+/* ─── HEADINGS ─────────────────────────────────────────────────────── */
 h1, h2, h3 {
   font-family: var(--font-prym);
   font-weight: 300;
   text-transform: uppercase;
-  color: var(--prym-light);
+  color: var(--prym-light);   /* charcoal #1A1A1A */
   margin: 0;
   line-height: 1.15;
 }
@@ -132,19 +122,16 @@ h1 { letter-spacing: 0.06em; }
 h2 { letter-spacing: 0.08em; }
 h3 { letter-spacing: 0.14em; }
 
-/* ─── FILM GRAIN ────────────────────────────────────────────────── */
+/* ─── FILM GRAIN ────────────────────────────────────────────────────── */
 .grain::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 40;
-  opacity: 0.03;
-  mix-blend-mode: overlay;
-  /* will-change: transform promotes this fixed overlay to its own GPU compositor
-     layer, preventing the mix-blend-mode stacking context from forcing the
-     entire page to repaint on every scroll tick. */
+  opacity: 0.025;
+  mix-blend-mode: multiply;   /* multiply renders grain subtly on light backgrounds */
   will-change: transform;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   background-size: 240px 240px;
 }

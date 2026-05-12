@@ -4,7 +4,15 @@ import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
-const C = { bg: '#0a0a0a', silver: '#c6c6c6', silver3: '#3c3c3b', white: '#f6f6f6' }
+
+// Warm luxury light-mode palette
+const C = {
+  bg:      '#FDFBF7',
+  text:    '#1A1A1A',
+  silver:  '#6B6867',
+  silver2: '#9E9890',
+  silver3: '#B0AA9F',
+}
 
 const ROUTE_LINKS = [
   (t) => [t.nav.flotte,      '/flotte'],
@@ -15,7 +23,6 @@ const ROUTE_LINKS = [
 
 const LANGS = ['FR', 'EN', 'AR']
 
-/* ── Language switcher — "FR | EN | AR" format ───────────────────── */
 function LangSwitcher() {
   const { lang, setLang } = useLanguage()
   return (
@@ -25,7 +32,7 @@ function LangSwitcher() {
           {i > 0 && (
             <span style={{
               fontFamily: FONT_EU, fontSize: 10,
-              color: 'rgba(246,246,246,0.15)',
+              color: 'rgba(176,170,159,0.5)',
               padding: '0 8px', userSelect: 'none', lineHeight: 1,
             }}>
               |
@@ -34,14 +41,11 @@ function LangSwitcher() {
           <button
             onClick={() => setLang(l)}
             style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              fontFamily: FONT_EU, fontSize: 10,
-              letterSpacing: '0.2em',
-              color: lang === l ? C.white : 'rgba(246,246,246,0.4)',
+              background: 'none', border: 'none',
+              fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.2em',
+              color: lang === l ? C.text : 'rgba(26,26,26,0.38)',
               fontWeight: lang === l ? 500 : 300,
-              padding: '4px 0',
-              transition: 'color 0.2s ease',
-              lineHeight: 1,
+              padding: '4px 0', transition: 'color 0.2s ease', lineHeight: 1,
               WebkitTapHighlightColor: 'transparent',
             }}
           >
@@ -53,11 +57,6 @@ function LangSwitcher() {
   )
 }
 
-/**
- * Shared mobile hamburger navbar.
- * @param {string} ctaLabel – override right-side label  (default: from i18n)
- * @param {string} ctaHref  – override right-side href   (default: '/reserver')
- */
 export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
   const [open, setOpen] = useState(false)
   const { lang } = useLanguage()
@@ -71,11 +70,14 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 200, height: 48,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 20px',
-        background: 'rgba(10,10,10,0.92)', backdropFilter: 'blur(12px)', willChange: 'transform',
-        borderBottom: `1px solid ${C.silver3}22`,
+        background: 'rgba(253,251,247,0.94)',
+        backdropFilter: 'blur(16px)',
+        willChange: 'transform',
+        borderBottom: '1px solid #E0DDD8',
       }}>
+        {/* Hamburger — dark strokes on light bar */}
         <button onClick={() => setOpen(true)} aria-label="Ouvrir le menu"
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px 4px', color: C.silver, WebkitTapHighlightColor: 'transparent', lineHeight: 0 }}>
+          style={{ background: 'none', border: 'none', padding: '8px 4px', color: C.silver, WebkitTapHighlightColor: 'transparent', lineHeight: 0 }}>
           <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
             <line x1="0" y1="1"  x2="22" y2="1"  stroke="currentColor" strokeWidth="0.8"/>
             <line x1="0" y1="7"  x2="22" y2="7"  stroke="currentColor" strokeWidth="0.8"/>
@@ -83,13 +85,15 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
           </svg>
         </button>
 
+        {/* Wordmark — centred */}
         <a href="/" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', textDecoration: 'none' }}>
-          <span style={{ fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.white, fontWeight: 300 }}>
+          <span style={{ fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.text, fontWeight: 300 }}>
             PRYM
           </span>
         </a>
 
-        <a href={ctaHref} style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.25em', textTransform: 'uppercase', color: C.silver, textDecoration: 'none', padding: '7px 0' }}>
+        <a href={ctaHref}
+          style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.25em', textTransform: 'uppercase', color: C.silver, textDecoration: 'none', padding: '7px 0' }}>
           {label}
         </a>
       </nav>
@@ -102,10 +106,17 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            style={{ position: 'fixed', inset: 0, zIndex: 300, background: 'rgba(10,10,10,0.97)', display: 'flex', flexDirection: 'column', padding: '80px 32px 48px' }}
+            style={{
+              position: 'fixed', inset: 0, zIndex: 300,
+              background: 'rgba(253,251,247,0.98)',
+              backdropFilter: 'blur(20px)',
+              display: 'flex', flexDirection: 'column',
+              padding: '80px 32px 48px',
+            }}
           >
+            {/* Close button */}
             <button onClick={() => setOpen(false)} aria-label="Fermer le menu"
-              style={{ position: 'absolute', top: 14, right: 20, background: 'none', border: 'none', cursor: 'pointer', color: C.silver3, padding: 8, fontFamily: FONT_EU, fontSize: 16, WebkitTapHighlightColor: 'transparent', lineHeight: 1 }}>
+              style={{ position: 'absolute', top: 14, right: 20, background: 'none', border: 'none', color: C.silver3, padding: 8, fontFamily: FONT_EU, fontSize: 16, WebkitTapHighlightColor: 'transparent', lineHeight: 1 }}>
               ✕
             </button>
 
@@ -115,22 +126,18 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
                 const [lbl, href] = fn(t)
                 return (
                   <a key={href} href={href}
-                    style={{ fontFamily: FONT_EU, fontSize: 24, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.white, textDecoration: 'none', fontWeight: 300 }}>
+                    style={{ fontFamily: FONT_EU, fontSize: 24, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.text, textDecoration: 'none', fontWeight: 300 }}>
                     {lbl}
                   </a>
                 )
               })}
             </div>
 
-            {/* Language switcher — utility zone */}
-            <div style={{
-              marginTop: 48,
-              paddingTop: 24,
-              borderTop: `1px solid rgba(60,60,59,0.35)`,
-            }}>
+            {/* Language switcher */}
+            <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid rgba(176,170,159,0.25)' }}>
               <p style={{
                 fontFamily: FONT_EU, fontSize: 6, letterSpacing: '0.3em',
-                color: 'rgba(246,246,246,0.25)', textTransform: 'uppercase',
+                color: 'rgba(26,26,26,0.28)', textTransform: 'uppercase',
                 margin: '0 0 14px',
               }}>
                 {t.nav.lang}
@@ -138,9 +145,9 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
               <LangSwitcher />
             </div>
 
-            {/* CTA */}
+            {/* CTA — dark fill button on light drawer */}
             <a href={ctaHref}
-              style={{ marginTop: 'auto', display: 'block', textAlign: 'center', fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.bg, background: C.silver, padding: '18px 40px', textDecoration: 'none' }}>
+              style={{ marginTop: 'auto', display: 'block', textAlign: 'center', fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.bg, background: C.text, padding: '18px 40px', textDecoration: 'none' }}>
               {label}
             </a>
           </motion.div>

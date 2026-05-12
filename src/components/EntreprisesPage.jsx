@@ -7,14 +7,16 @@ import RevealOnScroll from './RevealOnScroll'
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const C = {
-  bg: '#0a0a0a',
-  silver: '#c6c6c6', silver2: '#706f6f', silver3: '#3c3c3b',
-  white: '#f6f6f6',
+  bg:      '#FDFBF7',
+  silver:  '#6B6867',
+  silver2: '#9E9890',
+  silver3: '#B0AA9F',
+  white:   '#1A1A1A',
 }
 
 const IS = {
   width: '100%', background: 'transparent',
-  border: 'none', borderBottom: '1px solid #333', borderRadius: 0,
+  border: 'none', borderBottom: '1px solid #C8C2B8', borderRadius: 0,
   padding: '12px 0', color: C.white,
   fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.08em',
   outline: 'none', transition: 'border-bottom-color 0.25s', boxSizing: 'border-box',
@@ -112,7 +114,7 @@ function ContactForm({ isMobile }) {
     }
   }
 
-  const focusStyle = k => ({ ...IS, borderBottomColor: focus === k ? C.silver2 : '#333' })
+  const focusStyle = k => ({ ...IS, borderBottomColor: focus === k ? C.silver2 : '#C8C2B8' })
 
   if (status === 'sent') {
     return (
@@ -173,11 +175,11 @@ function ContactForm({ isMobile }) {
       {/* Volume */}
       <div style={{ position:'relative' }}>
         <label style={LS}>Volume estimé *</label>
-        <select style={{ ...focusStyle('volume'), cursor:'pointer', colorScheme:'dark', paddingRight:24 }}
+        <select style={{ ...focusStyle('volume'), cursor:'pointer', colorScheme:'light', paddingRight:24 }}
           value={form.volume} onChange={set('volume')}
           onFocus={()=>setFocus('volume')} onBlur={()=>setFocus(null)}>
           {VOLUMES.map(v => (
-            <option key={v} value={v} style={{ background:'#0a0a0a' }}>
+            <option key={v} value={v} style={{ background:'#FDFBF7' }}>
               {v || 'Sélectionner un volume'}
             </option>
           ))}
@@ -279,8 +281,8 @@ export default function EntreprisesPage() {
       {/* Hero */}
       <section style={{
         padding: 'clamp(140px,18vw,200px) clamp(24px,6vw,80px) clamp(60px,8vw,100px)',
-        background: `radial-gradient(ellipse at 50% 80%, #141416 0%, ${C.bg} 65%)`,
-        borderBottom: `1px solid ${C.silver3}22`,
+        background: `radial-gradient(ellipse at 50% 80%, #EDE9E3 0%, ${C.bg} 65%)`,
+        borderBottom: `1px solid ${C.silver3}50`,
       }}>
         <motion.p initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:0.2,duration:0.8}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.45em',textTransform:'uppercase',color:C.silver3,marginBottom:20}}>
@@ -336,7 +338,7 @@ export default function EntreprisesPage() {
           height: 'max(400px, 50vh)',
           marginTop:    'clamp(80px,12vw,140px)',
           marginBottom: 'clamp(80px,12vw,140px)',
-          background: '#0d0d0f',
+          background: '#EAE6DE',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
@@ -346,12 +348,12 @@ export default function EntreprisesPage() {
         {/* Depth gradient */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at 40% 55%, #141418 0%, #080808 70%)',
+          background: 'radial-gradient(ellipse at 40% 55%, #DDD9D2 0%, #E8E4DC 70%)',
         }} />
         {/* Subtle vertical line texture */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(60,60,59,0.05) 120px)',
+          background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(176,170,159,0.1) 120px)',
         }} />
         {/* Dev caption — centered */}
         <span style={{
@@ -373,7 +375,7 @@ export default function EntreprisesPage() {
       </motion.div>
 
       {/* Qui nous fait confiance */}
-      <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}22` }}>
+      <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}50` }}>
         <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 40 : 64}}>
           Ils font confiance à PRYM
@@ -446,7 +448,7 @@ export default function EntreprisesPage() {
 
       {/* Footer note */}
       <RevealOnScroll delay={0.1}>
-        <div style={{ borderTop:`1px solid ${C.silver3}22`, padding:'32px clamp(24px,6vw,80px)' }}>
+        <div style={{ borderTop:`1px solid ${C.silver3}50`, padding:'32px clamp(24px,6vw,80px)' }}>
           <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3 }}>
             Driven by Excellence — prym.ma
           </p>

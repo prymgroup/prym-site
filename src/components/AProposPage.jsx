@@ -9,12 +9,12 @@ import { T } from '../i18n/translations'
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const C = {
-  bg: '#0a0a0a',
-  silver: '#c6c6c6',
-  silver2: '#706f6f',
-  silver3: '#3c3c3b',
-  pearl: '#B0B0B0',
-  white: '#f6f6f6',
+  bg:      '#FDFBF7',
+  silver:  '#6B6867',
+  silver2: '#9E9890',
+  silver3: '#B0AA9F',
+  pearl:   '#6B6867',
+  white:   '#1A1A1A',
 }
 
 const GUTTER = 'clamp(40px,7vw,120px)'
@@ -51,8 +51,8 @@ export default function AProposPage() {
         minHeight: '100vh', display: 'flex', flexDirection: 'column',
         justifyContent: 'flex-end',
         padding: `clamp(120px,16vw,200px) ${GUTTER} clamp(80px,10vw,140px)`,
-        background: `radial-gradient(ellipse at 30% 60%, #141416 0%, ${C.bg} 65%)`,
-        borderBottom: `1px solid ${C.silver3}18`,
+        background: `radial-gradient(ellipse at 30% 60%, #EDE9E3 0%, ${C.bg} 65%)`,
+        borderBottom: `1px solid ${C.silver3}50`,
         position: 'relative',
       }}>
         <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}
@@ -76,7 +76,7 @@ export default function AProposPage() {
       </section>
 
       {/* ── L'origine ────────────────────────────────────────────────────── */}
-      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}18` }}>
+      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}50` }}>
         <div style={{
           display: isMobile ? 'flex' : 'grid',
           flexDirection: 'column',
@@ -107,7 +107,7 @@ export default function AProposPage() {
       </section>
 
       {/* ── Notre Philosophie ───────────────────────────────────────────── */}
-      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}18` }}>
+      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}50` }}>
         <div style={{
           display: isMobile ? 'flex' : 'grid',
           flexDirection: 'column',
@@ -133,7 +133,7 @@ export default function AProposPage() {
       </section>
 
       {/* ── Positionnement ──────────────────────────────────────────────── */}
-      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}18` }}>
+      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}50` }}>
         <div style={{
           display: isMobile ? 'flex' : 'grid',
           flexDirection: 'column',
@@ -170,7 +170,7 @@ export default function AProposPage() {
       {/* ── Closing manifeste ────────────────────────────────────────────── */}
       <section style={{
         padding: `clamp(120px,14vw,200px) ${GUTTER}`,
-        background: `radial-gradient(ellipse at 50% 0%, #141416 0%, ${C.bg} 60%)`,
+        background: `radial-gradient(ellipse at 50% 0%, #EDE9E3 0%, ${C.bg} 60%)`,
       }}>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}
           style={{
@@ -216,7 +216,7 @@ export default function AProposPage() {
       </section>
 
       <RevealOnScroll delay={0.1}>
-        <div style={{ borderTop: `1px solid ${C.silver3}18`, padding: `28px ${GUTTER}`, background: C.bg }}>
+        <div style={{ borderTop: `1px solid ${C.silver3}50`, padding: `28px ${GUTTER}`, background: C.bg }}>
           <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
             {ta.footer}
           </p>

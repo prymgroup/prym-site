@@ -10,12 +10,12 @@ const FONT_EU = '"Eurostile", "Russo One", "Helvetica Neue", Arial, sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 
 const C = {
-  bg:      '#0a0a0a',
-  silver:  '#c6c6c6',
-  silver2: '#706f6f',
-  silver3: '#3c3c3b',
-  white:   '#f6f6f6',
-  body:    '#A0A0A0',
+  bg:      '#FDFBF7',
+  silver:  '#6B6867',
+  silver2: '#9E9890',
+  silver3: '#B0AA9F',
+  white:   '#1A1A1A',
+  body:    '#6B6867',
 }
 
 const GUTTER = 'clamp(40px, 6vw, 120px)'
@@ -128,7 +128,7 @@ function Timeline({ steps, isAR }) {
             background: step.active ? C.silver : 'transparent',
             border: `1px solid ${step.active ? C.silver : C.silver3}`,
           }} />
-          <div style={{ flex: 1, height: 1, background: step.active ? `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver},transparent)` : '#1c1c1c' }} />
+          <div style={{ flex: 1, height: 1, background: step.active ? `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver},transparent)` : '#E0DDD8' }} />
           <span style={{ fontFamily: FONT_SE, fontSize: 13, color: step.active ? C.silver : C.body, whiteSpace: 'nowrap' }}>
             {step.label}
           </span>
@@ -148,12 +148,12 @@ function Hero({ t, isAR }) {
       alignItems: isAR ? 'flex-end' : 'flex-start', justifyContent: 'center',
       padding: `clamp(80px, 12vw, 140px) ${GUTTER}`,
       position: 'relative',
-      background: `radial-gradient(ellipse at 30% 60%, #141416 0%, ${C.bg} 70%)`,
+      background: `radial-gradient(ellipse at 30% 60%, #EDE9E3 0%, ${C.bg} 70%)`,
       direction: isAR ? 'rtl' : 'ltr',
     }}>
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(60,60,59,0.07) 80px)',
+        background: 'repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(176,170,159,0.12) 80px)',
       }} />
 
       <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}
@@ -187,7 +187,7 @@ function Hero({ t, isAR }) {
 
 function Sec({ children, isMobile }) {
   return (
-    <section style={{ padding: `${SEC_V} ${GUTTER}`, borderTop: '1px solid #111', background: C.bg }}>
+    <section style={{ padding: `${SEC_V} ${GUTTER}`, borderTop: '1px solid #E0DDD8', background: C.bg }}>
       <div style={{
         display: isMobile ? 'flex' : 'grid',
         flexDirection: 'column',
@@ -243,7 +243,7 @@ function SplitSection({ s, isAR, isMobile }) {
     <motion.section
       initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: '-60px' }} transition={{ duration: 1 }}
-      style={{ borderTop: '1px solid #111', background: C.bg }}
+      style={{ borderTop: '1px solid #E0DDD8', background: C.bg }}
     >
       <div style={{
         display: isMobile ? 'flex' : 'grid',
@@ -254,7 +254,7 @@ function SplitSection({ s, isAR, isMobile }) {
 
         {/* Left — image placeholder */}
         <div style={{
-          background: '#0d0d0f',
+          background: '#EAE6DE',
           height: isMobile ? '72vw' : 'auto',
           minHeight: isMobile ? 280 : 640,
           position: 'relative',
@@ -265,12 +265,12 @@ function SplitSection({ s, isAR, isMobile }) {
         }}>
           <div style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: 'radial-gradient(ellipse at 35% 55%, #141418 0%, #080808 70%)',
+            background: 'radial-gradient(ellipse at 35% 55%, #DDD9D2 0%, #E8E4DC 70%)',
           }} />
           {/* Subtle vertical line texture */}
           <div style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(60,60,59,0.06) 120px)',
+            background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(176,170,159,0.12) 120px)',
           }} />
           <span style={{
             position: 'relative', zIndex: 1,
@@ -312,8 +312,8 @@ function FullScreenQuote() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: `clamp(80px, 12vw, 140px) ${GUTTER}`,
-        background: `radial-gradient(ellipse at 50% 50%, #0e0e12 0%, ${C.bg} 70%)`,
-        borderTop: '1px solid #111',
+        background: `radial-gradient(ellipse at 50% 50%, #EDE9E3 0%, ${C.bg} 70%)`,
+        borderTop: '1px solid #E0DDD8',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -324,7 +324,7 @@ function FullScreenQuote() {
         fontFamily: FONT_EU, fontWeight: 300,
         fontSize: 'clamp(160px, 35vw, 420px)',
         letterSpacing: '-0.04em',
-        color: 'rgba(60,60,59,0.07)',
+        color: 'rgba(176,170,159,0.18)',
         lineHeight: 1,
         userSelect: 'none',
         pointerEvents: 'none',
@@ -357,7 +357,7 @@ function Closing({ t, isAR }) {
     <motion.section
       initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
       viewport={{ once: true }} transition={{ duration: 1 }}
-      style={{ padding: `clamp(80px, 12vw, 140px) ${GUTTER}`, textAlign: 'center', background: `radial-gradient(ellipse at 50% 0%, #141416 0%, ${C.bg} 60%)`, borderTop: '1px solid #111', direction: isAR ? 'rtl' : 'ltr' }}
+      style={{ padding: `clamp(80px, 12vw, 140px) ${GUTTER}`, textAlign: 'center', background: `radial-gradient(ellipse at 50% 0%, #EDE9E3 0%, ${C.bg} 60%)`, borderTop: '1px solid #E0DDD8', direction: isAR ? 'rtl' : 'ltr' }}
     >
       <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.45em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 24 }}>
         {t.eyebrow}
