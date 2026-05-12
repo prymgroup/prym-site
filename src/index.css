@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Tailwind v4 — enable dark: utilities when .dark is on any ancestor */
+@variant dark (&:where(.dark, .dark *));
+
 /* ─── PRYM BRAND THEME — WARM LUXURY LIGHT MODE ──────────────────── */
 @theme {
   --color-prym-black:   #FDFBF7;   /* alabaster — main background        */
@@ -39,13 +42,68 @@
 
 /* ─── CSS VARIABLES ────────────────────────────────────────────────── */
 :root {
-  --prym-black:   #FDFBF7;   /* alabaster background                    */
-  --prym-dark:    #F2EFE9;   /* warm surface                            */
-  --prym-surface: #B0AA9F;   /* warm taupe                              */
-  --prym-muted:   #9E9890;   /* warm stone-400                          */
-  --prym-silver:  #6B6867;   /* warm stone-600                          */
-  --prym-light:   #1A1A1A;   /* charcoal — primary text                 */
+  /* semantic tokens — light mode defaults */
+  --prym-black:   #FDFBF7;
+  --prym-dark:    #F2EFE9;
+  --prym-surface: #B0AA9F;
+  --prym-muted:   #9E9890;
+  --prym-silver:  #6B6867;
+  --prym-light:   #1A1A1A;
   --font-prym:    'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif;
+
+  /* ── theme palette — consumed by all page components ── */
+  --c-bg:           #FDFBF7;
+  --c-surface:      #F2EFE9;
+  --c-text:         #1A1A1A;
+  --c-silver:       #6B6867;
+  --c-silver2:      #9E9890;
+  --c-silver3:      #B0AA9F;
+  --c-border:       #E0DDD8;
+  --c-border-faint: rgba(176,170,159,0.22);
+  --c-pill-border:  rgba(176,170,159,0.4);
+  --c-pill-bg:      rgba(26,26,26,0.06);
+  /* gradient surfaces */
+  --c-canvas-grad:  radial-gradient(ellipse at 40% 50%, #EDE9E3 0%, #FDFBF7 70%);
+  --c-panel-grad:   radial-gradient(ellipse at 60% 50%, #EDE9E3 0%, #FDFBF7 75%);
+  /* vignette overlays */
+  --c-vig-radial:   radial-gradient(ellipse at center, transparent 55%, rgba(253,251,247,0.3) 100%);
+  --c-vig-ltr:      linear-gradient(to right, rgba(253,251,247,0.08) 0%, transparent 18%, transparent 85%, rgba(253,251,247,0.15) 100%);
+  --c-vig-ring:     radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(253,251,247,0.25) 100%);
+  /* interactive */
+  --c-chevron:      #6B6867;
+  --c-label:        #6B6867;
+  --c-loader:       #9E9890;
+  --c-hover-text:   #FDFBF7;
+}
+
+/* ─── DARK MODE OVERRIDES ───────────────────────────────────────────── */
+html.dark {
+  --prym-black:   #0a0a0a;
+  --prym-dark:    #0e0e0f;
+  --prym-surface: #3c3c3b;
+  --prym-muted:   #706f6f;
+  --prym-silver:  #c6c6c6;
+  --prym-light:   #f6f6f6;
+
+  --c-bg:           #0a0a0a;
+  --c-surface:      #0e0e0f;
+  --c-text:         #f6f6f6;
+  --c-silver:       #c6c6c6;
+  --c-silver2:      #706f6f;
+  --c-silver3:      #3c3c3b;
+  --c-border:       #111111;
+  --c-border-faint: rgba(60,60,59,0.18);
+  --c-pill-border:  rgba(60,60,59,0.27);
+  --c-pill-bg:      rgba(198,198,198,0.08);
+  --c-canvas-grad:  radial-gradient(ellipse at 40% 50%, #141416 0%, #0a0a0a 70%);
+  --c-panel-grad:   radial-gradient(ellipse at 60% 50%, #111114 0%, #0a0a0a 75%);
+  --c-vig-radial:   radial-gradient(ellipse at center, transparent 55%, rgba(10,10,10,0.55) 100%);
+  --c-vig-ltr:      linear-gradient(to right, rgba(10,10,10,0.15) 0%, transparent 18%, transparent 85%, rgba(10,10,10,0.3) 100%);
+  --c-vig-ring:     radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(10,10,10,0.45) 100%);
+  --c-chevron:      #c6c6c6;
+  --c-label:        #e0e0e0;
+  --c-loader:       #c6c6c6;
+  --c-hover-text:   #f6f6f6;
 }
 
 /* ─── BASE ─────────────────────────────────────────────────────────── */
@@ -56,12 +114,13 @@
 }
 
 html {
-  background: #FDFBF7;
+  background: var(--c-bg);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 body {
-  background: #FDFBF7;
-  color: #1A1A1A;
+  background: var(--c-bg);
+  color: var(--c-text);
   font-family: var(--font-prym);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;

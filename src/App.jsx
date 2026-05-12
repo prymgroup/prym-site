@@ -5,6 +5,7 @@ import {
   useSpring,
 } from 'framer-motion'
 import Lenis from 'lenis'
+import { ThemeProvider } from './context/ThemeContext'
 
 import HeroSection        from './components/HeroSection'
 import ManifestoSection   from './components/ManifestoSection'
@@ -206,10 +207,10 @@ export default function App() {
   }
 
   return (
-    <>
+    <ThemeProvider>
       {/* SmartCursor — renders only when pointer:fine + motion-ok + cores > 4 */}
       <SmartCursor />
       {renderPage()}
-    </>
+    </ThemeProvider>
   )
 }

@@ -10,10 +10,15 @@ import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
+// All values point at CSS custom properties so the component reacts to
+// html.dark overrides without any JS re-render.
 const C = {
-  bg: '#0a0a0a', bg2: '#0e0e0f',
-  silver: '#c6c6c6', silver2: '#706f6f', silver3: '#3c3c3b',
-  white: '#f6f6f6',
+  bg:      'var(--c-bg)',
+  bg2:     'var(--c-surface)',
+  silver:  'var(--c-silver)',
+  silver2: 'var(--c-silver2)',
+  silver3: 'var(--c-silver3)',
+  white:   'var(--c-text)',
 }
 
 // Catches useGLTF errors (404 in production for uncommitted GLBs).
@@ -59,7 +64,7 @@ function VehicleModel({ path }) {
 function Loader3D({ label }) {
   return (
     <Html center>
-      <div style={{ color: 'rgba(198,198,198,0.3)', fontFamily: FONT_EU, fontSize: '9px', letterSpacing: '0.3em' }}>
+      <div style={{ color: 'var(--c-loader)', fontFamily: FONT_EU, fontSize: '9px', letterSpacing: '0.3em' }}>
         {label}
       </div>
     </Html>
@@ -149,7 +154,7 @@ function ChevronArrow({ direction, onClick, bottom }) {
           : { top: '50%', transform: 'translateY(-50%)', [direction === 'left' ? 'left' : 'right']: 16 }
         ),
         zIndex: 10, background: 'none', border: 'none', cursor: 'pointer', padding: 16,
-        color: 'rgba(198,198,198,0.35)', opacity: 0.35, transition: 'opacity 0.4s ease',
+        color: 'var(--c-chevron)', opacity: 0.4, transition: 'opacity 0.4s ease',
         WebkitTapHighlightColor: 'transparent',
       }}>
       <svg width="10" height="22" viewBox="0 0 10 22" fill="none">
@@ -166,19 +171,19 @@ function TierPill({ tier, active, onClick, layoutId, domRef }) {
   return (
     <motion.button ref={domRef} onClick={onClick} whileTap={{ scale: 0.97 }}
       style={{
-        background: active ? 'rgba(198,198,198,0.08)' : 'transparent',
-        border: `1px solid ${active ? C.silver3 : C.silver3+'44'}`,
+        background: active ? 'var(--c-pill-bg)' : 'transparent',
+        border: `1px solid ${active ? 'var(--c-silver3)' : 'var(--c-pill-border)'}`,
         padding: '8px 16px', cursor: 'pointer',
         fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.25em',
-        textTransform: 'uppercase', color: active ? C.silver : C.silver3,
+        textTransform: 'uppercase', color: active ? 'var(--c-silver)' : 'var(--c-silver3)',
         transition: 'all 0.3s ease', whiteSpace: 'nowrap',
         position: 'relative', flexShrink: 0,
       }}
-      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = C.silver2; e.currentTarget.style.borderColor = C.silver3 } }}
-      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = C.silver3; e.currentTarget.style.borderColor = C.silver3+'44' } }}>
+      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--c-silver2)'; e.currentTarget.style.borderColor = 'var(--c-silver3)' } }}
+      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--c-silver3)'; e.currentTarget.style.borderColor = 'var(--c-pill-border)' } }}>
       {active && (
         <motion.div layoutId={layoutId || 'pill-active'}
-          style={{ position:'absolute', top:0, left:'15%', right:'15%', height:1, background:`linear-gradient(90deg,transparent,${C.silver},transparent)` }} />
+          style={{ position:'absolute', top:0, left:'15%', right:'15%', height:1, background:'linear-gradient(90deg,transparent,var(--c-silver),transparent)' }} />
       )}
       {tier.name.replace('PRYM ', '')}
     </motion.button>
@@ -248,10 +253,10 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
         style={{ display:'flex', flexDirection:'column' }}>
         <div style={{
           position:'relative', width:'100%', height:'calc(100vh - 170px)',
-          background:`radial-gradient(ellipse at 40% 50%, #141416 0%, ${C.bg} 70%)`,
+          background:'var(--c-canvas-grad)',
           overflow:'hidden', flexShrink:0,
         }}>
-          <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at center, transparent 55%, rgba(10,10,10,0.55) 100%)' }} />
+          <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'var(--c-vig-radial)' }} />
           {hasModel
             ? <ModelErrorBoundary key={currentModelPath} fallback={<NoModelPlaceholder tier={tier} label={tf.noVisual} />}>
                 <Scene3D modelPath={currentModelPath} isMobile={true} />
@@ -260,11 +265,11 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
           <AnimatePresence mode="wait">
             <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ position:'absolute', bottom:20, left:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0' }}>
+              style={{ position:'absolute', bottom:20, left:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
               {vehicleLabel.toUpperCase()}
             </motion.div>
           </AnimatePresence>
-          <div style={{ position:'absolute', bottom:20, right:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:8, color:'rgba(198,198,198,0.18)' }}>↓</div>
+          <div style={{ position:'absolute', bottom:20, right:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:8, color:'var(--c-chevron)', opacity:0.5 }}>↓</div>
         </div>
 
         <div style={{ padding:'28px 24px 48px', background:C.bg }}>
@@ -277,7 +282,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:26, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:24, lineHeight:1.05 }}>
             {tier.name}
           </h2>
-          <div style={{ width:36, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:28 }} />
+          <div style={{ width:36, height:1, background:'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:28 }} />
           <div style={{ display:'flex', gap:36, marginBottom:28 }}>
             {[{label:tf.passengers,value:tier.capacity?.passengers ?? '—'},{label:tf.luggage,value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
@@ -292,7 +297,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
             ))}
           </div>
           <a href={`/reserver?tier=${tier.id}`}
-            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:C.bg, background:C.silver, padding:'17px 32px', textDecoration:'none' }}>
+            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-bg)', background:'var(--c-silver)', padding:'17px 32px', textDecoration:'none' }}>
             {tf.book}
           </a>
         </div>
@@ -303,7 +308,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
   return (
     <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}
       style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden' }}>
-      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:`1px solid ${C.silver3}18`, overflowY:'auto', scrollbarWidth:'none' }}>
+      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:'1px solid var(--c-border-faint)', overflowY:'auto', scrollbarWidth:'none' }}>
         <motion.div initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.6, delay:0.1 }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:48 }}>
             {FLEET.map(t => (
@@ -320,12 +325,12 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
 
           <AnimatePresence mode="wait">
             <motion.p key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0', marginBottom:36 }}>
+              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)', marginBottom:36 }}>
               {vehicleLabel.toUpperCase()}
             </motion.p>
           </AnimatePresence>
 
-          <div style={{ width:40, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:36 }} />
+          <div style={{ width:40, height:1, background:'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:36 }} />
 
           <div style={{ display:'flex', gap:40, marginBottom:36 }}>
             {[{label:tf.passengers,value:tier.capacity?.passengers ?? '—'},{label:tf.luggage,value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
@@ -348,17 +353,17 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           </div>
 
           <a href={`/reserver?tier=${tier.id}`}
-            style={{ display:'inline-block', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:C.silver, background:'transparent', border:`1px solid ${C.silver3}`, padding:'16px 40px', textDecoration:'none', transition:'all 0.4s ease' }}
-            onMouseEnter={e => { e.currentTarget.style.background='#1A1A1A'; e.currentTarget.style.borderColor=C.silver2; e.currentTarget.style.color=C.white }}
-            onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor=C.silver3; e.currentTarget.style.color=C.silver }}>
+            style={{ display:'inline-block', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-silver)', background:'transparent', border:'1px solid var(--c-silver3)', padding:'16px 40px', textDecoration:'none', transition:'all 0.4s ease' }}
+            onMouseEnter={e => { e.currentTarget.style.background='var(--c-text)'; e.currentTarget.style.borderColor='var(--c-silver2)'; e.currentTarget.style.color='var(--c-hover-text)' }}
+            onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='var(--c-silver3)'; e.currentTarget.style.color='var(--c-silver)' }}>
             {tf.book}
           </a>
         </motion.div>
       </div>
 
-      <div style={{ position:'relative', background:`radial-gradient(ellipse at 60% 50%, #111114 0%, ${C.bg} 75%)`, overflow:'hidden' }}>
-        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'linear-gradient(to right, rgba(10,10,10,0.15) 0%, transparent 18%, transparent 85%, rgba(10,10,10,0.3) 100%)' }} />
-        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(10,10,10,0.45) 100%)' }} />
+      <div style={{ position:'relative', background:'var(--c-panel-grad)', overflow:'hidden' }}>
+        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'var(--c-vig-ltr)' }} />
+        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'var(--c-vig-ring)' }} />
         {hasModel
           ? <ModelErrorBoundary key={currentModelPath} fallback={<NoModelPlaceholder tier={tier} label={tf.noVisual} />}>
               <Scene3D modelPath={currentModelPath} isMobile={false} />
@@ -367,7 +372,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
         {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
         <AnimatePresence mode="wait">
           <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0' }}>
+            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
             {vehicleLabel.toUpperCase()}
           </motion.div>
         </AnimatePresence>
@@ -401,7 +406,7 @@ export default function FlottePage() {
       </div>
 
       {isMobile && (
-        <section style={{ padding:'48px 24px', textAlign:'left', borderTop:`1px solid ${C.silver3}22`, background:C.bg2 }}>
+        <section style={{ padding:'48px 24px', textAlign:'left', borderTop:'1px solid var(--c-border-faint)', background:'var(--c-surface)' }}>
           <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3, marginBottom:16 }}>
             {tf.corporate}
           </p>
@@ -409,7 +414,7 @@ export default function FlottePage() {
             {tf.regularNeeds}
           </h2>
           <a href="/entreprises"
-            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.35em', textTransform:'uppercase', color:C.silver, border:`1px solid ${C.silver3}`, padding:'14px 40px', textDecoration:'none' }}>
+            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-silver)', border:'1px solid var(--c-silver3)', padding:'14px 40px', textDecoration:'none' }}>
             {tf.contact}
           </a>
         </section>

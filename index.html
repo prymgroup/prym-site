@@ -29,8 +29,19 @@
 
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <!-- Anti-FOUC: apply saved theme class before first paint -->
+    <script>
+      (function(){
+        try {
+          var s = localStorage.getItem('prym-theme')
+          var dark = s ? s === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches
+          if (dark) document.documentElement.classList.add('dark')
+        } catch(e){}
+      })()
+    </script>
   </head>
-  <body style="background:#0a0a0a;margin:0;">
+  <body style="margin:0;">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

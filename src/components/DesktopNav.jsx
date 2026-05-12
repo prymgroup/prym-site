@@ -1,16 +1,8 @@
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
+import ThemeToggle from './ThemeToggle'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
-
-// Warm luxury light-mode palette
-const C = {
-  bg:      '#FDFBF7',
-  text:    '#1A1A1A',   // charcoal — primary
-  silver:  '#6B6867',   // stone-600 — secondary
-  silver2: '#9E9890',   // stone-400 — muted / nav links default
-  silver3: '#B0AA9F',   // taupe — borders / dividers
-}
 
 const ROUTE_LINKS = [
   (t) => [t.nav.flotte,      '/flotte'],
@@ -30,7 +22,7 @@ function LangSwitcher() {
           {i > 0 && (
             <span style={{
               fontFamily: FONT_EU, fontSize: 8,
-              color: 'rgba(176,170,159,0.5)',
+              color: 'var(--c-border-faint)',
               padding: '0 6px', userSelect: 'none', lineHeight: 1,
             }}>
               |
@@ -41,11 +33,11 @@ function LangSwitcher() {
             style={{
               background: 'none', border: 'none', cursor: 'pointer',
               fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.18em',
-              color: lang === l ? C.text : 'rgba(26,26,26,0.38)',
+              color: lang === l ? 'var(--c-text)' : 'rgba(26,26,26,0.38)',
               fontWeight: lang === l ? 500 : 300,
               padding: '2px 0', transition: 'color 0.2s ease', lineHeight: 1,
             }}
-            onMouseEnter={e => { if (lang !== l) e.currentTarget.style.color = 'rgba(26,26,26,0.72)' }}
+            onMouseEnter={e => { if (lang !== l) e.currentTarget.style.color = 'var(--c-silver2)' }}
             onMouseLeave={e => { if (lang !== l) e.currentTarget.style.color = 'rgba(26,26,26,0.38)' }}
           >
             {l}
@@ -68,17 +60,18 @@ export default function DesktopNav() {
       background: 'rgba(253,251,247,0.92)',
       backdropFilter: 'blur(16px)',
       willChange: 'transform',
-      borderBottom: '1px solid #E0DDD8',
+      borderBottom: '1px solid var(--c-border)',
+      transition: 'background 0.3s ease, border-color 0.3s ease',
     }}>
-      {/* Logo — inverted to charcoal on light background */}
+      {/* Logo — native silver chrome */}
       <a href="/" style={{ textDecoration: 'none' }}>
         <img
-          src="/logos/logo-slogan-white.svg"
+          src="/logos/silver-logo-full.svg"
           alt="PRYM"
-          style={{ height: 40, filter: 'brightness(0)', opacity: 0.88 }}
+          style={{ height: 40 }}
           onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block' }}
         />
-        <span style={{ display: 'none', fontFamily: FONT_EU, fontSize: 13, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.text, fontWeight: 300 }}>
+        <span style={{ display: 'none', fontFamily: FONT_EU, fontSize: 13, letterSpacing: '0.35em', textTransform: 'uppercase', color: 'var(--c-text)', fontWeight: 300 }}>
           PRYM
         </span>
       </a>
@@ -89,25 +82,29 @@ export default function DesktopNav() {
           const [label, href] = fn(t)
           return (
             <a key={href} href={href}
-              style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver2, textDecoration: 'none', transition: 'color 0.3s ease' }}
-              onMouseEnter={e => e.target.style.color = C.text}
-              onMouseLeave={e => e.target.style.color = C.silver2}>
+              style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-silver2)', textDecoration: 'none', transition: 'color 0.3s ease' }}
+              onMouseEnter={e => e.target.style.color = 'var(--c-text)'}
+              onMouseLeave={e => e.target.style.color = 'var(--c-silver2)'}>
               {label}
             </a>
           )
         })}
 
-        <span style={{ width: 1, height: 14, background: 'rgba(176,170,159,0.4)', flexShrink: 0 }} />
+        <span style={{ width: 1, height: 14, background: 'var(--c-border-faint)', flexShrink: 0 }} />
 
         <LangSwitcher />
 
-        <span style={{ width: 1, height: 14, background: 'rgba(176,170,159,0.4)', flexShrink: 0 }} />
+        <span style={{ width: 1, height: 14, background: 'var(--c-border-faint)', flexShrink: 0 }} />
+
+        <ThemeToggle />
+
+        <span style={{ width: 1, height: 14, background: 'var(--c-border-faint)', flexShrink: 0 }} />
 
         {/* CTA */}
         <a href="/reserver"
-          style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.text, border: `1px solid ${C.silver3}`, padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = C.silver; e.currentTarget.style.background = 'rgba(26,26,26,0.05)' }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = C.silver3; e.currentTarget.style.background = 'transparent' }}>
+          style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', border: '1px solid var(--c-silver3)', padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)'; e.currentTarget.style.background = 'transparent' }}>
           {t.nav.reserver}
         </a>
       </div>

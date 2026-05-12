@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
+import ThemeToggle from './ThemeToggle'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
@@ -133,7 +134,7 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
               })}
             </div>
 
-            {/* Language switcher */}
+            {/* Language + theme */}
             <div style={{ marginTop: 48, paddingTop: 24, borderTop: '1px solid rgba(176,170,159,0.25)' }}>
               <p style={{
                 fontFamily: FONT_EU, fontSize: 6, letterSpacing: '0.3em',
@@ -142,7 +143,11 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
               }}>
                 {t.nav.lang}
               </p>
-              <LangSwitcher />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <LangSwitcher />
+                <span style={{ width: 1, height: 12, background: 'rgba(176,170,159,0.4)', flexShrink: 0 }} />
+                <ThemeToggle />
+              </div>
             </div>
 
             {/* CTA — dark fill button on light drawer */}
