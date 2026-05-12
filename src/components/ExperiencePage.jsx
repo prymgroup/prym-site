@@ -10,12 +10,12 @@ const FONT_EU = '"Eurostile", "Russo One", "Helvetica Neue", Arial, sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 
 const C = {
-  bg:      '#FDFBF7',
-  silver:  '#6B6867',
-  silver2: '#9E9890',
-  silver3: '#B0AA9F',
-  white:   '#1A1A1A',
-  body:    '#6B6867',
+  bg:      'var(--c-bg)',
+  silver:  'var(--c-silver)',
+  silver2: 'var(--c-silver2)',
+  silver3: 'var(--c-silver3)',
+  white:   'var(--c-text)',
+  body:    'var(--c-silver)',
 }
 
 const GUTTER = 'clamp(40px, 6vw, 120px)'
@@ -45,8 +45,8 @@ function OlfactifVisual({ notes, credit, isAR }) {
             height: 1, flexShrink: 0,
             width: `${72 - i * 12}px`,
             background: isAR
-              ? `linear-gradient(270deg, ${C.silver}, transparent)`
-              : `linear-gradient(90deg, ${C.silver}, transparent)`,
+              ? 'linear-gradient(270deg, var(--c-silver), transparent)'
+              : 'linear-gradient(90deg, var(--c-silver), transparent)',
           }} />
           <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
             {note}
@@ -99,7 +99,7 @@ function NDAList({ title, items, protect, isAR }) {
         {items.map((item) => (
           <div key={item} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexDirection: isAR ? 'row-reverse' : 'row' }}>
-              <div style={{ width: 5, height: 5, borderRadius: '50%', border: `1px solid ${C.silver3}`, flexShrink: 0 }} />
+              <div style={{ width: 5, height: 5, borderRadius: '50%', border: '1px solid var(--c-silver3)', flexShrink: 0 }} />
               <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body }}>
                 {item}
               </span>
@@ -126,9 +126,9 @@ function Timeline({ steps, isAR }) {
           <div style={{
             width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
             background: step.active ? C.silver : 'transparent',
-            border: `1px solid ${step.active ? C.silver : C.silver3}`,
+            border: step.active ? '1px solid var(--c-silver)' : '1px solid var(--c-silver3)',
           }} />
-          <div style={{ flex: 1, height: 1, background: step.active ? `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver},transparent)` : '#E0DDD8' }} />
+          <div style={{ flex: 1, height: 1, background: step.active ? (isAR ? 'linear-gradient(270deg, var(--c-silver), transparent)' : 'linear-gradient(90deg, var(--c-silver), transparent)') : 'var(--c-border)' }} />
           <span style={{ fontFamily: FONT_SE, fontSize: 13, color: step.active ? C.silver : C.body, whiteSpace: 'nowrap' }}>
             {step.label}
           </span>
@@ -148,12 +148,12 @@ function Hero({ t, isAR }) {
       alignItems: isAR ? 'flex-end' : 'flex-start', justifyContent: 'center',
       padding: `clamp(80px, 12vw, 140px) ${GUTTER}`,
       position: 'relative',
-      background: `radial-gradient(ellipse at 30% 60%, #EDE9E3 0%, ${C.bg} 70%)`,
+      background: 'var(--c-hero-bg)',
       direction: isAR ? 'rtl' : 'ltr',
     }}>
       <div style={{
         position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(176,170,159,0.12) 80px)',
+        background: 'var(--c-grid-line)',
       }} />
 
       <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}
@@ -168,7 +168,7 @@ function Hero({ t, isAR }) {
       </motion.h1>
 
       <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.9, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        style={{ width: 80, height: 1, background: `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver},transparent)`, marginBottom: 36, transformOrigin: isAR ? 'right' : 'left' }} />
+        style={{ width: 80, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver), transparent)' : 'linear-gradient(90deg, var(--c-silver), transparent)', marginBottom: 36, transformOrigin: isAR ? 'right' : 'left' }} />
 
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.8 }}
         style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px, 1.8vw, 18px)', color: C.body, lineHeight: 1.8, maxWidth: 560, whiteSpace: 'pre-line' }}>
@@ -179,7 +179,7 @@ function Hero({ t, isAR }) {
         style={{ position: 'absolute', bottom: 48, [isAR ? 'right' : 'left']: GUTTER, display: 'flex', flexDirection: 'column', alignItems: isAR ? 'flex-end' : 'flex-start', gap: 8 }}>
         <span style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>{t.discover}</span>
         <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-          style={{ width: 1, height: 32, background: `linear-gradient(180deg,${C.silver3},transparent)` }} />
+          style={{ width: 1, height: 32, background: 'linear-gradient(180deg, var(--c-silver3), transparent)' }} />
       </motion.div>
     </section>
   )
@@ -187,7 +187,7 @@ function Hero({ t, isAR }) {
 
 function Sec({ children, isMobile }) {
   return (
-    <section style={{ padding: `${SEC_V} ${GUTTER}`, borderTop: '1px solid #E0DDD8', background: C.bg }}>
+    <section style={{ padding: `${SEC_V} ${GUTTER}`, borderTop: '1px solid var(--c-border)', background: 'var(--c-bg)' }}>
       <div style={{
         display: isMobile ? 'flex' : 'grid',
         flexDirection: 'column',
@@ -243,7 +243,7 @@ function SplitSection({ s, isAR, isMobile }) {
     <motion.section
       initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
       viewport={{ once: true, margin: '-60px' }} transition={{ duration: 1 }}
-      style={{ borderTop: '1px solid #E0DDD8', background: C.bg }}
+      style={{ borderTop: '1px solid var(--c-border)', background: 'var(--c-bg)' }}
     >
       <div style={{
         display: isMobile ? 'flex' : 'grid',
@@ -254,7 +254,7 @@ function SplitSection({ s, isAR, isMobile }) {
 
         {/* Left — image placeholder */}
         <div style={{
-          background: '#EAE6DE',
+          background: 'var(--c-split-img)',
           height: isMobile ? '72vw' : 'auto',
           minHeight: isMobile ? 280 : 640,
           position: 'relative',
@@ -265,12 +265,12 @@ function SplitSection({ s, isAR, isMobile }) {
         }}>
           <div style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: 'radial-gradient(ellipse at 35% 55%, #DDD9D2 0%, #E8E4DC 70%)',
+            background: 'var(--c-panel-grad)',
           }} />
           {/* Subtle vertical line texture */}
           <div style={{
             position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(176,170,159,0.12) 120px)',
+            background: 'var(--c-grid-line)',
           }} />
           <span style={{
             position: 'relative', zIndex: 1,
@@ -312,8 +312,8 @@ function FullScreenQuote() {
         alignItems: 'center',
         justifyContent: 'center',
         padding: `clamp(80px, 12vw, 140px) ${GUTTER}`,
-        background: `radial-gradient(ellipse at 50% 50%, #EDE9E3 0%, ${C.bg} 70%)`,
-        borderTop: '1px solid #E0DDD8',
+        background: 'var(--c-quote-bg)',
+        borderTop: '1px solid var(--c-border)',
         position: 'relative',
         overflow: 'hidden',
       }}
@@ -324,7 +324,7 @@ function FullScreenQuote() {
         fontFamily: FONT_EU, fontWeight: 300,
         fontSize: 'clamp(160px, 35vw, 420px)',
         letterSpacing: '-0.04em',
-        color: 'rgba(176,170,159,0.18)',
+        color: 'var(--c-prym-numeral)',
         lineHeight: 1,
         userSelect: 'none',
         pointerEvents: 'none',
@@ -357,7 +357,7 @@ function Closing({ t, isAR }) {
     <motion.section
       initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
       viewport={{ once: true }} transition={{ duration: 1 }}
-      style={{ padding: `clamp(80px, 12vw, 140px) ${GUTTER}`, textAlign: 'center', background: `radial-gradient(ellipse at 50% 0%, #EDE9E3 0%, ${C.bg} 60%)`, borderTop: '1px solid #E0DDD8', direction: isAR ? 'rtl' : 'ltr' }}
+      style={{ padding: `clamp(80px, 12vw, 140px) ${GUTTER}`, textAlign: 'center', background: 'var(--c-closing-bg)', borderTop: '1px solid var(--c-border)', direction: isAR ? 'rtl' : 'ltr' }}
     >
       <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.45em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 24 }}>
         {t.eyebrow}
@@ -370,14 +370,14 @@ function Closing({ t, isAR }) {
         {t.body}
       </p>
       <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <a href="/reserver" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.bg, background: C.silver, padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
-          onMouseEnter={e => e.target.style.background = C.white}
-          onMouseLeave={e => e.target.style.background = C.silver}>
+        <a href="/reserver" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-bg)', background: 'var(--c-silver)', padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-text)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-silver)' }}>
           {t.ctaBook}
         </a>
-        <a href="/flotte" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver, background: 'transparent', border: `1px solid ${C.silver3}`, padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
-          onMouseEnter={e => e.target.style.borderColor = C.silver}
-          onMouseLeave={e => e.target.style.borderColor = C.silver3}>
+        <a href="/flotte" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver)', background: 'transparent', border: '1px solid var(--c-silver3)', padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)' }}>
           {t.ctaFlotte}
         </a>
       </div>
@@ -400,7 +400,7 @@ export default function ExperiencePage() {
   const tc = (col) => ({ gridColumn: isMobile ? undefined : col })
 
   return (
-    <div style={{ background: C.bg, minHeight: '100vh', color: C.white }}>
+    <div style={{ background: 'var(--c-bg)', minHeight: '100vh', color: 'var(--c-text)' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
       <Hero t={te.hero} isAR={isAR} />
@@ -411,7 +411,7 @@ export default function ExperiencePage() {
           <Narrative n={s[0].n} label={s[0].label} title={s[0].title} body={s[0].body} isAR={isAR} />
         </div>
         <div style={{ ...tc('7 / span 6'), display: 'flex', alignItems: 'center' }}>
-          <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(15px,1.5vw,17px)', color: C.silver2, lineHeight: 2, borderLeft: `1px solid ${C.silver3}`, paddingLeft: 'clamp(24px,3vw,40px)' }}>
+          <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(15px,1.5vw,17px)', color: C.silver2, lineHeight: 2, borderLeft: '1px solid var(--c-silver3)', paddingLeft: 'clamp(24px,3vw,40px)' }}>
             {s[0].details?.[0]?.value ?? s[0].body}
           </p>
         </div>
