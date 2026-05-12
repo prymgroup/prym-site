@@ -6,6 +6,12 @@ import { T } from '../i18n/translations'
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
+const C = {
+  bg     : '#F8F7F4',  // warm off-white
+  text   : '#1A1A1A',  // rich charcoal — promise lines
+  accent : '#D6D0C4',  // champagne — decorative em-dash
+}
+
 function PromiseLine({ text, lang, index }) {
   const [ref, inView] = useInView(0.4)
   const isAR = lang === 'AR'
@@ -13,7 +19,9 @@ function PromiseLine({ text, lang, index }) {
   return (
     <motion.div ref={ref}
       initial={{ opacity: 0, x: isAR ? 18 : -18, filter: 'blur(6px)' }}
-      animate={inView ? { opacity: 1, x: 0, filter: 'blur(0px)' } : { opacity: 0, x: isAR ? 18 : -18, filter: 'blur(6px)' }}
+      animate={inView
+        ? { opacity: 1, x: 0,              filter: 'blur(0px)' }
+        : { opacity: 0, x: isAR ? 18 : -18, filter: 'blur(6px)' }}
       transition={{ duration: 1.4, delay: index * 0.28, ease: [0.22, 1, 0.36, 1] }}
       style={{
         display: 'flex', alignItems: 'center',
@@ -21,7 +29,13 @@ function PromiseLine({ text, lang, index }) {
         gap: '1.2em', willChange: 'transform, opacity, filter',
       }}
     >
-      <span style={{ fontFamily: FONT, fontSize: 'clamp(0.8rem, 1.6vw, 1.1rem)', color: '#3c3c3b', lineHeight: 1, flexShrink: 0, letterSpacing: '0.05em' }}>
+      {/* Champagne em-dash accent */}
+      <span style={{
+        fontFamily: FONT,
+        fontSize: 'clamp(0.8rem, 1.6vw, 1.1rem)',
+        color: C.accent,
+        lineHeight: 1, flexShrink: 0, letterSpacing: '0.05em',
+      }}>
         —
       </span>
       <p style={{
@@ -29,7 +43,7 @@ function PromiseLine({ text, lang, index }) {
         fontSize: 'clamp(0.9rem, 1.8vw, 1.4rem)',
         letterSpacing: isAR ? '0.03em' : '0.12em',
         textTransform: isAR ? 'none' : 'uppercase',
-        color: '#c6c6c6', lineHeight: 1.4,
+        color: C.text, lineHeight: 1.4,
         direction: isAR ? 'rtl' : 'ltr',
       }}>
         {text}
@@ -39,17 +53,19 @@ function PromiseLine({ text, lang, index }) {
 }
 
 export default function PromiseSection() {
-  const { lang } = useLanguage()
-  const t = T[lang].teasing
+  const { lang }   = useLanguage()
+  const t          = T[lang].teasing
   const sectionRef = useRef(null)
+
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
-  const y      = useTransform(scrollYProgress, [0, 1], [50, -50])
+  const y       = useTransform(scrollYProgress, [0, 1],              [50, -50])
   const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
 
   return (
     <section ref={sectionRef} style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: '0 clamp(2rem, 8vw, 8rem)', backgroundColor: '#0a0a0a', position: 'relative',
+      padding: '0 clamp(2rem, 8vw, 8rem)',
+      backgroundColor: C.bg, position: 'relative',
     }}>
       <motion.div style={{
         y, opacity,

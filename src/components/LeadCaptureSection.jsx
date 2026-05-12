@@ -4,8 +4,19 @@ import { useInView } from '../hooks/useInView'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 
-const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
+const FONT     = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// ── Warm Light Mode palette ───────────────────────────────────────────────
+const C = {
+  bg          : '#F8F7F4',  // warm off-white
+  text        : '#1A1A1A',  // rich charcoal — primary text, active tab, field value
+  mid         : '#6B6867',  // warm stone-600 — intro / label text
+  soft        : '#A09A90',  // warm stone-400 — muted labels, error, footer
+  accent      : '#D6D0C4',  // champagne — decorative
+  borderIdle  : '#C8C2B8',  // input bottom border — resting
+  borderFocus : '#1A1A1A',  // input bottom border — focused
+}
 
 function useIsMobile() {
   const [m, setM] = useState(() => window.innerWidth < 900)
@@ -26,11 +37,11 @@ function Field({ label, type = 'text', value, onChange, autoComplete, isAR }) {
       onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
       style={{
         width: '100%', background: 'transparent', border: 'none', outline: 'none',
-        color: '#f6f6f6', fontFamily: FONT,
+        color: C.text, fontFamily: FONT,
         fontSize: 'clamp(0.8rem, 1.4vw, 0.92rem)',
         letterSpacing: isAR ? '0.03em' : '0.14em',
         padding: '0.6rem 0',
-        borderBottom: `1px solid ${focused ? '#ffffff' : '#333'}`,
+        borderBottom: `1px solid ${focused ? C.borderFocus : C.borderIdle}`,
         transition: 'border-color 0.35s',
         direction: isAR ? 'rtl' : 'ltr',
         textAlign: isAR ? 'right' : 'left',
@@ -42,16 +53,17 @@ function Field({ label, type = 'text', value, onChange, autoComplete, isAR }) {
 function MagneticArrow({ status, isMobile }) {
   const ref = useRef(null)
   const [arrowHover, setArrowHover] = useState(false)
-  const x = useMotionValue(0); const y = useMotionValue(0)
+  const x  = useMotionValue(0);  const y  = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 180, damping: 16, mass: 0.5 })
   const sy = useSpring(y, { stiffness: 180, damping: 16, mass: 0.5 })
 
   const handleMove = useCallback((e) => {
     const el = ref.current; if (!el) return
     const rect = el.getBoundingClientRect()
-    const dx = e.clientX - (rect.left + rect.width / 2)
-    const dy = e.clientY - (rect.top + rect.height / 2)
-    if (Math.hypot(dx, dy) < 100) { x.set(dx * 0.4); y.set(dy * 0.4) } else { x.set(0); y.set(0) }
+    const dx   = e.clientX - (rect.left + rect.width  / 2)
+    const dy   = e.clientY - (rect.top  + rect.height / 2)
+    if (Math.hypot(dx, dy) < 100) { x.set(dx * 0.4); y.set(dy * 0.4) }
+    else { x.set(0); y.set(0) }
   }, [x, y])
 
   useEffect(() => {
@@ -66,20 +78,28 @@ function MagneticArrow({ status, isMobile }) {
       style={{
         x: sx, y: sy, background: 'none', border: 'none', cursor: 'pointer',
         padding: isMobile ? '1rem 0 1rem 1rem' : '0.4rem 0.6rem',
-        display: 'inline-flex', alignItems: 'center', willChange: 'transform', flexShrink: 0, alignSelf: 'flex-end',
+        display: 'inline-flex', alignItems: 'center',
+        willChange: 'transform', flexShrink: 0, alignSelf: 'flex-end',
       }}>
       <AnimatePresence mode="wait">
         {status === 'loading' ? (
           <motion.svg key="spin" width="22" height="22" viewBox="0 0 22 22" fill="none"
             initial={{ opacity: 0 }} animate={{ opacity: 1, rotate: 360 }} exit={{ opacity: 0 }}
             transition={{ opacity: { duration: 0.2 }, rotate: { duration: 1, repeat: Infinity, ease: 'linear' } }}>
-            <circle cx="11" cy="11" r="8" stroke="#c6c6c6" strokeWidth="1" strokeDasharray="30" strokeDashoffset="10" strokeLinecap="round" />
+            <circle cx="11" cy="11" r="8"
+              stroke={C.soft} strokeWidth="1"
+              strokeDasharray="30" strokeDashoffset="10" strokeLinecap="round" />
           </motion.svg>
         ) : (
           <motion.svg key="arrow" width="32" height="10" viewBox="0 0 32 10" fill="none"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-            style={{ transform: arrowHover ? 'translateX(6px)' : 'translateX(0)', transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)' }}>
-            <path d="M0 5H30M30 5L25.5 1M30 5L25.5 9" stroke="#c6c6c6" strokeWidth="0.85" strokeLinecap="square" />
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              transform: arrowHover ? 'translateX(6px)' : 'translateX(0)',
+              transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)',
+            }}>
+            <path d="M0 5H30M30 5L25.5 1M30 5L25.5 9"
+              stroke={C.text} strokeWidth="0.85" strokeLinecap="square" />
           </motion.svg>
         )}
       </AnimatePresence>
@@ -96,12 +116,13 @@ function TabSwitch({ mode, onChange, labels }) {
         const active = mode === tab.id
         return (
           <button key={tab.id} onClick={() => onChange(tab.id)}
-            onMouseEnter={() => setHovered(tab.id)} onMouseLeave={() => setHovered(null)}
+            onMouseEnter={() => setHovered(tab.id)}
+            onMouseLeave={() => setHovered(null)}
             style={{
               background: 'none', border: 'none', cursor: 'pointer', fontFamily: FONT,
               fontSize: '0.62rem', letterSpacing: '0.36em', textTransform: 'uppercase',
               fontWeight: active ? 500 : 300,
-              color: active ? '#ffffff' : (hovered === tab.id ? '#ffffff' : '#444'),
+              color: active ? C.text : (hovered === tab.id ? C.text : C.soft),
               padding: 0, transition: 'color 0.35s',
             }}>
             {tab.label}
@@ -115,7 +136,10 @@ function TabSwitch({ mode, onChange, labels }) {
 function B2CForm({ onSuccess, isMobile, t, isAR }) {
   const [fields, setFields] = useState({ prenom: '', nom: '', email: '' })
   const [status, setStatus] = useState('idle')
-  const set = key => e => { setFields(f => ({ ...f, [key]: e.target.value })); if (status === 'error') setStatus('idle') }
+  const set = key => e => {
+    setFields(f => ({ ...f, [key]: e.target.value }))
+    if (status === 'error') setStatus('idle')
+  }
   const handleSubmit = async e => {
     e.preventDefault()
     if (status === 'loading' || status === 'success') return
@@ -127,15 +151,16 @@ function B2CForm({ onSuccess, isMobile, t, isAR }) {
     setStatus('success'); onSuccess()
   }
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
-      <Field label={t.b2c.prenom} value={fields.prenom} onChange={set('prenom')} autoComplete="given-name"  isAR={isAR} />
-      <Field label={t.b2c.nom}    value={fields.nom}    onChange={set('nom')}    autoComplete="family-name" isAR={isAR} />
+    <form onSubmit={handleSubmit}
+      style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
+      <Field label={t.b2c.prenom} value={fields.prenom} onChange={set('prenom')} autoComplete="given-name"     isAR={isAR} />
+      <Field label={t.b2c.nom}    value={fields.nom}    onChange={set('nom')}    autoComplete="family-name"    isAR={isAR} />
       <Field label={t.b2c.email}  value={fields.email}  onChange={set('email')}  autoComplete="email" type="email" isAR={isAR} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: isMobile ? '1.2rem' : '0.6rem' }}>
         <AnimatePresence>
           {status === 'error' && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: '#706f6f', textTransform: isAR ? 'none' : 'uppercase' }}>
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: C.soft, textTransform: isAR ? 'none' : 'uppercase' }}>
               {t.error}
             </motion.span>
           )}
@@ -151,7 +176,10 @@ function B2CForm({ onSuccess, isMobile, t, isAR }) {
 function B2BForm({ onSuccess, isMobile, t, isAR }) {
   const [fields, setFields] = useState({ email: '', societe: '', fonction: '' })
   const [status, setStatus] = useState('idle')
-  const set = key => e => { setFields(f => ({ ...f, [key]: e.target.value })); if (status === 'error') setStatus('idle') }
+  const set = key => e => {
+    setFields(f => ({ ...f, [key]: e.target.value }))
+    if (status === 'error') setStatus('idle')
+  }
   const handleSubmit = async e => {
     e.preventDefault()
     if (status === 'loading' || status === 'success') return
@@ -163,15 +191,16 @@ function B2BForm({ onSuccess, isMobile, t, isAR }) {
     setStatus('success'); onSuccess()
   }
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
-      <Field label={t.b2b.email}   value={fields.email}   onChange={set('email')}   autoComplete="email" type="email" isAR={isAR} />
-      <Field label={t.b2b.societe} value={fields.societe} onChange={set('societe')} autoComplete="organization"       isAR={isAR} />
-      <Field label={t.b2b.fonction} value={fields.fonction} onChange={set('fonction')} autoComplete="organization-title" isAR={isAR} />
+    <form onSubmit={handleSubmit}
+      style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
+      <Field label={t.b2b.email}    value={fields.email}    onChange={set('email')}    autoComplete="email" type="email"      isAR={isAR} />
+      <Field label={t.b2b.societe}  value={fields.societe}  onChange={set('societe')}  autoComplete="organization"            isAR={isAR} />
+      <Field label={t.b2b.fonction} value={fields.fonction} onChange={set('fonction')} autoComplete="organization-title"      isAR={isAR} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: isMobile ? '1.2rem' : '0.6rem' }}>
         <AnimatePresence>
           {status === 'error' && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: '#706f6f', textTransform: isAR ? 'none' : 'uppercase' }}>
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: C.soft, textTransform: isAR ? 'none' : 'uppercase' }}>
               {t.error}
             </motion.span>
           )}
@@ -186,12 +215,12 @@ function B2BForm({ onSuccess, isMobile, t, isAR }) {
 
 export default function LeadCaptureSection() {
   const { lang } = useLanguage()
-  const t = T[lang].teasing.lead
-  const isAR = lang === 'AR'
-  const [mode, setMode] = useState('b2c')
+  const t        = T[lang].teasing.lead
+  const isAR     = lang === 'AR'
+  const [mode, setMode]       = useState('b2c')
   const [success, setSuccess] = useState(false)
   const [cardRef, cardInView] = useInView(0.15)
-  const isMobile = useIsMobile()
+  const isMobile              = useIsMobile()
 
   const handleModeChange = (m) => { setMode(m); setSuccess(false) }
 
@@ -200,7 +229,7 @@ export default function LeadCaptureSection() {
       minHeight: '100vh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       padding: isMobile ? '5rem 2rem 4rem' : 'clamp(5rem, 10vh, 8rem) clamp(1.25rem, 5vw, 3rem)',
-      backgroundColor: '#000', position: 'relative',
+      backgroundColor: C.bg, position: 'relative',
       direction: isAR ? 'rtl' : 'ltr',
     }}>
       <motion.div ref={cardRef}
@@ -213,19 +242,40 @@ export default function LeadCaptureSection() {
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(1.4rem, 3.5vh, 2.2rem)' }}>
-          <p style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.44em', color: '#3c3c3b', textTransform: isAR ? 'none' : 'uppercase', margin: 0 }}>
+
+          {/* Section eyebrow */}
+          <p style={{
+            fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.44em',
+            color: C.soft, textTransform: isAR ? 'none' : 'uppercase', margin: 0,
+          }}>
             {t.label}
           </p>
-          <p style={{ fontFamily: FONT, fontSize: 'clamp(0.7rem, 1.2vw, 0.84rem)', letterSpacing: isAR ? '0.02em' : '0.06em', color: '#706f6f', lineHeight: 1.7, margin: 0, direction: isAR ? 'rtl' : 'ltr' }}>
+
+          {/* Intro */}
+          <p style={{
+            fontFamily: FONT, fontSize: 'clamp(0.7rem, 1.2vw, 0.84rem)',
+            letterSpacing: isAR ? '0.02em' : '0.06em',
+            color: C.mid, lineHeight: 1.7, margin: 0,
+            direction: isAR ? 'rtl' : 'ltr',
+          }}>
             {t.intro}
           </p>
+
           <div><TabSwitch mode={mode} onChange={handleModeChange} labels={t.tabs} /></div>
+
+          {/* Thin separator */}
+          <div style={{ width: '100%', height: 1, backgroundColor: C.accent }} />
+
           <AnimatePresence mode="wait">
             {success ? (
               <motion.p key="success"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                style={{ fontFamily: FONT, fontSize: '0.72rem', letterSpacing: '0.38em', color: '#c6c6c6', textTransform: isAR ? 'none' : 'uppercase', textAlign: 'center', padding: '1.4rem 0', margin: 0 }}>
+                style={{
+                  fontFamily: FONT, fontSize: '0.72rem', letterSpacing: '0.38em',
+                  color: C.text, textTransform: isAR ? 'none' : 'uppercase',
+                  textAlign: 'center', padding: '1.4rem 0', margin: 0,
+                }}>
                 {t.success}
               </motion.p>
             ) : (
@@ -239,17 +289,26 @@ export default function LeadCaptureSection() {
               </motion.div>
             )}
           </AnimatePresence>
-          <p style={{ fontFamily: FONT, fontSize: '0.5rem', letterSpacing: '0.22em', color: '#3c3c3b', textTransform: isAR ? 'none' : 'uppercase', margin: 0 }}>
+
+          {/* Discretion note */}
+          <p style={{
+            fontFamily: FONT, fontSize: '0.5rem', letterSpacing: '0.22em',
+            color: C.soft, textTransform: isAR ? 'none' : 'uppercase', margin: 0,
+          }}>
             {t.discretion}
           </p>
         </div>
       </motion.div>
 
+      {/* Footer */}
       <motion.footer
         initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.5 }} transition={{ delay: 0.6, duration: 1.6 }}
         style={{ position: 'absolute', bottom: '2rem', left: 0, right: 0, padding: '0 2rem', textAlign: 'center' }}>
-        <p style={{ fontFamily: FONT, fontSize: 'clamp(0.48rem, 1vw, 0.58rem)', letterSpacing: '0.34em', color: '#3c3c3b', textTransform: isAR ? 'none' : 'uppercase', margin: 0 }}>
+        <p style={{
+          fontFamily: FONT, fontSize: 'clamp(0.48rem, 1vw, 0.58rem)', letterSpacing: '0.34em',
+          color: C.soft, textTransform: isAR ? 'none' : 'uppercase', margin: 0,
+        }}>
           {t.footer}
         </p>
       </motion.footer>

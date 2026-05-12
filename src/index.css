@@ -99,7 +99,7 @@ input::placeholder {
 }
 
 .prym-field::placeholder {
-  color: #666;
+  color: #A09A90;   /* warm stone-400 — legible on #F8F7F4 light bg */
   letter-spacing: 0.18em;
   font-weight: 300;
 }
