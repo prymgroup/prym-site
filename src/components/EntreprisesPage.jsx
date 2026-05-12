@@ -7,17 +7,17 @@ import RevealOnScroll from './RevealOnScroll'
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const C = {
-  bg:      '#FDFBF7',
-  silver:  '#6B6867',
-  silver2: '#9E9890',
-  silver3: '#B0AA9F',
-  white:   '#1A1A1A',
+  bg:      'var(--c-bg)',
+  silver:  'var(--c-silver)',
+  silver2: 'var(--c-silver2)',
+  silver3: 'var(--c-silver3)',
+  white:   'var(--c-text)',
 }
 
 const IS = {
   width: '100%', background: 'transparent',
-  border: 'none', borderBottom: '1px solid #C8C2B8', borderRadius: 0,
-  padding: '12px 0', color: C.white,
+  border: 'none', borderBottom: '1px solid var(--c-silver3)', borderRadius: 0,
+  padding: '12px 0', color: 'var(--c-text)',
   fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.08em',
   outline: 'none', transition: 'border-bottom-color 0.25s', boxSizing: 'border-box',
   appearance: 'none', WebkitAppearance: 'none',
@@ -25,7 +25,7 @@ const IS = {
 
 const LS = {
   fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em',
-  textTransform: 'uppercase', color: C.silver3,
+  textTransform: 'uppercase', color: 'var(--c-silver3)',
   marginBottom: 8, display: 'block',
 }
 
@@ -114,20 +114,20 @@ function ContactForm({ isMobile }) {
     }
   }
 
-  const focusStyle = k => ({ ...IS, borderBottomColor: focus === k ? C.silver2 : '#C8C2B8' })
+  const focusStyle = k => ({ ...IS, borderBottomColor: focus === k ? 'var(--c-silver2)' : 'var(--c-silver3)' })
 
   if (status === 'sent') {
     return (
       <motion.div initial={{ opacity:0, y:16 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.6 }}
         style={{ padding:'60px 0' }}>
-        <div style={{ width:48, height:1, background:C.silver, marginBottom:32 }} />
-        <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3, marginBottom:16 }}>
+        <div style={{ width:48, height:1, background:'var(--c-silver)', marginBottom:32 }} />
+        <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:'var(--c-silver3)', marginBottom:16 }}>
           Demande reçue
         </p>
-        <h3 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(16px,1.8vw,24px)', letterSpacing:'0.14em', textTransform:'uppercase', color:C.white, marginBottom:16 }}>
+        <h3 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(16px,1.8vw,24px)', letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--c-text)', marginBottom:16 }}>
           Nous vous contactons sous 24h.
         </h3>
-        <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:13, color:C.silver2, lineHeight:1.8 }}>
+        <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:13, color:'var(--c-silver2)', lineHeight:1.8 }}>
           Un conseiller PRYM analysera votre demande et reviendra vers vous pour construire une offre sur mesure.
         </p>
       </motion.div>
@@ -175,16 +175,16 @@ function ContactForm({ isMobile }) {
       {/* Volume */}
       <div style={{ position:'relative' }}>
         <label style={LS}>Volume estimé *</label>
-        <select style={{ ...focusStyle('volume'), cursor:'pointer', colorScheme:'light', paddingRight:24 }}
+        <select style={{ ...focusStyle('volume'), cursor:'pointer', colorScheme:'light dark', paddingRight:24 }}
           value={form.volume} onChange={set('volume')}
           onFocus={()=>setFocus('volume')} onBlur={()=>setFocus(null)}>
           {VOLUMES.map(v => (
-            <option key={v} value={v} style={{ background:'#FDFBF7' }}>
+            <option key={v} value={v} style={{ background:'var(--c-bg)' }}>
               {v || 'Sélectionner un volume'}
             </option>
           ))}
         </select>
-        <span style={{ position:'absolute', right:0, bottom:14, fontSize:9, color:C.silver3, pointerEvents:'none' }}>▾</span>
+        <span style={{ position:'absolute', right:0, bottom:14, fontSize:9, color:'var(--c-silver3)', pointerEvents:'none' }}>▾</span>
       </div>
 
       {/* Besoins */}
@@ -199,7 +199,7 @@ function ContactForm({ isMobile }) {
                   fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.22em', textTransform: 'uppercase',
                   padding: '4px 0', cursor: 'pointer', transition: 'color 0.2s',
                   background: 'none', border: 'none',
-                  color: active ? C.white : C.silver3,
+                  color: active ? 'var(--c-text)' : 'var(--c-silver3)',
                   fontWeight: active ? 500 : 300,
                 }}>
                 {b}
@@ -222,8 +222,8 @@ function ContactForm({ isMobile }) {
       <label style={{ display:'flex', gap:12, alignItems:'flex-start', cursor:'pointer' }}>
         <input type="checkbox" checked={form.consent}
           onChange={e=>setForm(f=>({...f,consent:e.target.checked}))}
-          style={{ marginTop:3, accentColor:'#444', width:14, height:14, flexShrink:0, cursor:'pointer' }} />
-        <span style={{ fontSize:11, color:C.silver3, lineHeight:1.7, fontFamily:FONT_SE, fontStyle:'italic' }}>
+          style={{ marginTop:3, accentColor:'var(--c-silver)', width:14, height:14, flexShrink:0, cursor:'pointer' }} />
+        <span style={{ fontSize:11, color:'var(--c-silver3)', lineHeight:1.7, fontFamily:FONT_SE, fontStyle:'italic' }}>
           J'accepte d'être contacté par un conseiller PRYM pour étudier ma demande. Les informations partagées restent strictement confidentielles.
         </span>
       </label>
@@ -232,13 +232,13 @@ function ContactForm({ isMobile }) {
       <button onClick={submit} disabled={!valid || status === 'sending'}
         style={{
           padding:'16px', cursor: valid ? 'pointer' : 'not-allowed',
-          background: valid ? C.silver : 'transparent',
-          border: `1px solid ${valid ? C.silver : C.silver3+'44'}`,
+          background: valid ? 'var(--c-silver)' : 'transparent',
+          border: valid ? '1px solid var(--c-silver)' : '1px solid var(--c-border-faint)',
           fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.35em', textTransform:'uppercase',
-          color: valid ? C.bg : C.silver3, transition:'all 0.3s', marginTop:8,
+          color: valid ? 'var(--c-bg)' : 'var(--c-silver3)', transition:'all 0.3s', marginTop:8,
         }}
-        onMouseEnter={e=>{ if(valid) e.currentTarget.style.background = C.white }}
-        onMouseLeave={e=>{ if(valid) e.currentTarget.style.background = C.silver }}>
+        onMouseEnter={e=>{ if(valid) e.currentTarget.style.background = 'var(--c-text)' }}
+        onMouseLeave={e=>{ if(valid) e.currentTarget.style.background = 'var(--c-silver)' }}>
         {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
       </button>
 
@@ -275,14 +275,14 @@ export default function EntreprisesPage() {
     : 'clamp(120px,14vw,180px) clamp(24px,6vw,80px)'
 
   return (
-    <div style={{ background:C.bg, minHeight:'100vh', color:C.white }}>
+    <div style={{ background: 'var(--c-bg)', minHeight: '100vh', color: 'var(--c-text)' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
       {/* Hero */}
       <section style={{
         padding: 'clamp(140px,18vw,200px) clamp(24px,6vw,80px) clamp(60px,8vw,100px)',
-        background: `radial-gradient(ellipse at 50% 80%, #EDE9E3 0%, ${C.bg} 65%)`,
-        borderBottom: `1px solid ${C.silver3}50`,
+        background: 'var(--c-hero-bg)',
+        borderBottom: '1px solid var(--c-border)',
       }}>
         <motion.p initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:0.2,duration:0.8}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.45em',textTransform:'uppercase',color:C.silver3,marginBottom:20}}>
@@ -338,7 +338,7 @@ export default function EntreprisesPage() {
           height: 'max(400px, 50vh)',
           marginTop:    'clamp(80px,12vw,140px)',
           marginBottom: 'clamp(80px,12vw,140px)',
-          background: '#EAE6DE',
+          background: 'var(--c-split-img)',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',
@@ -348,12 +348,12 @@ export default function EntreprisesPage() {
         {/* Depth gradient */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at 40% 55%, #DDD9D2 0%, #E8E4DC 70%)',
+          background: 'var(--c-panel-grad)',
         }} />
         {/* Subtle vertical line texture */}
         <div style={{
           position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'repeating-linear-gradient(90deg, transparent, transparent 119px, rgba(176,170,159,0.1) 120px)',
+          background: 'var(--c-grid-line)',
         }} />
         {/* Dev caption — centered */}
         <span style={{
@@ -375,7 +375,7 @@ export default function EntreprisesPage() {
       </motion.div>
 
       {/* Qui nous fait confiance */}
-      <section style={{ padding: SP, borderBottom: `1px solid ${C.silver3}50` }}>
+      <section style={{ padding: SP, borderBottom: '1px solid var(--c-border)' }}>
         <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 40 : 64}}>
           Ils font confiance à PRYM
@@ -420,7 +420,7 @@ export default function EntreprisesPage() {
             style={{fontFamily:FONT_EU,fontWeight:300,fontSize:'clamp(22px,3.5vw,36px)',letterSpacing:'0.08em',textTransform:'uppercase',color:C.white,marginBottom:24,lineHeight:1.15}}>
             Parlons de votre mobilité.
           </motion.h2>
-          <div style={{width:48,height:1,background:`linear-gradient(90deg,${C.silver3},transparent)`,marginBottom:24}} />
+          <div style={{width:48,height:1,background:'linear-gradient(90deg, var(--c-silver3), transparent)',marginBottom:24}} />
           <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7,delay:0.2}}
             style={{fontFamily:FONT_SE,fontStyle:'italic',fontSize:13,color:C.silver2,lineHeight:1.9,marginBottom:32}}>
             Remplissez ce formulaire et un conseiller PRYM vous contactera sous 24 heures pour construire ensemble une offre adaptée à vos besoins.
@@ -448,7 +448,7 @@ export default function EntreprisesPage() {
 
       {/* Footer note */}
       <RevealOnScroll delay={0.1}>
-        <div style={{ borderTop:`1px solid ${C.silver3}50`, padding:'32px clamp(24px,6vw,80px)' }}>
+        <div style={{ borderTop: '1px solid var(--c-border)', padding:'32px clamp(24px,6vw,80px)' }}>
           <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3 }}>
             Driven by Excellence — prym.ma
           </p>

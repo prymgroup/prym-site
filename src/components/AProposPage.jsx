@@ -9,12 +9,12 @@ import { T } from '../i18n/translations'
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const C = {
-  bg:      '#FDFBF7',
-  silver:  '#6B6867',
-  silver2: '#9E9890',
-  silver3: '#B0AA9F',
-  pearl:   '#6B6867',
-  white:   '#1A1A1A',
+  bg:      'var(--c-bg)',
+  silver:  'var(--c-silver)',
+  silver2: 'var(--c-silver2)',
+  silver3: 'var(--c-silver3)',
+  pearl:   'var(--c-silver)',
+  white:   'var(--c-text)',
 }
 
 const GUTTER = 'clamp(40px,7vw,120px)'
@@ -43,7 +43,7 @@ export default function AProposPage() {
   }, [])
 
   return (
-    <div style={{ background: C.bg, minHeight: '100vh', color: C.white, direction: isAR ? 'rtl' : 'ltr' }}>
+    <div style={{ background: 'var(--c-bg)', minHeight: '100vh', color: 'var(--c-text)', direction: isAR ? 'rtl' : 'ltr' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
@@ -51,8 +51,8 @@ export default function AProposPage() {
         minHeight: '100vh', display: 'flex', flexDirection: 'column',
         justifyContent: 'flex-end',
         padding: `clamp(120px,16vw,200px) ${GUTTER} clamp(80px,10vw,140px)`,
-        background: `radial-gradient(ellipse at 30% 60%, #EDE9E3 0%, ${C.bg} 65%)`,
-        borderBottom: `1px solid ${C.silver3}50`,
+        background: 'var(--c-hero-bg)',
+        borderBottom: '1px solid var(--c-border)',
         position: 'relative',
       }}>
         <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}
@@ -67,7 +67,7 @@ export default function AProposPage() {
         </motion.h1>
 
         <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.9, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          style={{ width: 80, height: 1, background: `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver},transparent)`, marginBottom: 36, position: 'relative', zIndex: 1, transformOrigin: isAR ? 'right' : 'left' }} />
+          style={{ width: 80, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver), transparent)' : 'linear-gradient(90deg, var(--c-silver), transparent)', marginBottom: 36, position: 'relative', zIndex: 1, transformOrigin: isAR ? 'right' : 'left' }} />
 
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.8 }}
           style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px,1.6vw,18px)', color: C.pearl, lineHeight: 1.85, maxWidth: 580, position: 'relative', zIndex: 1 }}>
@@ -76,7 +76,7 @@ export default function AProposPage() {
       </section>
 
       {/* ── L'origine ────────────────────────────────────────────────────── */}
-      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}50` }}>
+      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: '1px solid var(--c-border)' }}>
         <div style={{
           display: isMobile ? 'flex' : 'grid',
           flexDirection: 'column',
@@ -92,7 +92,7 @@ export default function AProposPage() {
             <h2 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(22px,3vw,36px)', letterSpacing: isAR ? '0.02em' : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 28, lineHeight: 1.2 }}>
               {ta.origin.title.split('\n').map((l, i, a) => <span key={i}>{l}{i < a.length - 1 && <br />}</span>)}
             </h2>
-            <div style={{ width: 40, height: 1, background: `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver3},transparent)` }} />
+            <div style={{ width: 40, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver3), transparent)' : 'linear-gradient(90deg, var(--c-silver3), transparent)' }} />
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.15 }}
@@ -107,7 +107,7 @@ export default function AProposPage() {
       </section>
 
       {/* ── Notre Philosophie ───────────────────────────────────────────── */}
-      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}50` }}>
+      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: '1px solid var(--c-border)' }}>
         <div style={{
           display: isMobile ? 'flex' : 'grid',
           flexDirection: 'column',
@@ -120,7 +120,7 @@ export default function AProposPage() {
             <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.5em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 24 }}>
               Notre Philosophie
             </p>
-            <div style={{ width: 40, height: 1, background: `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver3},transparent)` }} />
+            <div style={{ width: 40, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver3), transparent)' : 'linear-gradient(90deg, var(--c-silver3), transparent)' }} />
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.15 }}
@@ -133,7 +133,7 @@ export default function AProposPage() {
       </section>
 
       {/* ── Positionnement ──────────────────────────────────────────────── */}
-      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: `1px solid ${C.silver3}50` }}>
+      <section style={{ padding: `${SEC_V} ${GUTTER}`, borderBottom: '1px solid var(--c-border)' }}>
         <div style={{
           display: isMobile ? 'flex' : 'grid',
           flexDirection: 'column',
@@ -152,7 +152,7 @@ export default function AProposPage() {
               <br />
               <span style={{ color: C.silver }}>{ta.positioning.h2b}</span>
             </h2>
-            <div style={{ width: 48, height: 1, background: `linear-gradient(${isAR ? '270deg' : '90deg'},${C.silver3},transparent)`, marginTop: 36 }} />
+            <div style={{ width: 48, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver3), transparent)' : 'linear-gradient(90deg, var(--c-silver3), transparent)', marginTop: 36 }} />
           </motion.div>
 
           <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.15 }}
@@ -170,7 +170,7 @@ export default function AProposPage() {
       {/* ── Closing manifeste ────────────────────────────────────────────── */}
       <section style={{
         padding: `clamp(120px,14vw,200px) ${GUTTER}`,
-        background: `radial-gradient(ellipse at 50% 0%, #EDE9E3 0%, ${C.bg} 60%)`,
+        background: 'var(--c-closing-bg)',
       }}>
         <motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }}
           style={{
@@ -190,8 +190,8 @@ export default function AProposPage() {
               fontFamily: FONT_SE,
               fontSize: 'clamp(20px,3vw,32px)',
               color: C.silver, lineHeight: 1.65,
-              borderLeft: isAR ? 'none' : `1px solid ${C.silver3}`,
-              borderRight: isAR ? `1px solid ${C.silver3}` : 'none',
+              borderLeft: isAR ? 'none' : '1px solid var(--c-silver3)',
+              borderRight: isAR ? '1px solid var(--c-silver3)' : 'none',
               paddingLeft: isAR ? 0 : 'clamp(24px,3vw,48px)',
               paddingRight: isAR ? 'clamp(24px,3vw,48px)' : 0,
               marginBottom: 56,
@@ -199,14 +199,14 @@ export default function AProposPage() {
               {ta.closing.quote.split('\n').map((l, i, a) => <span key={i}>{l}{i < a.length - 1 && <br />}</span>)}
             </blockquote>
             <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: isAR ? 'flex-end' : 'flex-start' }}>
-              <a href="/experience" style={{ display: 'inline-block', fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.bg, background: C.silver, padding: '16px 40px', textDecoration: 'none', transition: 'all 0.3s' }}
-                onMouseEnter={e => e.currentTarget.style.background = C.white}
-                onMouseLeave={e => e.currentTarget.style.background = C.silver}>
+              <a href="/experience" style={{ display: 'inline-block', fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-bg)', background: 'var(--c-silver)', padding: '16px 40px', textDecoration: 'none', transition: 'all 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-text)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-silver)' }}>
                 {ta.closing.ctaExp}
               </a>
-              <a href="/reserver" style={{ display: 'inline-block', fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver, border: `1px solid ${C.silver3}`, padding: '16px 40px', textDecoration: 'none', transition: 'all 0.3s' }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = C.silver; e.currentTarget.style.color = C.white }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = C.silver3; e.currentTarget.style.color = C.silver }}>
+              <a href="/reserver" style={{ display: 'inline-block', fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver)', border: '1px solid var(--c-silver3)', padding: '16px 40px', textDecoration: 'none', transition: 'all 0.3s' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.color = 'var(--c-text)' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)'; e.currentTarget.style.color = 'var(--c-silver)' }}>
                 {ta.closing.ctaBook}
               </a>
             </div>
@@ -216,7 +216,7 @@ export default function AProposPage() {
       </section>
 
       <RevealOnScroll delay={0.1}>
-        <div style={{ borderTop: `1px solid ${C.silver3}50`, padding: `28px ${GUTTER}`, background: C.bg }}>
+        <div style={{ borderTop: '1px solid var(--c-border)', padding: `28px ${GUTTER}`, background: 'var(--c-bg)' }}>
           <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
             {ta.footer}
           </p>
