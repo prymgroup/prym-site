@@ -85,11 +85,11 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
           </svg>
         </button>
 
-        {/* Wordmark — centred */}
-        <a href="/" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', textDecoration: 'none' }}>
-          <span style={{ fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.text, fontWeight: 300 }}>
-            PRYM
-          </span>
+        {/* Logo — centred */}
+        <a href="/" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', textDecoration: 'none', lineHeight: 0 }}>
+          <img src="/logos/silver-logo-full.svg" alt="PRYM" style={{ height: 32 }}
+            onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }} />
+          <span style={{ display: 'none', fontFamily: FONT_EU, fontSize: 12, letterSpacing: '0.35em', textTransform: 'uppercase', color: C.text, fontWeight: 300 }}>PRYM</span>
         </a>
 
         <a href={ctaHref}

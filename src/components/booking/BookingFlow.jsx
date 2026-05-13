@@ -35,7 +35,7 @@ function DesktopNav({ step, cancelLabel, navLinks }) {
       transition: 'background 0.3s ease',
     }}>
       <a href="/" style={{ textDecoration: 'none' }}>
-        <img src="/logos/logo-slogan-white.svg" alt="PRYM" style={{ height: 40, opacity: 0.9 }}
+        <img src="/logos/silver-logo-full.svg" alt="PRYM" style={{ height: 40 }}
           onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }} />
         <span style={{ display:'none', fontFamily:FONT_EU, fontSize:13, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-text)', fontWeight:300 }}>PRYM</span>
       </a>
