@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '../../../context/LanguageContext'
 import { T } from '../../../i18n/translations'
 
+const FONT_EU = FONT_EU
+
 const IS = {
   width: '100%',
   background: 'var(--c-pill-bg)',
@@ -10,7 +12,7 @@ const IS = {
   borderRadius: 0,
   padding: '14px 16px',
   color: 'var(--c-text)',
-  fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+  fontFamily: FONT_EU,
   fontSize: 12,
   letterSpacing: '0.08em',
   outline: 'none',
@@ -20,7 +22,7 @@ const IS = {
 
 function LS({ isAR }) {
   return {
-    fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+    fontFamily: FONT_EU,
     fontSize: 9,
     letterSpacing: isAR ? '0.02em' : '0.3em',
     textTransform: isAR ? 'none' : 'uppercase',
@@ -32,7 +34,7 @@ function LS({ isAR }) {
 
 function eyebrow(n, isAR) {
   return (
-    <p style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', marginBottom: 8 }}>
+    <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', marginBottom: 8 }}>
       {n}
     </p>
   )
@@ -40,7 +42,7 @@ function eyebrow(n, isAR) {
 
 function h2el(t, isAR) {
   return (
-    <h2 style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 20, letterSpacing: isAR ? '0.02em' : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-text)', fontWeight: 300, marginBottom: 32 }}>
+    <h2 style={{ fontFamily: FONT_EU, fontSize: 20, letterSpacing: isAR ? '0.02em' : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-text)', fontWeight: 300, marginBottom: 32 }}>
       {t}
     </h2>
   )
@@ -50,7 +52,7 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
   return (
     <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
       <button onClick={onBack} style={{ ...IS, width: 'auto', padding: '14px 24px', cursor: 'pointer', color: 'var(--c-silver2)' }}>{backLabel}</button>
-      <button onClick={onNext} disabled={!valid} style={{ flex: 1, padding: 14, cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s' }}>{nextLabel}</button>
+      <button onClick={onNext} disabled={!valid} style={{ flex: 1, padding: 14, cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s' }}>{nextLabel}</button>
     </div>
   )
 }

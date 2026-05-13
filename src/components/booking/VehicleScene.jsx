@@ -1,5 +1,7 @@
 import { Suspense, useRef, useEffect, useState, useCallback, Component } from 'react'
 import { useIsMobile } from '../../hooks/useIsMobile'
+
+const FONT_EU = FONT_EU
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
 import * as THREE from 'three'
@@ -59,7 +61,7 @@ function Placeholder() {
 function Loader() {
   return (
     <Html center>
-      <div style={{ color: 'var(--c-loader)', fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: '10px', letterSpacing: '0.2em' }}>
+      <div style={{ color: 'var(--c-loader)', fontFamily: FONT_EU, fontSize: '10px', letterSpacing: '0.2em' }}>
         CHARGEMENT
       </div>
     </Html>
@@ -91,7 +93,7 @@ function SceneInner({ modelPath, isMobile }) {
       {/* Inner boundary: errors inside Canvas don't reach the outer React tree */}
       <ModelErrorBoundary key={modelPath} fallback={
         <Html center>
-          <div style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+          <div style={{ fontFamily: FONT_EU,
             fontSize: 9, letterSpacing: '0.3em', color: 'var(--c-silver3)', textTransform: 'uppercase' }}>
             Visuel Indisponible
           </div>
@@ -141,7 +143,7 @@ export default function VehicleScene({ tier }) {
 
   const errorFallback = (
     <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <span style={{ fontFamily:'"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--c-silver3)' }}>
+      <span style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--c-silver3)' }}>
         Modèle en cours de préparation
       </span>
     </div>
@@ -155,7 +157,7 @@ export default function VehicleScene({ tier }) {
         <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'var(--c-vig-radial)' }} />
         <Suspense fallback={
           <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-            <span style={{ color:'var(--c-loader)', fontFamily:'"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize:'10px', letterSpacing:'0.2em', textTransform:'uppercase' }}>CHARGEMENT</span>
+            <span style={{ color:'var(--c-loader)', fontFamily:FONT_EU, fontSize:'10px', letterSpacing:'0.2em', textTransform:'uppercase' }}>CHARGEMENT</span>
           </div>
         }>
           <Canvas

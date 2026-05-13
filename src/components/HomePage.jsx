@@ -193,7 +193,7 @@ export default function HomePage() {
                 <directionalLight position={[10, 10, 5]} intensity={2} />
                 <directionalLight position={[-6, 8, -4]} intensity={1.0} color="#e8f0ff" />
                 <directionalLight position={[0, -4, 6]} intensity={0.5} color="#fff5e8" />
-                <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
+                <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} color="#4a4a48" />
                 <Environment preset="city" />
                 <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.6} maxPolarAngle={Math.PI / 2} />
                 {/* Inner boundary: errors inside Canvas don't reach the outer one */}

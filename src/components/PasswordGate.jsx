@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+const FONT_EU = FONT_EU
+
 const PASSWORD   = 'tahra'
 const STORAGE_KEY = 'prym_auth'
 
@@ -64,7 +66,7 @@ export default function PasswordGate({ children }) {
         />
         <span style={{
           display: 'none',
-          fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+          fontFamily: FONT_EU,
           fontSize: 13,
           letterSpacing: '0.42em',
           textTransform: 'uppercase',
@@ -103,7 +105,7 @@ export default function PasswordGate({ children }) {
             letterSpacing: '0.35em',
             padding: '10px 0',
             outline: 'none',
-            fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+            fontFamily: FONT_EU,
             transition: 'border-color 0.3s',
             caretColor: 'rgba(198,198,198,0.6)',
           }}
@@ -118,7 +120,7 @@ export default function PasswordGate({ children }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               style={{
-                fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+                fontFamily: FONT_EU,
                 fontSize: 8,
                 letterSpacing: '0.3em',
                 textTransform: 'uppercase',
@@ -139,7 +141,7 @@ export default function PasswordGate({ children }) {
         style={{
           position: 'absolute',
           bottom: 32,
-          fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+          fontFamily: FONT_EU,
           fontSize: 7,
           letterSpacing: '0.38em',
           textTransform: 'uppercase',
