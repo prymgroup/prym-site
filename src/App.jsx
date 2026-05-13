@@ -21,6 +21,7 @@ const FlottePage = lazy(() => import('./components/FlottePage'))
 const ExperiencePage = lazy(() => import('./components/ExperiencePage'))
 const BookingFlow = lazy(() => import('./components/booking/BookingFlow'))
 const HomePage    = lazy(() => import('./components/HomePage'))
+const HomePageV2  = lazy(() => import('./components/HomePageV2'))
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
@@ -158,6 +159,7 @@ export default function App() {
   const isExperience   = path === '/experience'  || path === '/experience/'
   const isBooking      = path === '/reserver'    || path === '/reserver/'
   const isAfterTeasing = path === '/afterteasing'|| path === '/afterteasing/'
+  const isV2           = path === '/v2'          || path === '/v2/'
 
   function renderPage() {
     if (isAPropos)      return <Suspense fallback={<BookingLoader />}><SnapPageShell><AProposPage /></SnapPageShell></Suspense>
@@ -166,6 +168,7 @@ export default function App() {
     if (isExperience)   return <Suspense fallback={<BookingLoader />}><SnapPageShell><ExperiencePage /></SnapPageShell></Suspense>
     if (isBooking)      return <Suspense fallback={<BookingLoader />}><BookingFlow /></Suspense>
     if (isAfterTeasing) return <Suspense fallback={<BookingLoader />}><HomePage /></Suspense>
+    if (isV2)          return <Suspense fallback={<BookingLoader />}><HomePageV2 /></Suspense>
     return <LandingPage />
   }
 
