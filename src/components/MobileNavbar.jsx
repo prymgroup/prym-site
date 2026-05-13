@@ -44,7 +44,7 @@ function LangSwitcher() {
               background: 'none', border: 'none',
               fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.2em',
               color: lang === l ? C.text : 'var(--c-lang-muted)',
-              fontWeight: lang === l ? 500 : 300,
+              fontWeight: lang === l ? 400 : 300,
               padding: '4px 0', transition: 'color 0.2s ease', lineHeight: 1,
               WebkitTapHighlightColor: 'transparent',
             }}

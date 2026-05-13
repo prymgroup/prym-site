@@ -1,18 +1,18 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState } from 'react'
 
 const ThemeCtx = createContext({ isDark: false, toggle: () => {} })
 
 export function ThemeProvider({ children }) {
-  const [isDark, setIsDark] = useState(false)
-
-  // Initialise from localStorage / system preference on mount
-  useEffect(() => {
+  // Lazy initialiser — reads localStorage synchronously before the first render
+  // so the correct class is on <html> before React paints anything, eliminating
+  // the light-mode flash on hard reload for users who prefer dark.
+  const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('prym-theme')
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
     const initial = saved ? saved === 'dark' : prefersDark
-    setIsDark(initial)
     document.documentElement.classList.toggle('dark', initial)
-  }, [])
+    return initial
+  })
 
   const toggle = () => {
     setIsDark(prev => {

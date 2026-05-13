@@ -62,27 +62,27 @@ export default function HomePage() {
 
         {/* eyebrow */}
         <span
-          className="text-xs uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 mb-4 block"
-          style={{ fontFamily: FONT_EU }}
+          className="text-xs uppercase tracking-[0.2em] mb-4 block"
+          style={{ fontFamily: FONT_EU, color: 'var(--c-silver2)' }}
         >
           PRYM Executive Transport — Maroc
         </span>
 
         {/* H2 — primary */}
         <h2
-          className="!text-stone-900 dark:!text-white text-5xl md:text-7xl font-light uppercase tracking-[0.08em]"
-          style={{ fontFamily: FONT_EU, lineHeight: 1.05 }}
+          className="text-5xl md:text-7xl font-light uppercase tracking-[0.08em]"
+          style={{ fontFamily: FONT_EU, lineHeight: 1.05, color: 'var(--c-text)' }}
         >
           LE MOUVEMENT,<br />ÉLEVÉ AU RANG<br />D'ART.
         </h2>
 
         {/* separator */}
-        <div className="w-12 h-px bg-stone-300 dark:bg-stone-700 my-6" />
+        <div className="w-12 h-px my-6" style={{ background: 'var(--c-border)' }} />
 
         {/* subtitle — secondary */}
         <p
-          className="text-stone-500 dark:text-stone-400 max-w-md"
-          style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.2vw,16px)', lineHeight: 1.9 }}
+          className="max-w-md"
+          style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.2vw,16px)', lineHeight: 1.9, color: 'var(--c-silver2)' }}
         >
           Service de chauffeur privé ultra-premium au Maroc.<br />
           Discrétion absolue. Ponctualité chirurgicale.
@@ -91,14 +91,20 @@ export default function HomePage() {
         {/* CTA buttons */}
         <div className="mt-8 relative z-10">
           <button
-            className="inline-flex justify-center items-center px-10 py-4 border border-stone-400 dark:border-stone-600 text-stone-900 dark:text-white uppercase tracking-widest text-sm hover:bg-stone-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+            className="inline-flex justify-center items-center px-10 py-4 uppercase tracking-widest text-sm transition-all"
+            style={{ border: '1px solid var(--c-silver3)', color: 'var(--c-text)', background: 'transparent' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-text)'; e.currentTarget.style.color = 'var(--c-hover-text)'; e.currentTarget.style.borderColor = 'var(--c-text)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--c-text)'; e.currentTarget.style.borderColor = 'var(--c-silver3)' }}
             onClick={() => window.location.href = '/reserver'}
           >
             RÉSERVER
           </button>
           <a
             href="/flotte"
-            className="inline-block ml-6 text-sm uppercase tracking-widest text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white transition-colors"
+            className="inline-block ml-6 text-sm uppercase tracking-widest transition-colors"
+            style={{ color: 'var(--c-silver2)', textDecoration: 'none' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-text)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--c-silver2)' }}
           >
             LA FLOTTE →
           </a>
@@ -109,12 +115,10 @@ export default function HomePage() {
           <motion.div
             animate={{ scaleY: [0, 1, 0] }}
             transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.4 }}
-            className="bg-gray-400 dark:bg-gray-600"
-            style={{ width: 1, height: 40, transformOrigin: 'top' }}
+            style={{ width: 1, height: 40, transformOrigin: 'top', background: 'var(--c-silver3)' }}
           />
           <span
-            className="text-gray-400 dark:text-gray-600 uppercase tracking-widest"
-            style={{ fontFamily: FONT_EU, fontSize: 7 }}
+            style={{ fontFamily: FONT_EU, fontSize: 7, color: 'var(--c-silver3)', textTransform: 'uppercase', letterSpacing: '0.1em' }}
           >
             Scroll
           </span>
@@ -127,29 +131,30 @@ export default function HomePage() {
         {/* text — z-10 so it sits above the car */}
         <div className="relative z-10 max-w-xs md:max-w-sm">
           <span
-            className="text-xs uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 mb-4 block"
-            style={{ fontFamily: FONT_EU }}
+            className="text-xs uppercase tracking-[0.2em] mb-4 block"
+            style={{ fontFamily: FONT_EU, color: 'var(--c-silver2)' }}
           >
             PRYM Signature — Tier III
           </span>
 
           {/* separator above heading */}
-          <div className="w-12 h-px bg-stone-300 dark:bg-stone-700 mb-6" />
+          <div className="w-12 h-px mb-6" style={{ background: 'var(--c-border)' }} />
 
           <h2
-            className="text-stone-900 dark:text-white font-light uppercase tracking-[0.08em]"
+            className="font-light uppercase tracking-[0.08em]"
             style={{
               fontFamily: FONT_EU,
               fontSize: 'clamp(28px,4vw,52px)',
               lineHeight: 1.18,
+              color: 'var(--c-text)',
             }}
           >
             L'objet<br />de désir.
           </h2>
 
           <p
-            className="text-gray-500 dark:text-gray-400 mt-5"
-            style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.1vw,15px)', lineHeight: 1.9 }}
+            className="mt-5"
+            style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.1vw,15px)', lineHeight: 1.9, color: 'var(--c-silver2)' }}
           >
             La Mercedes Classe S. Le summum du raffinement,<br />
             mis à votre service dans chaque déplacement.
@@ -157,15 +162,17 @@ export default function HomePage() {
 
           <a
             href="/flotte"
-            className="mt-8 inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest"
-            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', textDecoration: 'none' }}
+            className="mt-8 inline-flex items-center gap-2 transition-colors uppercase tracking-widest"
+            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', textDecoration: 'none', color: 'var(--c-silver2)' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-text)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--c-silver2)' }}
           >
             Explorer toute la flotte &nbsp;→
           </a>
         </div>
 
         {/* 3D car — Suspense outside Canvas so R3F mount is always valid */}
-        <div className="absolute right-0 md:right-[-5%] top-1/2 -translate-y-1/2 w-full md:w-[60%] h-[500px] z-0 pointer-events-none">
+        <div className="absolute right-0 md:right-[-5%] top-1/2 -translate-y-1/2 w-full md:w-[60%] z-0 pointer-events-none" style={{ height: 'min(500px, 50vh)' }}>
           <Suspense fallback={null}>
             <Canvas
               camera={{ position: [12, 5, 16], fov: 30 }}
@@ -190,15 +197,15 @@ export default function HomePage() {
       <section className="h-screen w-full snap-start flex flex-col justify-center px-8 md:px-24 relative">
 
         {/* rule */}
-        <div className="w-12 h-px bg-gray-300 dark:bg-gray-700 mb-12" />
+        <div className="w-12 h-px mb-12" style={{ background: 'var(--c-border)' }} />
 
         {/* H2 — primary */}
         <h2
-          className="text-gray-900 dark:text-white"
           style={{
             fontFamily: FONT_EU, fontWeight: 300,
             fontSize: 'clamp(22px,3.5vw,44px)',
             letterSpacing: '0.06em', textTransform: 'uppercase', lineHeight: 1.25,
+            color: 'var(--c-text)',
           }}
         >
           Découvrez notre<br />définition du temps.
@@ -207,8 +214,10 @@ export default function HomePage() {
         {/* CTA */}
         <a
           href="/experience"
-          className="mt-12 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors inline-flex items-center uppercase tracking-widest"
-          style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.42em', textDecoration: 'none', gap: 14 }}
+          className="mt-12 transition-colors inline-flex items-center uppercase tracking-widest"
+          style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.42em', textDecoration: 'none', gap: 14, color: 'var(--c-silver2)' }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-text)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--c-silver2)' }}
         >
           L'expérience PRYM
           <motion.span
@@ -222,18 +231,16 @@ export default function HomePage() {
 
         {/* footer — pinned */}
         <div
-          className="absolute left-8 md:left-24 right-8 md:right-24 border-t border-gray-200 dark:border-gray-800 pt-5 flex justify-between flex-wrap gap-2"
-          style={{ bottom: 'clamp(20px,3vh,32px)' }}
+          className="absolute left-8 md:left-24 right-8 md:right-24 pt-5 flex justify-between flex-wrap gap-2"
+          style={{ borderTop: '1px solid var(--c-border)', bottom: 'clamp(20px,3vh,32px)' }}
         >
           <p
-            className="text-gray-500 dark:text-gray-400 m-0 uppercase tracking-widest"
-            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.38em' }}
+            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.38em', color: 'var(--c-silver2)', textTransform: 'uppercase', margin: 0 }}
           >
             PRYM Executive Transport &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Maroc
           </p>
           <p
-            className="text-gray-500 dark:text-gray-400 m-0 uppercase tracking-widest"
-            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em' }}
+            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', color: 'var(--c-silver2)', textTransform: 'uppercase', margin: 0 }}
           >
             prym.ma
           </p>

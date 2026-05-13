@@ -128,9 +128,7 @@ function Scene3D({ modelPath, isMobile }) {
         dpr={isMobile ? [1, 1.5] : [1, 2]}
         gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
         style={{ background: 'transparent' }} camera={{ fov, near: 0.1, far: 100 }}>
-        <Suspense fallback={<Loader3D label="..." />}>
-          <SceneContent modelPath={modelPath} isMobile={isMobile} />
-        </Suspense>
+        <SceneContent modelPath={modelPath} isMobile={isMobile} />
       </Canvas>
     </div>
   )
@@ -252,7 +250,8 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
       <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.4 }}
         style={{ display:'flex', flexDirection:'column', height:'100%' }}>
         <div style={{
-          position:'relative', width:'100%', flex:1,
+          position:'relative', width:'100%',
+          minHeight: 'min(55vh, 340px)',
           background:'var(--c-canvas-grad)',
           overflow:'hidden', flexShrink:0,
         }}>
@@ -307,7 +306,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
 
   return (
     <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}
-      style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden', scrollSnapAlign:'start', scrollSnapStop:'always' }}>
+      style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden' }}>
       <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:'1px solid var(--c-border-faint)', overflowY:'auto', scrollbarWidth:'none' }}>
         <motion.div initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.6, delay:0.1 }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:48 }}>

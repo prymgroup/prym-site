@@ -34,7 +34,7 @@ function LangSwitcher() {
               background: 'none', border: 'none', cursor: 'pointer',
               fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.18em',
               color: lang === l ? 'var(--c-text)' : 'var(--c-lang-muted)',
-              fontWeight: lang === l ? 500 : 300,
+              fontWeight: lang === l ? 400 : 300,
               padding: '2px 0', transition: 'color 0.2s ease', lineHeight: 1,
             }}
             onMouseEnter={e => { if (lang !== l) e.currentTarget.style.color = 'var(--c-silver2)' }}

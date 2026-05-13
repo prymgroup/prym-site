@@ -170,7 +170,7 @@ body {
 
 ::selection {
   background: rgba(176,170,159,0.22);
-  color: #1A1A1A;
+  color: var(--c-text);
 }
 
 ::-webkit-scrollbar {
@@ -194,13 +194,13 @@ html.dark textarea::placeholder {
 html.dark { color-scheme: dark; }
 
 .prym-field::placeholder {
-  color: #B0AA9F;   /* warm taupe — legible on alabaster */
+  color: var(--c-silver3);
   letter-spacing: 0.18em;
   font-weight: 300;
 }
 
 input:-webkit-autofill {
-  -webkit-text-fill-color: #1A1A1A;
+  -webkit-text-fill-color: var(--c-text);
   -webkit-box-shadow: 0 0 0px 1000px transparent inset;
   transition: background-color 5000s ease-in-out 0s;
 }

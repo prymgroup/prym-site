@@ -94,23 +94,23 @@ function BookingLoader() {
       gap: '16px',
     }}>
       <div style={{
-        fontFamily: "'Eurostile', 'Arial Narrow', sans-serif",
+        fontFamily: FONT,
         fontSize: '10px',
         letterSpacing: '0.35em',
         textTransform: 'uppercase',
-        color: 'rgba(26,26,26,0.3)',
+        color: 'var(--c-silver3)',
       }}>
         PRYM
       </div>
       <div style={{
         width: '120px',
         height: '1px',
-        background: 'rgba(26,26,26,0.08)',
+        background: 'var(--c-border-faint)',
         position: 'relative',
         overflow: 'hidden',
       }}>
         <motion.div
-          style={{ position: 'absolute', inset: 0, background: 'rgba(26,26,26,0.25)', transformOrigin: 'left' }}
+          style={{ position: 'absolute', inset: 0, background: 'var(--c-progress-fill)', transformOrigin: 'left' }}
           animate={{ scaleX: [0, 1] }}
           transition={{ duration: 1.5, ease: 'easeInOut', repeat: Infinity }}
         />

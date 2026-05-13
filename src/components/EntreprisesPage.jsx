@@ -247,7 +247,6 @@ export default function EntreprisesPage() {
       {/* ── 2 · Avantages ────────────────────────────────────────────── */}
       <section style={{
         ...SNAP,
-        overflowY: 'auto',
         padding: `clamp(72px,10vh,96px) ${GUTTER} clamp(40px,6vh,64px)`,
         borderTop: '1px solid var(--c-border)',
       }}>
@@ -322,7 +321,6 @@ export default function EntreprisesPage() {
       {/* ── 5 · Form ─────────────────────────────────────────────────── */}
       <section style={{
         ...SNAP,
-        overflowY: 'auto',
         padding: `clamp(72px,10vh,96px) ${GUTTER} clamp(40px,6vh,56px)`,
         borderTop: '1px solid var(--c-border)',
       }}>

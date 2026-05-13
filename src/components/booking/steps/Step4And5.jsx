@@ -10,7 +10,7 @@ const IS = {
   borderRadius: 0,
   padding: '14px 16px',
   color: 'var(--c-text)',
-  fontFamily: '"Eurostile","Arial Narrow",sans-serif',
+  fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
   fontSize: 12,
   letterSpacing: '0.08em',
   outline: 'none',
@@ -20,7 +20,7 @@ const IS = {
 
 function lsStyle(isAR) {
   return {
-    fontFamily: '"Eurostile","Arial Narrow",sans-serif',
+    fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
     fontSize: 9,
     letterSpacing: isAR ? '0.02em' : '0.3em',
     textTransform: isAR ? 'none' : 'uppercase',
@@ -41,8 +41,8 @@ export function Step4Passenger({ data, onChange, onNext, onBack }) {
   return (
     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.4 }}
       style={{ padding: '32px 24px', maxWidth: 480, margin: '0 auto', width: '100%', direction: isAR ? 'rtl' : 'ltr' }}>
-      <p style={{ fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', marginBottom: 8 }}>{tb.eyebrow}</p>
-      <h2 style={{ fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 20, letterSpacing: isAR ? '0.02em' : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-text)', fontWeight: 300, marginBottom: 32 }}>{tb.h2}</h2>
+      <p style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', marginBottom: 8 }}>{tb.eyebrow}</p>
+      <h2 style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 20, letterSpacing: isAR ? '0.02em' : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-text)', fontWeight: 300, marginBottom: 32 }}>{tb.h2}</h2>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
           <label style={lsStyle(isAR)}>{tb.name}</label>
@@ -68,7 +68,7 @@ export function Step4Passenger({ data, onChange, onNext, onBack }) {
             {[['online', tb.payOnline.label, tb.payOnline.sub], ['onsite', tb.payOnsite.label, tb.payOnsite.sub]].map(([v, l, s]) => (
               <button key={v} onClick={() => onChange({ ...data, paymentMethod: v })}
                 style={{ flex: 1, padding: 12, textAlign: isAR ? 'right' : 'left', cursor: 'pointer', background: data.paymentMethod === v ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${data.paymentMethod === v ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, transition: 'all 0.2s' }}>
-                <div style={{ fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.15em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-text)', marginBottom: 3 }}>{l}</div>
+                <div style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.15em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-text)', marginBottom: 3 }}>{l}</div>
                 <div style={{ fontSize: 10, color: 'var(--c-silver3)', fontFamily: '"Nexa","Nexa Light",sans-serif', fontStyle: 'italic' }}>{s}</div>
               </button>
             ))}
@@ -82,7 +82,7 @@ export function Step4Passenger({ data, onChange, onNext, onBack }) {
       <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
         <button onClick={onBack} style={{ ...IS, width: 'auto', padding: '14px 24px', cursor: 'pointer', color: 'var(--c-silver2)' }}>{tb.back}</button>
         <button onClick={onNext} disabled={!valid}
-          style={{ flex: 1, padding: 14, cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s' }}>
+          style={{ flex: 1, padding: 14, cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s' }}>
           {tb.confirm}
         </button>
       </div>
@@ -106,13 +106,13 @@ export function Step5Confirm({ reference, mode, tier, passenger, onReset }) {
             <div style={{ position: 'absolute', top: 0, [h]: 0, width: 1, height: 16, background: 'var(--c-silver)' }} />
           </div>
         ))}
-        <p style={{ fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', marginBottom: 12 }}>{tb.refLabel}</p>
-        <p style={{ fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 22, letterSpacing: '0.15em', color: 'var(--c-text)', marginBottom: 24 }}>{reference}</p>
+        <p style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', marginBottom: 12 }}>{tb.refLabel}</p>
+        <p style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 22, letterSpacing: '0.15em', color: 'var(--c-text)', marginBottom: 24 }}>{reference}</p>
         <div style={{ borderTop: '1px solid var(--c-border-faint)', paddingTop: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {[[tb.service, mode === 'transfer' ? tb.transfer : tb.disposal],[tb.vehicle, tier?.name],[tb.contact, passenger?.name]].map(([k,v]) => (
             <div key={k} style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.2em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)' }}>{k}</span>
-              <span style={{ fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 10, letterSpacing: '0.1em', color: 'var(--c-silver)' }}>{v}</span>
+              <span style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.2em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)' }}>{k}</span>
+              <span style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 10, letterSpacing: '0.1em', color: 'var(--c-silver)' }}>{v}</span>
             </div>
           ))}
         </div>
@@ -122,7 +122,7 @@ export function Step5Confirm({ reference, mode, tier, passenger, onReset }) {
         {tb.body} <span style={{ color: 'var(--c-silver)' }}>{tb.delay}</span> {tb.bodyEnd}
       </motion.p>
       <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} onClick={onReset}
-        style={{ background: 'none', border: '1px solid var(--c-border-faint)', borderRadius: 0, padding: '12px 24px', cursor: 'pointer', fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', transition: 'all 0.3s' }}
+        style={{ background: 'none', border: '1px solid var(--c-border-faint)', borderRadius: 0, padding: '12px 24px', cursor: 'pointer', fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver3)', transition: 'all 0.3s' }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-pill-border)'; e.currentTarget.style.color = 'var(--c-silver)' }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-border-faint)'; e.currentTarget.style.color = 'var(--c-silver3)' }}>
         {tb.newRequest}

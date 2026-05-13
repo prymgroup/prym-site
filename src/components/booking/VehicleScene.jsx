@@ -20,7 +20,7 @@ function VehicleModel({ path }) {
   const clone = scene.clone(true)
 
   useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.12
+    if (ref.current) ref.current.rotation.y += delta * 0.10
   })
 
   useEffect(() => {
@@ -58,7 +58,7 @@ function Placeholder() {
 function Loader() {
   return (
     <Html center>
-      <div style={{ color: 'rgba(200,200,204,0.4)', fontFamily: 'monospace', fontSize: '10px', letterSpacing: '0.2em' }}>
+      <div style={{ color: 'var(--c-loader)', fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize: '10px', letterSpacing: '0.2em' }}>
         CHARGEMENT
       </div>
     </Html>
@@ -136,7 +136,7 @@ export default function VehicleScene({ tier }) {
 
   const errorFallback = (
     <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}>
-      <span style={{ fontFamily:'"Eurostile","Arial Narrow",sans-serif', fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:'rgba(200,200,204,0.25)' }}>
+      <span style={{ fontFamily:'"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--c-silver3)' }}>
         Modèle en cours de préparation
       </span>
     </div>
@@ -147,20 +147,24 @@ export default function VehicleScene({ tier }) {
     // so a previously errored tier does not stay stuck in fallback state.
     <ModelErrorBoundary key={modelPath} fallback={errorFallback}>
       <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'radial-gradient(ellipse at center, transparent 50%, rgba(5,5,7,0.5) 100%)' }} />
-        <Canvas
-          key={key}
-          shadows
-          frameloop={inView ? 'always' : 'demand'}
-          dpr={isMobile ? [1, 1.5] : [1, 2]}
-          gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
-          style={{ background: 'transparent' }}
-          camera={{ fov: isMobile ? 55 : 45, near: 0.1, far: 100 }}
-        >
-          <Suspense fallback={<Loader />}>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', background: 'var(--c-vig-radial)' }} />
+        <Suspense fallback={
+          <div style={{ width:'100%', height:'100%', display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <span style={{ color:'var(--c-loader)', fontFamily:'"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif', fontSize:'10px', letterSpacing:'0.2em', textTransform:'uppercase' }}>CHARGEMENT</span>
+          </div>
+        }>
+          <Canvas
+            key={key}
+            shadows
+            frameloop={inView ? 'always' : 'demand'}
+            dpr={isMobile ? [1, 1.5] : [1, 2]}
+            gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
+            style={{ background: 'transparent' }}
+            camera={{ fov: isMobile ? 55 : 45, near: 0.1, far: 100 }}
+          >
             <SceneInner modelPath={modelPath} isMobile={isMobile} />
-          </Suspense>
-        </Canvas>
+          </Canvas>
+        </Suspense>
       </div>
     </ModelErrorBoundary>
   )
