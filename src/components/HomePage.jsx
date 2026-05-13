@@ -1,6 +1,6 @@
-import { useEffect, useLayoutEffect, useRef, useState, Suspense } from 'react'
+import { useEffect, useRef, useState, Suspense } from 'react'
 import { motion } from 'framer-motion'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Environment, ContactShadows } from '@react-three/drei'
 import * as THREE from 'three'
 import DesktopNav from './DesktopNav'
@@ -24,14 +24,6 @@ function useIsMobile() {
 /* ── 3D model ────────────────────────────────────────────────────────────────── */
 useGLTF.preload(MODEL_PATH)
 
-function SceneCamera({ isMobile }) {
-  const { camera } = useThree()
-  useLayoutEffect(() => {
-    camera.position.set(isMobile ? 4.5 : 3.5, 0.9, isMobile ? 6.5 : 5.5)
-    camera.lookAt(0, 0.6, 0)
-  }, [camera, isMobile])
-  return null
-}
 
 function SignatureModel() {
   const { scene } = useGLTF(MODEL_PATH)
@@ -57,22 +49,21 @@ function SignatureModel() {
   return <group ref={ref}><primitive object={clone} /></group>
 }
 
-function CarCanvas({ isMobile }) {
+function CarCanvas() {
   return (
+    /* Action 3 — fixed camera framing; Action 2 — Environment + boosted lights */
     <Canvas
-      camera={{ fov: isMobile ? 52 : 38, near: 0.1, far: 100 }}
+      camera={{ position: [5, 2, 8], fov: 45 }}
       gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
       className="w-full h-full"
       style={{ background: 'transparent' }}
     >
-      <SceneCamera isMobile={isMobile} />
-      {/* Action 2 — boosted lighting so black-painted GLB reflects on light bg */}
       <ambientLight intensity={1.5} />
       <directionalLight position={[10, 10, 5]}  intensity={2} />
-      <directionalLight position={[-6, 8, -4]} intensity={1.2} color="#e8f0ff" />
-      <directionalLight position={[0, -4, 6]}  intensity={0.6} color="#fff5e8" />
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.25} scale={20} blur={3} far={8} />
-      <Environment preset="studio" />
+      <directionalLight position={[-6, 8, -4]} intensity={1.0} color="#e8f0ff" />
+      <directionalLight position={[0, -4, 6]}  intensity={0.5} color="#fff5e8" />
+      <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
+      <Environment preset="city" />
       <Suspense fallback={null}>
         <SignatureModel />
       </Suspense>
@@ -128,11 +119,11 @@ export default function HomePage() {
           Discrétion absolue. Ponctualité chirurgicale.
         </p>
 
-        {/* Action 3 — flex wrapper eliminates overlap between button and link */}
+        {/* Actions 4 & 5 — exact button + link classes; flex wrapper prevents overlap */}
         <div className="flex flex-wrap items-center gap-6 mt-8">
           <button
-            className="px-8 py-3 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white uppercase tracking-widest text-sm hover:bg-gray-900 hover:text-white transition-colors w-fit"
-            style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.32em', background: 'none', cursor: 'pointer' }}
+            className="px-8 py-4 border border-stone-400 dark:border-stone-600 text-stone-900 dark:text-white text-sm uppercase tracking-[0.2em] hover:bg-stone-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
+            style={{ fontFamily: FONT_EU, background: 'none', cursor: 'pointer' }}
             onClick={() => window.location.href = '/reserver'}
           >
             RÉSERVER
@@ -140,8 +131,8 @@ export default function HomePage() {
 
           <a
             href="/flotte"
-            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest"
-            style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.32em', textDecoration: 'none' }}
+            className="text-sm uppercase tracking-widest text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white transition-colors"
+            style={{ fontFamily: FONT_EU, textDecoration: 'none' }}
           >
             La flotte &nbsp;→
           </a>
@@ -204,9 +195,9 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* Action 1 — explicit h-[400px] md:h-[700px] so Canvas has a real height to render into */}
-        <div className="absolute right-[-20%] md:right-[-10%] top-1/2 -translate-y-1/2 w-[100%] md:w-[60%] h-[400px] md:h-[700px] z-0 pointer-events-none">
-          <CarCanvas isMobile={isMobile} />
+        {/* Action 1 — strict dimensions give Canvas real pixels to render into */}
+        <div className="absolute right-[-20%] md:right-[-10%] top-1/2 -translate-y-1/2 w-[100%] md:w-[65%] h-[500px] md:h-[800px] z-0 pointer-events-none">
+          <CarCanvas />
         </div>
       </section>
 
