@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, Suspense } from 'react'
 import { motion } from 'framer-motion'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { useGLTF, Environment, ContactShadows } from '@react-three/drei'
+import { Canvas } from '@react-three/fiber'
+import { useGLTF, Environment, ContactShadows, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import DesktopNav from './DesktopNav'
 import MobileNavbar from './MobileNavbar'
@@ -25,27 +25,21 @@ function useIsMobile() {
 useGLTF.preload(MODEL_PATH)
 
 
-function SignatureModel({ modelScale = [3, 3, 3], initialRotationY = -Math.PI / 3 }) {
+function SignatureModel() {
   const { scene } = useGLTF(MODEL_PATH)
   const ref   = useRef()
   const clone = scene.clone(true)
 
   useEffect(() => {
     if (!ref.current) return
-    ref.current.scale.set(...modelScale)
     const box    = new THREE.Box3().setFromObject(ref.current)
     const center = box.getCenter(new THREE.Vector3())
     ref.current.position.x = -center.x
     ref.current.position.y = -box.min.y
     ref.current.position.z = -center.z
-    ref.current.rotation.y = initialRotationY
   }, [])
 
-  useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.06
-  })
-
-  return <group ref={ref}><primitive object={clone} /></group>
+  return <group ref={ref} scale={[1, 1, 1]}><primitive object={clone} /></group>
 }
 
 
@@ -95,16 +89,16 @@ export default function HomePage() {
         </p>
 
         {/* CTA buttons */}
-        <div className="flex items-center gap-6 mt-8 relative z-10">
+        <div className="mt-8 relative z-10">
           <button
-            className="!px-8 !py-4 border border-stone-400 dark:border-stone-600 !text-stone-900 dark:!text-white uppercase tracking-widest text-sm hover:!bg-stone-900 hover:!text-white dark:hover:!bg-white dark:hover:!text-black transition-colors"
+            className="inline-flex justify-center items-center px-10 py-4 border border-stone-400 dark:border-stone-600 text-stone-900 dark:text-white uppercase tracking-widest text-sm hover:bg-stone-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
             onClick={() => window.location.href = '/reserver'}
           >
             RÉSERVER
           </button>
           <a
             href="/flotte"
-            className="text-sm uppercase tracking-widest text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white transition-colors"
+            className="inline-block ml-6 text-sm uppercase tracking-widest text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white transition-colors"
           >
             LA FLOTTE →
           </a>
@@ -174,7 +168,7 @@ export default function HomePage() {
         <div className="absolute right-0 md:right-[-5%] top-1/2 -translate-y-1/2 w-full md:w-[60%] h-[500px] z-0 pointer-events-none">
           <Suspense fallback={null}>
             <Canvas
-              camera={{ position: [0, 1.5, 6], fov: 35 }}
+              camera={{ position: [12, 5, 16], fov: 30 }}
               gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
               className="w-full h-full"
               style={{ background: 'transparent' }}
@@ -185,7 +179,8 @@ export default function HomePage() {
               <directionalLight position={[0, -4, 6]} intensity={0.5} color="#fff5e8" />
               <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
               <Environment preset="city" />
-              <SignatureModel modelScale={[4, 4, 4]} initialRotationY={-0.5} />
+              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.6} maxPolarAngle={Math.PI / 2} />
+              <SignatureModel />
             </Canvas>
           </Suspense>
         </div>
