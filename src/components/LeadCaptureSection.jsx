@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
+import { useIsMobile } from '../hooks/useIsMobile'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 
@@ -15,16 +16,6 @@ const C = {
   accent      : 'var(--c-silver3)',
   borderIdle  : 'var(--c-silver3)',
   borderFocus : 'var(--c-text)',
-}
-
-function useIsMobile() {
-  const [m, setM] = useState(() => window.innerWidth < 900)
-  useEffect(() => {
-    const fn = () => setM(window.innerWidth < 900)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-  return m
 }
 
 function Field({ label, type = 'text', value, onChange, autoComplete, isAR }) {
@@ -219,7 +210,7 @@ export default function LeadCaptureSection() {
   const [mode, setMode]       = useState('b2c')
   const [success, setSuccess] = useState(false)
   const [cardRef, cardInView] = useInView(0.15)
-  const isMobile              = useIsMobile()
+  const isMobile              = useIsMobile(900)
 
   const handleModeChange = (m) => { setMode(m); setSuccess(false) }
 

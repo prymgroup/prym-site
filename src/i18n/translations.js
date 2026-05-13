@@ -157,6 +157,10 @@ export const T = {
           { value: 'NDA', label: 'Confidentialité',      sub: 'Garantie contractuelle' },
         ],
       },
+      philosophy: {
+        eyebrow: 'Notre Philosophie',
+        body:    "L'industrie du transport de direction s'était endormie sur ses acquis. PRYM est née d'une volonté radicale : redéfinir le standard. Moins de bruit, plus de justesse. Une approche architecturale du service où chaque détail a été pensé pour disparaître au profit de votre tranquillité.",
+      },
       pillars: {
         eyebrow: 'Nos trois piliers',
         items: [
@@ -422,6 +426,10 @@ export const T = {
           { value: 'NDA', label: 'Confidentiality',    sub: 'Contractual guarantee' },
         ],
       },
+      philosophy: {
+        eyebrow: 'Our Philosophy',
+        body:    "The executive transport industry had fallen asleep on its achievements. PRYM was born of a radical intent: to redefine the standard. Less noise, more precision. An architectural approach to service where every detail was designed to disappear in favour of your peace of mind.",
+      },
       pillars: {
         eyebrow: 'Our three pillars',
         items: [
@@ -686,6 +694,10 @@ export const T = {
           { value: '21°', label: 'درجة الحرارة المعيارية', sub: 'في كل مركبة' },
           { value: 'NDA', label: 'السرية',              sub: 'ضمان تعاقدي' },
         ],
+      },
+      philosophy: {
+        eyebrow: 'فلسفتنا',
+        body:    'كانت صناعة نقل المديرين قد نامت على ما حققته. وُلدت PRYM من إرادة جذرية: إعادة تعريف المعيار. أقل ضجيجاً، أكثر دقةً. مقاربة معمارية للخدمة حيث كل تفصيل صُمِّم ليختفي لصالح راحتك.',
       },
       pillars: {
         eyebrow: 'ركائزنا الثلاث',

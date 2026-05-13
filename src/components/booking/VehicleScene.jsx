@@ -1,4 +1,5 @@
 import { Suspense, useRef, useEffect, useState, useCallback, Component } from 'react'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
 import * as THREE from 'three'
@@ -116,17 +117,11 @@ function SceneInner({ modelPath, isMobile }) {
 
 export default function VehicleScene({ tier }) {
   const [key, setKey] = useState(0)
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  const isMobile = useIsMobile()
   // Pause WebGL rendering when canvas is scrolled out of view — saves GPU on
   // mobile and mid-page booking flows where the canvas is off-screen.
   const [inView, setInView] = useState(true)
   const containerRef = useRef()
-
-  useEffect(() => {
-    const fn = () => setIsMobile(window.innerWidth < 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
 
   useEffect(() => { setKey(k => k + 1) }, [tier?.id])
 

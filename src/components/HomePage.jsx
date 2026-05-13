@@ -5,6 +5,7 @@ import { useGLTF, Html, Environment, ContactShadows, OrbitControls } from '@reac
 import * as THREE from 'three'
 import DesktopNav from './DesktopNav'
 import MobileNavbar from './MobileNavbar'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
@@ -23,18 +24,10 @@ class ModelErrorBoundary extends Component {
   }
 }
 
-/* ── useIsMobile ─────────────────────────────────────────────────────────────── */
-function useIsMobile() {
-  const [m, setM] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const fn = () => setM(window.innerWidth < 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-  return m
-}
-
 /* ── 3D model ────────────────────────────────────────────────────────────────── */
+// Draco decoder CDN — consistent with FlottePage and VehicleScene.
+// Not required for this non-draco model but guards against future model swaps.
+useGLTF.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/')
 useGLTF.preload(MODEL_PATH)
 
 

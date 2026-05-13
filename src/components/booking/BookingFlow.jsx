@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useIsMobile } from '../../hooks/useIsMobile'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FLEET } from '../../data/fleet'
 import VehicleScene from './VehicleScene'
@@ -11,16 +12,6 @@ import { useLanguage } from '../../context/LanguageContext'
 import { T } from '../../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const fn = () => setIsMobile(window.innerWidth < 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-  return isMobile
-}
 
 // ── Navs ─────────────────────────────────────────────────────────────────────
 

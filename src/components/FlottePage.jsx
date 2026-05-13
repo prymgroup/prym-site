@@ -8,6 +8,7 @@ import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 // All values point at CSS custom properties so the component reacts to
@@ -30,15 +31,6 @@ class ModelErrorBoundary extends Component {
     if (this.state.hasError) return this.props.fallback ?? null
     return this.props.children
   }
-}
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const fn = () => setIsMobile(window.innerWidth < 768)
-    window.addEventListener('resize', fn); return () => window.removeEventListener('resize', fn)
-  }, [])
-  return isMobile
 }
 
 // ── 3D Model ──────────────────────────────────────────────────────────────────

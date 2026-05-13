@@ -5,6 +5,7 @@ import DesktopNav from './DesktopNav'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 import RevealOnScroll from './RevealOnScroll'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
@@ -32,15 +33,6 @@ const SNAP = {
 // Top pad clears the fixed navbar
 const SEC_PAD = `clamp(72px,10vh,96px) ${GUTTER} clamp(32px,5vh,48px)`
 
-function useIsMobile() {
-  const [m, setM] = useState(() => window.innerWidth < 900)
-  useEffect(() => {
-    const fn = () => setM(window.innerWidth < 900)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-  return m
-}
 
 /* ── Sub-components ────────────────────────────────────────────────────────── */
 function OlfactifVisual({ notes, credit, isAR }) {
@@ -327,7 +319,7 @@ function Closing({ t, isAR }) {
 
 /* ── Page ──────────────────────────────────────────────────────────────────── */
 export default function ExperiencePage() {
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobile(900)
   const { lang } = useLanguage()
   const te   = T[lang].experience
   const isAR = lang === 'AR'

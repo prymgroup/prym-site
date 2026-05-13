@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react'
+import { useEffect, useState, lazy, Suspense, Component } from 'react'
 import {
   motion,
   useScroll,
@@ -12,6 +12,7 @@ import PromiseSection     from './components/PromiseSection'
 import LeadCaptureSection from './components/LeadCaptureSection'
 import MobileNavbar       from './components/MobileNavbar'
 import DesktopNav         from './components/DesktopNav'
+import { useIsMobile }    from './hooks/useIsMobile'
 
 // Lazy-load the booking flow (don't load 3D deps on the landing page)
 const AProposPage = lazy(() => import('./components/AProposPage'))
@@ -22,6 +23,34 @@ const BookingFlow = lazy(() => import('./components/booking/BookingFlow'))
 const HomePage    = lazy(() => import('./components/HomePage'))
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
+
+// Catches ChunkLoadError and any uncaught render error in the page tree.
+// Shows a minimal reload prompt instead of a blank white screen.
+class AppErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false } }
+  static getDerivedStateFromError() { return { hasError: true } }
+  render() {
+    if (this.state.hasError) return (
+      <div style={{
+        minHeight: '100vh', display: 'flex', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', gap: 24,
+        background: 'var(--c-bg)', color: 'var(--c-text)',
+      }}>
+        <span style={{ fontFamily: FONT, fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--c-silver3)' }}>
+          PRYM
+        </span>
+        <button onClick={() => window.location.reload()} style={{
+          fontFamily: FONT, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase',
+          color: 'var(--c-silver)', background: 'none', border: '1px solid var(--c-silver3)',
+          padding: '12px 32px', cursor: 'pointer',
+        }}>
+          Recharger
+        </button>
+      </div>
+    )
+    return this.props.children
+  }
+}
 
 
 /* ── Scroll progress bar ────────────────────────────────────────── */
@@ -44,18 +73,8 @@ function ScrollProgress() {
 
 
 /* ── Landing page ───────────────────────────────────────────────── */
-function useLandingIsMobile() {
-  const [m, setM] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const fn = () => setM(window.innerWidth < 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-  return m
-}
-
 function LandingPage() {
-  const isMobile = useLandingIsMobile()
+  const isMobile = useIsMobile()
   return (
     <div className="grain" style={{ backgroundColor: 'var(--c-bg)', height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
@@ -151,8 +170,8 @@ export default function App() {
   }
 
   return (
-    <>
+    <AppErrorBoundary>
       {renderPage()}
-    </>
+    </AppErrorBoundary>
   )
 }

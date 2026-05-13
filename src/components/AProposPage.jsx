@@ -4,6 +4,7 @@ import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
@@ -29,15 +30,6 @@ const SNAP = {
 // Top padding clears the fixed navbar; bottom gives breathing room
 const SEC_PAD = `clamp(72px,10vh,96px) ${GUTTER} clamp(32px,5vh,48px)`
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const fn = () => setIsMobile(window.innerWidth < 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-  return isMobile
-}
 
 export default function AProposPage() {
   const isMobile = useIsMobile()
@@ -146,7 +138,7 @@ export default function AProposPage() {
             viewport={{ once: true }} transition={{ duration: 0.8 }}
             style={{ gridColumn: isMobile ? undefined : '1 / span 4' }}>
             <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.5em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 24 }}>
-              Notre Philosophie
+              {ta.philosophy.eyebrow}
             </p>
             <div style={{ width: 40, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver3), transparent)' : 'linear-gradient(90deg, var(--c-silver3), transparent)' }} />
           </motion.div>
@@ -155,7 +147,7 @@ export default function AProposPage() {
             viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.15 }}
             style={{ gridColumn: isMobile ? undefined : '6 / span 7' }}>
             <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px,1.5vw,18px)', color: C.pearl, lineHeight: 1.9 }}>
-              L'industrie du transport de direction s'était endormie sur ses acquis. PRYM est née d'une volonté radicale : redéfinir le standard. Moins de bruit, plus de justesse. Une approche architecturale du service où chaque détail a été pensé pour disparaître au profit de votre tranquillité.
+              {ta.philosophy.body}
             </p>
           </motion.div>
         </div>

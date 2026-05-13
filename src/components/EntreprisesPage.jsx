@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
+import { useIsMobile } from '../hooks/useIsMobile'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
@@ -196,15 +197,6 @@ function ContactForm({ isMobile }) {
   )
 }
 
-function useIsMobile() {
-  const [m, setM] = useState(() => window.innerWidth < 768)
-  useEffect(() => {
-    const fn = () => setM(window.innerWidth < 768)
-    window.addEventListener('resize', fn)
-    return () => window.removeEventListener('resize', fn)
-  }, [])
-  return m
-}
 
 export default function EntreprisesPage() {
   const isMobile = useIsMobile()
