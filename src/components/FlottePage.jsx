@@ -88,9 +88,20 @@ function SceneContent({ modelPath, isMobile }) {
       <ambientLight intensity={1.4} />
       <ContactShadows position={[0, -0.01, 0]} opacity={0.5} scale={20} blur={2.5} far={8} color="#4a4a48" />
       <Environment preset="studio" />
-      <Suspense fallback={<Loader3D label="..." />}>
-        <VehicleModel path={modelPath} />
-      </Suspense>
+      {/* ErrorBoundary must live INSIDE Canvas — R3F runs its own React
+          reconciler root so errors inside Canvas never reach outer boundaries */}
+      <ModelErrorBoundary key={modelPath} fallback={
+        <Html center>
+          <div style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em',
+            color: 'var(--c-silver3)', textTransform: 'uppercase' }}>
+            Visuel Indisponible
+          </div>
+        </Html>
+      }>
+        <Suspense fallback={<Loader3D label="..." />}>
+          <VehicleModel path={modelPath} />
+        </Suspense>
+      </ModelErrorBoundary>
       <OrbitControls ref={orbitRef} enablePan={false}
         minDistance={isMobile ? 2 : 3} maxDistance={isMobile ? 8 : 12}
         minPolarAngle={Math.PI * 0.05} maxPolarAngle={Math.PI * 0.6}
@@ -123,13 +134,21 @@ function Scene3D({ modelPath, isMobile }) {
     // Wrapper fills the parent (position:relative + overflow:hidden) so the
     // IntersectionObserver has a real DOM node to watch.
     <div ref={containerRef} style={{ position: 'absolute', inset: 0 }}>
-      <Canvas key={key} shadows
-        frameloop={inView ? 'always' : 'demand'}
-        dpr={isMobile ? [1, 1.5] : [1, 2]}
-        gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
-        style={{ background: 'transparent' }} camera={{ fov, near: 0.1, far: 100 }}>
-        <SceneContent modelPath={modelPath} isMobile={isMobile} />
-      </Canvas>
+      <Suspense fallback={
+        <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', color: 'var(--c-silver3)', textTransform: 'uppercase' }}>
+            Chargement…
+          </span>
+        </div>
+      }>
+        <Canvas key={key} shadows
+          frameloop={inView ? 'always' : 'demand'}
+          dpr={isMobile ? [1, 1.5] : [1, 2]}
+          gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
+          style={{ background: 'transparent' }} camera={{ fov, near: 0.1, far: 100 }}>
+          <SceneContent modelPath={modelPath} isMobile={isMobile} />
+        </Canvas>
+      </Suspense>
     </div>
   )
 }

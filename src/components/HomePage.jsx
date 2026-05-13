@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, Suspense } from 'react'
+import { useEffect, useRef, useState, Suspense, Component } from 'react'
 import { motion } from 'framer-motion'
 import { Canvas } from '@react-three/fiber'
-import { useGLTF, Environment, ContactShadows, OrbitControls } from '@react-three/drei'
+import { useGLTF, Html, Environment, ContactShadows, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import DesktopNav from './DesktopNav'
 import MobileNavbar from './MobileNavbar'
@@ -9,6 +9,19 @@ import MobileNavbar from './MobileNavbar'
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const MODEL_PATH = '/models/signature_mercedes.glb'
+
+// Catches useGLTF errors (404 in production) so a missing GLB never freezes
+// the page. key=path resets the boundary when the model path changes.
+// Must be used both outside Canvas (for outer React tree) AND inside Canvas
+// (R3F runs its own reconciler root — errors don't cross that boundary).
+class ModelErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false } }
+  static getDerivedStateFromError() { return { hasError: true } }
+  render() {
+    if (this.state.hasError) return this.props.fallback ?? null
+    return this.props.children
+  }
+}
 
 /* ── useIsMobile ─────────────────────────────────────────────────────────────── */
 function useIsMobile() {
@@ -171,25 +184,48 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* 3D car — Suspense outside Canvas so R3F mount is always valid */}
+        {/* 3D car — ErrorBoundary + Suspense outside Canvas for outer React tree.
+            A second ErrorBoundary+Suspense lives inside Canvas because R3F uses
+            its own reconciler root and errors/suspensions don't cross that boundary. */}
         <div className="absolute right-0 md:right-[-5%] top-1/2 -translate-y-1/2 w-full md:w-[60%] z-0 pointer-events-none" style={{ height: 'min(500px, 50vh)' }}>
-          <Suspense fallback={null}>
-            <Canvas
-              camera={{ position: [12, 5, 16], fov: 30 }}
-              gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
-              className="w-full h-full"
-              style={{ background: 'transparent' }}
-            >
-              <ambientLight intensity={1.5} />
-              <directionalLight position={[10, 10, 5]} intensity={2} />
-              <directionalLight position={[-6, 8, -4]} intensity={1.0} color="#e8f0ff" />
-              <directionalLight position={[0, -4, 6]} intensity={0.5} color="#fff5e8" />
-              <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
-              <Environment preset="city" />
-              <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.6} maxPolarAngle={Math.PI / 2} />
-              <SignatureModel />
-            </Canvas>
-          </Suspense>
+          <ModelErrorBoundary fallback={<div style={{ width: '100%', height: '100%' }} />}>
+            <Suspense fallback={<div style={{ width: '100%', height: '100%' }} />}>
+              <Canvas
+                camera={{ position: [12, 5, 16], fov: 30 }}
+                gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
+                className="w-full h-full"
+                style={{ background: 'transparent' }}
+              >
+                <ambientLight intensity={1.5} />
+                <directionalLight position={[10, 10, 5]} intensity={2} />
+                <directionalLight position={[-6, 8, -4]} intensity={1.0} color="#e8f0ff" />
+                <directionalLight position={[0, -4, 6]} intensity={0.5} color="#fff5e8" />
+                <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
+                <Environment preset="city" />
+                <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.6} maxPolarAngle={Math.PI / 2} />
+                {/* Inner boundary: errors inside Canvas don't reach the outer one */}
+                <ModelErrorBoundary fallback={
+                  <Html center>
+                    <div style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em',
+                      color: 'var(--c-silver3)', textTransform: 'uppercase' }}>
+                      Visuel Indisponible
+                    </div>
+                  </Html>
+                }>
+                  <Suspense fallback={
+                    <Html center>
+                      <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em',
+                        color: 'var(--c-silver3)', textTransform: 'uppercase' }}>
+                        Chargement…
+                      </span>
+                    </Html>
+                  }>
+                    <SignatureModel />
+                  </Suspense>
+                </ModelErrorBoundary>
+              </Canvas>
+            </Suspense>
+          </ModelErrorBoundary>
         </div>
       </section>
 

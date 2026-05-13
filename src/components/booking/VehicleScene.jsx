@@ -87,9 +87,19 @@ function SceneInner({ modelPath, isMobile }) {
       <ambientLight intensity={1.4} />
       <ContactShadows position={[0, -0.01, 0]} opacity={0.6} scale={18} blur={2.5} far={8} color="#4a4a48" />
       <Environment preset="studio" />
-      <Suspense fallback={modelPath ? <Loader /> : <Placeholder />}>
-        {modelPath ? <VehicleModel path={modelPath} /> : <Placeholder />}
-      </Suspense>
+      {/* Inner boundary: errors inside Canvas don't reach the outer React tree */}
+      <ModelErrorBoundary key={modelPath} fallback={
+        <Html center>
+          <div style={{ fontFamily: '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif',
+            fontSize: 9, letterSpacing: '0.3em', color: 'var(--c-silver3)', textTransform: 'uppercase' }}>
+            Visuel Indisponible
+          </div>
+        </Html>
+      }>
+        <Suspense fallback={modelPath ? <Loader /> : <Placeholder />}>
+          {modelPath ? <VehicleModel path={modelPath} /> : <Placeholder />}
+        </Suspense>
+      </ModelErrorBoundary>
       <OrbitControls
         enablePan={false}
         minDistance={isMobile ? 2 : 3}
