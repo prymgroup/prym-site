@@ -6,6 +6,7 @@ import Step1Mode from './steps/Step1Mode'
 import { Step2aTransfer, Step2bDisposal } from './steps/Step2Forms'
 import { Step4Passenger, Step5Confirm } from './steps/Step4And5'
 import MobileNavbar from '../MobileNavbar'
+import ThemeToggle from '../ThemeToggle'
 import { useLanguage } from '../../context/LanguageContext'
 import { T } from '../../i18n/translations'
 
@@ -56,12 +57,15 @@ function DesktopNav({ step, cancelLabel, navLinks }) {
         </div>
       </div>
 
-      <a href="/flotte"
-        style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', border: '1px solid var(--c-silver3)', padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)'; e.currentTarget.style.background = 'transparent' }}>
-        {cancelLabel}
-      </a>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <ThemeToggle />
+        <a href="/flotte"
+          style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', border: '1px solid var(--c-silver3)', padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)'; e.currentTarget.style.background = 'transparent' }}>
+          {cancelLabel}
+        </a>
+      </div>
     </nav>
   )
 }
