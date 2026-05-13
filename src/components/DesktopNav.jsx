@@ -82,9 +82,9 @@ export default function DesktopNav() {
           const [label, href] = fn(t)
           return (
             <a key={href} href={href}
-              style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-silver2)', textDecoration: 'none', transition: 'color 0.3s ease' }}
-              onMouseEnter={e => e.target.style.color = 'var(--c-text)'}
-              onMouseLeave={e => e.target.style.color = 'var(--c-silver2)'}>
+              style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', textDecoration: 'none', transition: 'color 0.3s ease', opacity: 0.7 }}
+              onMouseEnter={e => { e.target.style.opacity = '1' }}
+              onMouseLeave={e => { e.target.style.opacity = '0.7' }}>
               {label}
             </a>
           )
@@ -102,9 +102,9 @@ export default function DesktopNav() {
 
         {/* CTA */}
         <a href="/reserver"
-          style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', border: '1px solid var(--c-silver3)', padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)'; e.currentTarget.style.background = 'transparent' }}>
+          style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', border: '1px solid var(--c-silver)', padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver2)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.background = 'transparent' }}>
           {t.nav.reserver}
         </a>
       </div>
