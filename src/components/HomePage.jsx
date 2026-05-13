@@ -49,27 +49,6 @@ function SignatureModel() {
   return <group ref={ref}><primitive object={clone} /></group>
 }
 
-function CarCanvas() {
-  return (
-    /* Action 3 — fixed camera framing; Action 2 — Environment + boosted lights */
-    <Canvas
-      camera={{ position: [5, 2, 8], fov: 45 }}
-      gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
-      className="w-full h-full"
-      style={{ background: 'transparent' }}
-    >
-      <ambientLight intensity={1.5} />
-      <directionalLight position={[10, 10, 5]}  intensity={2} />
-      <directionalLight position={[-6, 8, -4]} intensity={1.0} color="#e8f0ff" />
-      <directionalLight position={[0, -4, 6]}  intensity={0.5} color="#fff5e8" />
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
-      <Environment preset="city" />
-      <Suspense fallback={null}>
-        <SignatureModel />
-      </Suspense>
-    </Canvas>
-  )
-}
 
 /* ── Page ────────────────────────────────────────────────────────────────────── */
 export default function HomePage() {
@@ -97,17 +76,8 @@ export default function HomePage() {
         </p>
 
         {/* H2 — primary */}
-        <h2
-          className="text-gray-900 dark:text-white mt-5"
-          style={{
-            fontFamily: FONT_EU, fontWeight: 300,
-            fontSize: 'clamp(36px,6.5vw,96px)',
-            letterSpacing: '-0.01em', textTransform: 'uppercase', lineHeight: 0.93,
-          }}
-        >
-          Le mouvement,<br />
-          <span className="text-gray-500 dark:text-gray-400">élevé au rang</span><br />
-          d'art.
+        <h2 className="text-stone-900 dark:text-white text-5xl md:text-7xl font-light uppercase mt-5">
+          LE MOUVEMENT,<br />ÉLEVÉ AU RANG<br />D'ART.
         </h2>
 
         {/* subtitle — secondary */}
@@ -119,22 +89,19 @@ export default function HomePage() {
           Discrétion absolue. Ponctualité chirurgicale.
         </p>
 
-        {/* Actions 4 & 5 — exact button + link classes; flex wrapper prevents overlap */}
-        <div className="flex flex-wrap items-center gap-6 mt-8">
+        {/* CTA buttons */}
+        <div className="flex items-center gap-6 mt-8 relative z-10">
           <button
-            className="px-8 py-4 border border-stone-400 dark:border-stone-600 text-stone-900 dark:text-white text-sm uppercase tracking-[0.2em] hover:bg-stone-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all"
-            style={{ fontFamily: FONT_EU, background: 'none', cursor: 'pointer' }}
+            className="px-8 py-3 border border-stone-400 dark:border-stone-600 text-stone-900 dark:text-white uppercase tracking-widest text-sm hover:bg-stone-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
             onClick={() => window.location.href = '/reserver'}
           >
             RÉSERVER
           </button>
-
           <a
             href="/flotte"
             className="text-sm uppercase tracking-widest text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-white transition-colors"
-            style={{ fontFamily: FONT_EU, textDecoration: 'none' }}
           >
-            La flotte &nbsp;→
+            LA FLOTTE →
           </a>
         </div>
 
@@ -195,9 +162,24 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* Action 1 — strict dimensions give Canvas real pixels to render into */}
-        <div className="absolute right-[-20%] md:right-[-10%] top-1/2 -translate-y-1/2 w-[100%] md:w-[65%] h-[500px] md:h-[800px] z-0 pointer-events-none">
-          <CarCanvas />
+        {/* 3D car — Suspense outside Canvas so R3F mount is always valid */}
+        <div className="absolute right-0 md:right-[-5%] top-1/2 -translate-y-1/2 w-full md:w-[60%] h-[500px] z-0 pointer-events-none">
+          <Suspense fallback={null}>
+            <Canvas
+              camera={{ position: [5, 2, 8], fov: 45 }}
+              gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
+              className="w-full h-full"
+              style={{ background: 'transparent' }}
+            >
+              <ambientLight intensity={1.5} />
+              <directionalLight position={[10, 10, 5]} intensity={2} />
+              <directionalLight position={[-6, 8, -4]} intensity={1.0} color="#e8f0ff" />
+              <directionalLight position={[0, -4, 6]} intensity={0.5} color="#fff5e8" />
+              <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
+              <Environment preset="city" />
+              <SignatureModel />
+            </Canvas>
+          </Suspense>
         </div>
       </section>
 
