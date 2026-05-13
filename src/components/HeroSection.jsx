@@ -52,7 +52,7 @@ export default function HeroSection() {
           draggable={false}
           initial={{ clipPath: 'inset(100% 0 0% 0)' }}
           animate={{ clipPath: 'inset(0% 0 0% 0)' }}
-          transition={{ duration: 1.6, delay: 0.5, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.75, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           style={{
             width: 'clamp(240px, 34vw, 520px)',
             height: 'auto', display: 'block',
@@ -63,7 +63,7 @@ export default function HeroSection() {
         {/* Tagline */}
         <motion.p
           initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.4, delay: 1.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, delay: 0.9, ease: [0.22, 1, 0.36, 1] }}
           style={{
             fontFamily: FONT, fontSize: 'clamp(0.44rem, 0.9vw, 0.6rem)', fontWeight: 400,
             letterSpacing: '0.55em', textTransform: isAR ? 'none' : 'uppercase',
@@ -77,7 +77,7 @@ export default function HeroSection() {
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-        transition={{ delay: 2.8, duration: 1.2 }}
+        transition={{ delay: 1.6, duration: 0.8 }}
         style={{
           position: 'absolute', bottom: '2.8rem', left: '50%',
           transform: 'translateX(-50%)',
