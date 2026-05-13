@@ -14,7 +14,6 @@ import PromiseSection     from './components/PromiseSection'
 import LeadCaptureSection from './components/LeadCaptureSection'
 import MobileNavbar       from './components/MobileNavbar'
 import DesktopNav         from './components/DesktopNav'
-import SmartCursor        from './components/SmartCursor'
 
 // Lazy-load the booking flow (don't load 3D deps on the landing page)
 const AProposPage = lazy(() => import('./components/AProposPage'))
@@ -208,9 +207,7 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      {/* SmartCursor — renders only when pointer:fine + motion-ok + cores > 4 */}
-      <SmartCursor />
-      {renderPage()}
+{renderPage()}
     </ThemeProvider>
   )
 }

@@ -155,12 +155,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  *, *::before, *::after,
-  a, button, input, select, textarea, [role="button"] {
-    cursor: none !important;
-  }
-}
 
 ::selection {
   background: rgba(176,170,159,0.22);
