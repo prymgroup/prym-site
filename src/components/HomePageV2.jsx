@@ -73,7 +73,32 @@ export default function HomePageV2() {
       className="w-full h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth"
       style={{ backgroundColor: 'var(--c-bg)', color: 'var(--c-text)' }}
     >
-      {isMobile ? <MobileNavbar /> : <DesktopNav />}
+      {/* Nav — inline V2, mobile-first */}
+      <nav
+        className="fixed top-0 left-0 right-0 z-50 p-4 md:p-8 flex items-center justify-between"
+        style={{ background: 'var(--c-nav-bg)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+      >
+        <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+          <img
+            src="/logos/logo-slogan-white.svg"
+            alt="PRYM"
+            style={{ height: 26 }}
+            onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.nextSibling.style.display = 'inline' }}
+          />
+          <span style={{ display: 'none', fontFamily: FONT_EU, fontSize: 11, letterSpacing: '0.4em', textTransform: 'uppercase', color: 'var(--c-text)' }}>PRYM</span>
+        </a>
+        <div className="flex items-center">
+          <a href="/flotte"    className="hidden md:inline-block" style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-silver)', textDecoration: 'none', marginRight: 36 }}>La flotte</a>
+          <a href="/experience" className="hidden md:inline-block" style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-silver)', textDecoration: 'none', marginRight: 36 }}>L'expérience</a>
+          <button
+            className="ml-4"
+            style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+            onClick={() => window.location.href = '/reserver'}
+          >
+            MENU
+          </button>
+        </div>
+      </nav>
 
       {/* ── Section 1 — Hero ──────────────────────────────────────────── */}
       <section className="min-h-screen w-full snap-start flex flex-col justify-center px-8 md:px-24 relative overflow-hidden">
@@ -95,8 +120,8 @@ export default function HomePageV2() {
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-          className="font-light uppercase tracking-[0.2em] text-4xl md:text-6xl text-[var(--c-text)]"
-          style={{ fontFamily: FONT_EU, lineHeight: 1.1 }}
+          className="!text-3xl !font-light !uppercase md:text-6xl !tracking-widest !leading-tight"
+          style={{ fontFamily: FONT_EU }}
         >
           Le temps<br />à sa valeur.
         </motion.h1>
@@ -126,8 +151,8 @@ export default function HomePageV2() {
           transition={{ duration: 0.9, delay: 0.78 }}
         >
           <button
-            className="mt-12 !px-10 !py-4 !border font-light uppercase tracking-[0.2em] text-sm transition-all hover:bg-[var(--c-text)] hover:text-[var(--c-bg)] !inline-flex justify-center items-center"
-            style={{ borderColor: 'var(--c-silver3)', color: 'var(--c-text)', fontFamily: FONT_EU }}
+            className="inline-flex justify-center items-center !px-10 !py-4 border font-light uppercase tracking-[0.2em] text-sm transition-all hover:bg-[var(--c-text)] hover:text-[var(--c-bg)]"
+            style={{ borderColor: 'var(--c-silver3)', color: 'var(--c-text)', fontFamily: FONT_EU, marginTop: 48 }}
             onClick={() => window.location.href = '/reserver'}
           >
             RÉSERVER MAINTENANT
@@ -170,8 +195,8 @@ export default function HomePageV2() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-          className="font-light uppercase tracking-[0.2em] text-4xl md:text-6xl text-[var(--c-text)] max-w-4xl"
-          style={{ fontFamily: FONT_EU, lineHeight: 1.15 }}
+          className="!text-3xl !font-light !uppercase md:text-6xl !tracking-widest !leading-tight max-w-4xl"
+          style={{ fontFamily: FONT_EU }}
         >
           "Chaque<br />déplacement est<br />une déclaration."
         </motion.h2>
@@ -242,12 +267,12 @@ export default function HomePageV2() {
       </section>
 
       {/* ── Section 4 — Fleet Showcase ────────────────────────────────── */}
-      <section className="min-h-screen w-full snap-start flex flex-col justify-center px-8 md:px-24 relative overflow-hidden">
+      <section className="min-h-screen w-full snap-start flex !flex-col justify-center pb-[370px] md:pb-0 px-8 md:px-24 relative overflow-hidden">
 
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'var(--c-grid-line)' }} />
 
-        {/* Text — left column */}
-        <div className="relative z-10 w-full md:w-1/2">
+        {/* Text — top on mobile, left on desktop */}
+        <div className="w-full relative z-10 mb-8 md:mb-0 md:w-1/2">
 
           <motion.span
             initial={{ opacity: 0 }}
@@ -267,8 +292,8 @@ export default function HomePageV2() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-            className="font-light uppercase tracking-[0.2em] text-4xl md:text-6xl text-[var(--c-text)]"
-            style={{ fontFamily: FONT_EU, lineHeight: 1.1 }}
+            className="!text-3xl !font-light !uppercase md:text-6xl !tracking-widest !leading-tight"
+            style={{ fontFamily: FONT_EU }}
           >
             L'objet<br />de désir.
           </motion.h2>
@@ -301,8 +326,8 @@ export default function HomePageV2() {
           </motion.a>
         </div>
 
-        {/* 3D model — right side */}
-        <div className="absolute right-[-20%] md:right-[-5%] top-1/2 -translate-y-1/2 w-[120%] md:w-[60%] h-[400px] md:h-[600px] z-0 pointer-events-none">
+        {/* 3D model — bottom on mobile, right on desktop */}
+        <div className="absolute left-0 bottom-0 w-full h-[350px] z-0 pointer-events-none md:absolute md:right-[-5%] md:left-auto md:top-1/2 md:bottom-auto md:-translate-y-1/2 md:h-[600px] md:w-[60%]">
           <ModelErrorBoundary fallback={<div style={{ width: '100%', height: '100%' }} />}>
             <Suspense fallback={null}>
               <Canvas
