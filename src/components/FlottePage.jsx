@@ -85,7 +85,7 @@ function SceneContent({ modelPath, isMobile }) {
       <directionalLight position={[6, 8, -4]} intensity={2.5} color="#fff5e8" castShadow />
       <directionalLight position={[-8, 4, 2]} intensity={0.8} color="#e8f0ff" />
       <directionalLight position={[-1, 5, 6]} intensity={1.8} color="#c8d8ff" />
-      <ambientLight intensity={0.15} />
+      <ambientLight intensity={1.4} />
       <ContactShadows position={[0, -0.01, 0]} opacity={0.5} scale={20} blur={2.5} far={8} color="#000" />
       <Environment preset="studio" />
       <Suspense fallback={<Loader3D label="..." />}>
@@ -250,9 +250,9 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
   if (isMobile) {
     return (
       <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.4 }}
-        style={{ display:'flex', flexDirection:'column' }}>
+        style={{ display:'flex', flexDirection:'column', height:'100%' }}>
         <div style={{
-          position:'relative', width:'100%', height:'calc(100vh - 170px)',
+          position:'relative', width:'100%', flex:1,
           background:'var(--c-canvas-grad)',
           overflow:'hidden', flexShrink:0,
         }}>
@@ -265,7 +265,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
           <AnimatePresence mode="wait">
             <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ position:'absolute', bottom:20, left:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
+              style={{ position:'absolute', bottom:20, left:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-silver)' }}>
               {vehicleLabel.toUpperCase()}
             </motion.div>
           </AnimatePresence>
@@ -325,7 +325,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
 
           <AnimatePresence mode="wait">
             <motion.p key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)', marginBottom:36 }}>
+              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-silver)', marginBottom:36 }}>
               {vehicleLabel.toUpperCase()}
             </motion.p>
           </AnimatePresence>
@@ -372,7 +372,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
         {canNavigate && (<><ChevronArrow direction="left" onClick={prevModel} /><ChevronArrow direction="right" onClick={nextModel} /></>)}
         <AnimatePresence mode="wait">
           <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
+            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-silver)' }}>
             {vehicleLabel.toUpperCase()}
           </motion.div>
         </AnimatePresence>

@@ -32,7 +32,7 @@ function PromiseLine({ text, lang, index }) {
         —
       </span>
       <p style={{
-        margin: 0, fontFamily: FONT, fontWeight: 400,
+        margin: 0, fontFamily: FONT, fontWeight: 300,
         fontSize: 'clamp(0.9rem, 1.8vw, 1.4rem)',
         letterSpacing: isAR ? '0.03em' : '0.12em',
         textTransform: isAR ? 'none' : 'uppercase',

@@ -4,7 +4,6 @@ import {
   useScroll,
   useSpring,
 } from 'framer-motion'
-import { ThemeProvider } from './context/ThemeContext'
 
 import HeroSection        from './components/HeroSection'
 import ManifestoSection   from './components/ManifestoSection'
@@ -34,7 +33,7 @@ function ScrollProgress() {
       style={{
         position: 'fixed', top: 0, left: 0, right: 0,
         height: 1,
-        backgroundColor: '#B0AA9F',
+        backgroundColor: 'var(--c-silver3)',
         transformOrigin: 'left',
         scaleX,
         zIndex: 50,
@@ -43,41 +42,6 @@ function ScrollProgress() {
   )
 }
 
-/* ── Top bar ────────────────────────────────────────────────────── */
-function TopBar() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 3.8, duration: 1.4 }}
-      style={{
-        position: 'fixed', top: 0, left: 0, right: 0,
-        padding: 'clamp(1.2rem, 3vh, 1.8rem) clamp(1.25rem, 4vw, 3rem)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        zIndex: 45, pointerEvents: 'none',
-      }}
-    >
-      <span style={{
-        fontFamily: FONT,
-        fontSize: '0.6rem',
-        letterSpacing: '0.38em',
-        color: '#9E9890',
-        textTransform: 'uppercase',
-      }}>
-        PRYM
-      </span>
-      <span style={{
-        fontFamily: FONT,
-        fontSize: '0.56rem',
-        letterSpacing: '0.32em',
-        color: '#B0AA9F',
-        textTransform: 'uppercase',
-      }}>
-        — 2026 —
-      </span>
-    </motion.div>
-  )
-}
 
 /* ── Landing page ───────────────────────────────────────────────── */
 function useLandingIsMobile() {
@@ -93,18 +57,13 @@ function useLandingIsMobile() {
 function LandingPage() {
   const isMobile = useLandingIsMobile()
   return (
-    <div className="grain" style={{ backgroundColor: 'var(--c-bg)', height: '100vh', overflow: 'hidden' }}>
+    <div className="grain" style={{ backgroundColor: 'var(--c-bg)', height: '100vh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
-      <main style={{
-        height: '100vh', overflowY: 'scroll',
-        scrollSnapType: 'y mandatory',
-      }}>
-        <HeroSection />
-        <ManifestoSection />
-        <ScrollSection />
-        <PromiseSection />
-        <LeadCaptureSection />
-      </main>
+      <HeroSection />
+      <ManifestoSection />
+      <ScrollSection />
+      <PromiseSection />
+      <LeadCaptureSection />
     </div>
   )
 }
@@ -127,7 +86,7 @@ function BookingLoader() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: '#FDFBF7',
+      background: 'var(--c-bg)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -192,8 +151,8 @@ export default function App() {
   }
 
   return (
-    <ThemeProvider>
-{renderPage()}
-    </ThemeProvider>
+    <>
+      {renderPage()}
+    </>
   )
 }

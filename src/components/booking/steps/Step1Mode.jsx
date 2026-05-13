@@ -8,7 +8,7 @@ function Card({ icon, title, subtitle, desc, selectLabel, onClick, delay, isAR }
       initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
       whileTap={{ scale: 0.97 }}
-      style={{ flex: '1 1 140px', minHeight: 150, background: 'var(--c-pill-bg)', border: '1px solid var(--c-border-faint)', borderRadius: 2, padding: '20px 16px', cursor: 'pointer', textAlign: isAR ? 'right' : 'left', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative', overflow: 'hidden', WebkitTapHighlightColor: 'transparent', direction: isAR ? 'rtl' : 'ltr', transition: 'background 0.2s, border-color 0.2s' }}
+      style={{ flex: '1 1 140px', minHeight: 150, background: 'var(--c-pill-bg)', border: '1px solid var(--c-border-faint)', borderRadius: 0, padding: '20px 16px', cursor: 'pointer', textAlign: isAR ? 'right' : 'left', display: 'flex', flexDirection: 'column', gap: 8, position: 'relative', overflow: 'hidden', WebkitTapHighlightColor: 'transparent', direction: isAR ? 'rtl' : 'ltr', transition: 'background 0.2s, border-color 0.2s' }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-pill-border)'; e.currentTarget.style.background = 'var(--c-pill-bg-hover)' }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-border-faint)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}>
       <div style={{ position: 'absolute', top: 0, [isAR ? 'right' : 'left']: 0, width: 20, height: 1, background: 'var(--c-silver3)' }} />

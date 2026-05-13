@@ -71,7 +71,6 @@
   --c-vig-ring:     radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(253,251,247,0.25) 100%);
   /* interactive */
   --c-chevron:      #6B6867;
-  --c-label:        #6B6867;
   --c-loader:       #9E9890;
   --c-hover-text:   #FDFBF7;
 
@@ -122,7 +121,6 @@ html.dark {
   --c-vig-ltr:      linear-gradient(to right, rgba(10,10,10,0.15) 0%, transparent 18%, transparent 85%, rgba(10,10,10,0.3) 100%);
   --c-vig-ring:     radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(10,10,10,0.45) 100%);
   --c-chevron:      #c6c6c6;
-  --c-label:        #e0e0e0;
   --c-loader:       #c6c6c6;
   --c-hover-text:   #f6f6f6;
 
@@ -209,7 +207,7 @@ input:-webkit-autofill {
 
 /* ─── BODY TEXT ────────────────────────────────────────────────────── */
 p {
-  color: #6B6867;
+  color: var(--c-silver);
   line-height: 1.625;
 }
 

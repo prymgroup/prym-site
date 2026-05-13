@@ -13,7 +13,7 @@ function WordReveal({ text, lang, delay = 0 }) {
   return (
     <p ref={ref} aria-label={text}
       style={{
-        margin: 0, fontFamily: FONT, fontWeight: 400,
+        margin: 0, fontFamily: FONT, fontWeight: 300,
         fontSize: 'clamp(2rem, 5.5vw, 5.5rem)',
         letterSpacing: isAR ? '0.04em' : '0.18em',
         textTransform: isAR ? 'none' : 'uppercase',

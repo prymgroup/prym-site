@@ -53,7 +53,7 @@ export default function HomePage() {
 
   return (
     /* Action 1 */
-    <div className="bg-[#FDFBF7] dark:bg-black w-full h-screen overflow-y-scroll snap-y snap-mandatory">
+    <div className="w-full h-screen overflow-y-scroll snap-y snap-mandatory" style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}>
 
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 

@@ -7,7 +7,7 @@ const IS = {
   width: '100%',
   background: 'var(--c-pill-bg)',
   border: '1px solid var(--c-border-faint)',
-  borderRadius: 2,
+  borderRadius: 0,
   padding: '14px 16px',
   color: 'var(--c-text)',
   fontFamily: '"Eurostile","Arial Narrow",sans-serif',
@@ -50,7 +50,7 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
   return (
     <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
       <button onClick={onBack} style={{ ...IS, width: 'auto', padding: '14px 24px', cursor: 'pointer', color: 'var(--c-silver2)' }}>{backLabel}</button>
-      <button onClick={onNext} disabled={!valid} style={{ flex: 1, padding: 14, cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 2, fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s' }}>{nextLabel}</button>
+      <button onClick={onNext} disabled={!valid} style={{ flex: 1, padding: 14, cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, fontFamily: '"Eurostile","Arial Narrow",sans-serif', fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s' }}>{nextLabel}</button>
     </div>
   )
 }

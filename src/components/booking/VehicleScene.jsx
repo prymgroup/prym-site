@@ -43,12 +43,12 @@ function Placeholder() {
   useFrame((_, d) => { if (ref.current) ref.current.rotation.y += d * 0.25 })
   return (
     <group ref={ref}>
-      <mesh><boxGeometry args={[3.2, 0.9, 1.5]} /><meshStandardMaterial color="#0a0a0a" metalness={0.9} roughness={0.2} /></mesh>
-      <mesh position={[0, 0.75, 0]}><boxGeometry args={[2, 0.7, 1.45]} /><meshStandardMaterial color="#0a0a0a" metalness={0.9} roughness={0.2} /></mesh>
+      <mesh><boxGeometry args={[3.2, 0.9, 1.5]} /><meshStandardMaterial color="#3c3c3b" metalness={0.7} roughness={0.3} /></mesh>
+      <mesh position={[0, 0.75, 0]}><boxGeometry args={[2, 0.7, 1.45]} /><meshStandardMaterial color="#3c3c3b" metalness={0.7} roughness={0.3} /></mesh>
       {[-1.1, 1.1].flatMap(x => [-0.65, 0.65].map(z => (
         <mesh key={`${x}${z}`} position={[x, -0.35, z]}>
           <cylinderGeometry args={[0.28, 0.28, 0.22, 24]} />
-          <meshStandardMaterial color="#111" metalness={0.5} roughness={0.6} />
+          <meshStandardMaterial color="#6B6867" metalness={0.5} roughness={0.6} />
         </mesh>
       )))}
     </group>
@@ -84,7 +84,7 @@ function SceneInner({ modelPath, isMobile }) {
       <directionalLight position={[6, 8, -4]} intensity={2.5} color="#fff5e8" castShadow />
       <directionalLight position={[-8, 4, 2]} intensity={0.8} color="#e8f0ff" />
       <directionalLight position={[-1, 5, 6]} intensity={1.8} color="#c8d8ff" />
-      <ambientLight intensity={0.15} />
+      <ambientLight intensity={1.4} />
       <ContactShadows position={[0, -0.01, 0]} opacity={0.6} scale={18} blur={2.5} far={8} color="#000" />
       <Environment preset="studio" />
       <Suspense fallback={modelPath ? <Loader /> : <Placeholder />}>

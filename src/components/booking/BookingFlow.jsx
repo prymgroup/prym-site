@@ -147,7 +147,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
           )}
           <AnimatePresence mode="wait">
             <motion.div key={vehicleLabel} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}
-              style={{ position:'absolute', bottom:16, left:20, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
+              style={{ position:'absolute', bottom:16, left:20, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-silver)' }}>
               {vehicleLabel.toUpperCase()}
             </motion.div>
           </AnimatePresence>
@@ -219,7 +219,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
 
           <AnimatePresence mode="wait">
             <motion.p key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)', marginBottom:32 }}>
+              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-silver)', marginBottom:32 }}>
               {vehicleLabel.toUpperCase()}
             </motion.p>
           </AnimatePresence>
@@ -276,7 +276,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
         )}
         <AnimatePresence mode="wait">
           <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
+            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-silver)' }}>
             {vehicleLabel.toUpperCase()}
           </motion.div>
         </AnimatePresence>
