@@ -10,9 +10,6 @@ import { useLanguage } from '../../context/LanguageContext'
 import { T } from '../../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
-const C = {
-  bg: '#0a0a0a', silver: '#c6c6c6', silver2: '#706f6f', silver3: '#3c3c3b', white: '#f6f6f6',
-}
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
@@ -32,26 +29,27 @@ function DesktopNav({ step, cancelLabel, navLinks }) {
       position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, height: 64,
       padding: '0 clamp(24px,5vw,72px)',
       display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      background: 'rgba(10,10,10,0.88)', backdropFilter: 'blur(12px)',
-      borderBottom: `1px solid ${C.silver3}18`,
+      background: 'var(--c-nav-bg)', backdropFilter: 'blur(12px)',
+      borderBottom: '1px solid var(--c-border-faint)',
+      transition: 'background 0.3s ease',
     }}>
       <a href="/" style={{ textDecoration: 'none' }}>
         <img src="/logos/logo-slogan-white.svg" alt="PRYM" style={{ height: 40, opacity: 0.9 }}
           onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='block' }} />
-        <span style={{ display:'none', fontFamily:FONT_EU, fontSize:13, letterSpacing:'0.35em', textTransform:'uppercase', color:C.white, fontWeight:300 }}>PRYM</span>
+        <span style={{ display:'none', fontFamily:FONT_EU, fontSize:13, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-text)', fontWeight:300 }}>PRYM</span>
       </a>
 
       <div style={{ display:'flex', gap:'clamp(20px,2.5vw,40px)', alignItems:'center' }}>
         {navLinks.map(([l,h]) => (
           <a key={h} href={h}
-            style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3, textDecoration:'none', transition:'color 0.3s ease' }}
-            onMouseEnter={e=>e.target.style.color=C.silver}
-            onMouseLeave={e=>e.target.style.color=C.silver3}>{l}</a>
+            style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--c-silver3)', textDecoration:'none', transition:'color 0.3s ease' }}
+            onMouseEnter={e=>e.target.style.color='var(--c-silver)'}
+            onMouseLeave={e=>e.target.style.color='var(--c-silver3)'}>{l}</a>
         ))}
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center', paddingLeft: 8, borderLeft: `1px solid ${C.silver3}33` }}>
+        <div style={{ display: 'flex', gap: 6, alignItems: 'center', paddingLeft: 8, borderLeft: '1px solid var(--c-pill-border)' }}>
           {[1,2,3,4].map(i => (
             <motion.div key={i}
-              animate={{ background: i <= step ? 'rgba(198,198,198,0.55)' : 'rgba(60,60,59,0.35)' }}
+              animate={{ background: i <= step ? 'var(--c-dash-active)' : 'var(--c-dash-inactive)' }}
               transition={{ duration: 0.4 }}
               style={{ width: 20, height: 1 }} />
           ))}
@@ -59,9 +57,9 @@ function DesktopNav({ step, cancelLabel, navLinks }) {
       </div>
 
       <a href="/flotte"
-        style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.white, border: `1px solid ${C.silver3}`, padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
-        onMouseEnter={e => { e.currentTarget.style.borderColor = C.silver; e.currentTarget.style.background = 'rgba(198,198,198,0.06)' }}
-        onMouseLeave={e => { e.currentTarget.style.borderColor = C.silver3; e.currentTarget.style.background = 'transparent' }}>
+        style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', border: '1px solid var(--c-silver3)', padding: '10px 24px', textDecoration: 'none', transition: 'all 0.4s ease' }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)'; e.currentTarget.style.background = 'transparent' }}>
         {cancelLabel}
       </a>
     </nav>
@@ -73,18 +71,18 @@ function TierPill({ tier, active, onClick, domRef }) {
   return (
     <motion.button ref={domRef} onClick={onClick} whileTap={{ scale: 0.97 }}
       style={{
-        background: active ? 'rgba(198,198,198,0.08)' : 'transparent',
-        border: `1px solid ${active ? C.silver3 : C.silver3+'44'}`,
+        background: active ? 'var(--c-pill-bg)' : 'transparent',
+        border: `1px solid ${active ? 'var(--c-silver3)' : 'var(--c-pill-border)'}`,
         padding: '8px 14px', cursor: 'pointer',
         fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.25em',
-        textTransform: 'uppercase', color: active ? C.silver : C.silver3,
+        textTransform: 'uppercase', color: active ? 'var(--c-silver)' : 'var(--c-silver3)',
         transition: 'all 0.3s', whiteSpace: 'nowrap', flexShrink: 0, position: 'relative',
       }}
-      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = C.silver2; e.currentTarget.style.borderColor = C.silver3 } }}
-      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = C.silver3; e.currentTarget.style.borderColor = `${C.silver3}44` } }}>
+      onMouseEnter={e => { if (!active) { e.currentTarget.style.color = 'var(--c-silver2)'; e.currentTarget.style.borderColor = 'var(--c-silver3)' } }}
+      onMouseLeave={e => { if (!active) { e.currentTarget.style.color = 'var(--c-silver3)'; e.currentTarget.style.borderColor = 'var(--c-pill-border)' } }}>
       {active && (
         <motion.div layoutId="pill-booking"
-          style={{ position:'absolute', top:0, left:'15%', right:'15%', height:1, background:`linear-gradient(90deg,transparent,${C.silver},transparent)` }} />
+          style={{ position:'absolute', top:0, left:'15%', right:'15%', height:1, background:'linear-gradient(90deg,transparent,var(--c-silver),transparent)' }} />
       )}
       {tier.name.replace('PRYM ', '')}
     </motion.button>
@@ -99,7 +97,7 @@ function Chevron({ direction, onClick }) {
         position: 'absolute', top: '50%', transform: 'translateY(-50%)',
         [direction === 'left' ? 'left' : 'right']: 16,
         zIndex: 10, background: 'none', border: 'none', cursor: 'pointer', padding: 18,
-        color: 'rgba(198,198,198,0.4)', opacity: 0.4, transition: 'opacity 0.4s',
+        color: 'var(--c-silver2)', opacity: 0.4, transition: 'opacity 0.4s',
         WebkitTapHighlightColor: 'transparent',
       }}>
       <svg width="10" height="22" viewBox="0 0 10 22" fill="none">
@@ -132,10 +130,10 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
         <div style={{
           position: 'relative',
           height: 'calc(100vh - 260px)', minHeight: 260,
-          background: `radial-gradient(ellipse at 40% 50%, #141416 0%, ${C.bg} 70%)`,
+          background: 'var(--c-canvas-grad)',
           overflow: 'hidden', flexShrink: 0,
         }}>
-          <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at center, transparent 55%, rgba(10,10,10,0.55) 100%)' }} />
+          <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'var(--c-vig-radial)' }} />
           {hasModel && <VehicleScene tier={{ ...tier, modelPath: currentModelPath }} />}
           {canNavigate && (
             <>
@@ -145,14 +143,14 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
           )}
           <AnimatePresence mode="wait">
             <motion.div key={vehicleLabel} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.3 }}
-              style={{ position:'absolute', bottom:16, left:20, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0' }}>
+              style={{ position:'absolute', bottom:16, left:20, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
               {vehicleLabel.toUpperCase()}
             </motion.div>
           </AnimatePresence>
         </div>
 
         {/* Tier pills */}
-        <div style={{ display:'flex', gap:6, overflowX:'auto', scrollbarWidth:'none', padding:'14px 20px', borderBottom:`1px solid ${C.silver3}22`, flexShrink:0 }}>
+        <div style={{ display:'flex', gap:6, overflowX:'auto', scrollbarWidth:'none', padding:'14px 20px', borderBottom:'1px solid var(--c-border-faint)', flexShrink:0 }}>
           {FLEET.map(t => (
             <TierPill key={t.id} tier={t} active={activeTier.id===t.id} onClick={() => setActiveTier(t)}
               domRef={el => { pillRefs.current[t.id] = el }} />
@@ -163,33 +161,33 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
         <div style={{ padding:'20px 20px 32px', overflowY:'auto' }}>
           <AnimatePresence mode="wait">
             <motion.h2 key={tier.id} initial={{opacity:0,y:8}} animate={{opacity:1,y:0}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:22, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:20, lineHeight:1.05 }}>
+              style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:22, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-text)', marginBottom:20, lineHeight:1.05 }}>
               {tier.name}
             </motion.h2>
           </AnimatePresence>
-          <div style={{ width:32, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:20 }} />
+          <div style={{ width:32, height:1, background:'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:20 }} />
           <div style={{ display:'flex', gap:28, marginBottom:20 }}>
             {[{label: tb.passengers, value:tier.capacity?.passengers ?? '—'},{label: tb.luggage, value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
-                <p style={{ fontFamily:FONT_EU, fontSize:22, color:C.white, lineHeight:1, marginBottom:4 }}>{value}</p>
-                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:22, color:'var(--c-text)', lineHeight:1, marginBottom:4 }}>{value}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--c-silver3)' }}>{label}</p>
               </div>
             ))}
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:10, marginBottom:24 }}>
             {(tier.amenities ?? []).map(a => (
-              <span key={a} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.15em', textTransform:'uppercase', color:C.silver2 }}>{a}</span>
+              <span key={a} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.15em', textTransform:'uppercase', color:'var(--c-silver2)' }}>{a}</span>
             ))}
           </div>
           <div style={{ display:'flex', gap:10 }}>
             <button onClick={onBack}
-              style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.2em', textTransform:'uppercase', color:C.silver3, background:'none', border:`1px solid ${C.silver3}44`, padding:'12px 16px', cursor:'pointer' }}>
+              style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.2em', textTransform:'uppercase', color:'var(--c-silver3)', background:'none', border:'1px solid var(--c-pill-border)', padding:'12px 16px', cursor:'pointer', transition:'all 0.3s' }}>
               {tb.back}
             </button>
             <button onClick={() => onSelect(tier)}
-              style={{ flex:1, fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.25em', textTransform:'uppercase', color:C.white, background:'rgba(198,198,198,0.08)', border:`1px solid ${C.silver3}`, padding:'12px 20px', cursor:'pointer', transition:'all 0.3s' }}
-              onMouseEnter={e => { e.currentTarget.style.background='rgba(198,198,198,0.14)' }}
-              onMouseLeave={e => { e.currentTarget.style.background='rgba(198,198,198,0.08)' }}>
+              style={{ flex:1, fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.25em', textTransform:'uppercase', color:'var(--c-text)', background:'var(--c-pill-bg)', border:'1px solid var(--c-silver3)', padding:'12px 20px', cursor:'pointer', transition:'all 0.3s' }}
+              onMouseEnter={e => { e.currentTarget.style.background='var(--c-pill-bg-hover)' }}
+              onMouseLeave={e => { e.currentTarget.style.background='var(--c-pill-bg)' }}>
               {tb.selectShort}
             </button>
           </div>
@@ -202,7 +200,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
   return (
     <div style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden' }}>
       {/* Left info */}
-      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:`1px solid ${C.silver3}18`, overflowY:'auto', scrollbarWidth:'none' }}>
+      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:'1px solid var(--c-border-faint)', overflowY:'auto', scrollbarWidth:'none' }}>
         <motion.div initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.5 }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:40 }}>
             {FLEET.map(t => <TierPill key={t.id} tier={t} active={activeTier.id===t.id} onClick={() => setActiveTier(t)} />)}
@@ -210,25 +208,25 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
 
           <AnimatePresence mode="wait">
             <motion.h2 key={tier.id} initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:0.35}}
-              style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(24px,2.5vw,42px)', letterSpacing:'0.08em', textTransform:'uppercase', color:C.white, marginBottom:12, lineHeight:1.0 }}>
+              style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(24px,2.5vw,42px)', letterSpacing:'0.08em', textTransform:'uppercase', color:'var(--c-text)', marginBottom:12, lineHeight:1.0 }}>
               {tier.name}
             </motion.h2>
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
             <motion.p key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0', marginBottom:32 }}>
+              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)', marginBottom:32 }}>
               {vehicleLabel.toUpperCase()}
             </motion.p>
           </AnimatePresence>
 
-          <div style={{ width:36, height:1, background:`linear-gradient(90deg,${C.silver3},transparent)`, marginBottom:32 }} />
+          <div style={{ width:36, height:1, background:'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:32 }} />
 
           <div style={{ display:'flex', gap:36, marginBottom:32 }}>
             {[{label: tb.passengers, value:tier.capacity?.passengers ?? '—'},{label: tb.luggage, value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
-                <p style={{ fontFamily:FONT_EU, fontSize:'clamp(24px,2.2vw,36px)', letterSpacing:'0.04em', color:C.white, lineHeight:1, marginBottom:5 }}>{value}</p>
-                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:'clamp(24px,2.2vw,36px)', letterSpacing:'0.04em', color:'var(--c-text)', lineHeight:1, marginBottom:5 }}>{value}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:'var(--c-silver3)' }}>{label}</p>
               </div>
             ))}
           </div>
@@ -236,9 +234,9 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:11, marginBottom:44 }}>
             {(tier.amenities ?? []).map(a => (
               <span key={a}
-                style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2, opacity:0.55, transition:'opacity 0.4s', cursor:'default' }}
+                style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:'var(--c-silver2)', opacity:0.7, transition:'opacity 0.4s', cursor:'default' }}
                 onMouseEnter={e => e.currentTarget.style.opacity=1}
-                onMouseLeave={e => e.currentTarget.style.opacity=0.55}>
+                onMouseLeave={e => e.currentTarget.style.opacity=0.7}>
                 {a}
               </span>
             ))}
@@ -246,15 +244,15 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
 
           <div style={{ display:'flex', gap:12 }}>
             <button onClick={onBack}
-              style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.2em', textTransform:'uppercase', color:C.silver3, background:'none', border:`1px solid ${C.silver3}44`, padding:'14px 20px', cursor:'pointer', transition:'all 0.3s' }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor=C.silver3; e.currentTarget.style.color=C.silver2 }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor=`${C.silver3}44`; e.currentTarget.style.color=C.silver3 }}>
+              style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.2em', textTransform:'uppercase', color:'var(--c-silver3)', background:'none', border:'1px solid var(--c-pill-border)', padding:'14px 20px', cursor:'pointer', transition:'all 0.3s' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor='var(--c-silver3)'; e.currentTarget.style.color='var(--c-silver2)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor='var(--c-pill-border)'; e.currentTarget.style.color='var(--c-silver3)' }}>
               {tb.back}
             </button>
             <button onClick={() => onSelect(tier)}
-              style={{ flex:1, fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', color:C.silver, background:'transparent', border:`1px solid ${C.silver3}`, padding:'14px 24px', cursor:'pointer', transition:'all 0.4s' }}
-              onMouseEnter={e => { e.currentTarget.style.background='#1A1A1A'; e.currentTarget.style.borderColor=C.silver2; e.currentTarget.style.color=C.white }}
-              onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor=C.silver3; e.currentTarget.style.color=C.silver }}>
+              style={{ flex:1, fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.28em', textTransform:'uppercase', color:'var(--c-silver)', background:'transparent', border:'1px solid var(--c-silver3)', padding:'14px 24px', cursor:'pointer', transition:'all 0.4s' }}
+              onMouseEnter={e => { e.currentTarget.style.background='var(--c-surface)'; e.currentTarget.style.borderColor='var(--c-silver2)'; e.currentTarget.style.color='var(--c-text)' }}
+              onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='var(--c-silver3)'; e.currentTarget.style.color='var(--c-silver)' }}>
               {tb.select}
             </button>
           </div>
@@ -262,9 +260,9 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
       </div>
 
       {/* Right 3D */}
-      <div style={{ position:'relative', background:`radial-gradient(ellipse at 60% 50%, #111114 0%, ${C.bg} 75%)`, overflow:'hidden' }}>
-        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'linear-gradient(to right, rgba(10,10,10,0.15) 0%, transparent 18%, transparent 85%, rgba(10,10,10,0.3) 100%)' }} />
-        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'radial-gradient(ellipse at 55% 50%, transparent 40%, rgba(10,10,10,0.45) 100%)' }} />
+      <div style={{ position:'relative', background:'var(--c-panel-grad)', overflow:'hidden' }}>
+        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'var(--c-vig-ltr)' }} />
+        <div style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', background:'var(--c-vig-ring)' }} />
         {hasModel && <VehicleScene tier={{ ...tier, modelPath: currentModelPath }} />}
         {canNavigate && (
           <>
@@ -274,7 +272,7 @@ function Step3Vehicle({ tier, activeTier, setActiveTier, selectedModel, onPrev, 
         )}
         <AnimatePresence mode="wait">
           <motion.div key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'#E0E0E0' }}>
+            style={{ position:'absolute', bottom:28, left:32, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-label)' }}>
             {vehicleLabel.toUpperCase()}
           </motion.div>
         </AnimatePresence>
@@ -344,15 +342,15 @@ export default function BookingFlow() {
   const showScene = step === 3
 
   return (
-    <div style={{ minHeight:'100dvh', background:C.bg, color:C.white, display:'flex', flexDirection:'column', overflowX:'hidden' }}>
+    <div style={{ minHeight:'100dvh', background:'var(--c-bg)', color:'var(--c-text)', display:'flex', flexDirection:'column', overflowX:'hidden', transition:'background 0.3s ease, color 0.3s ease' }}>
       {isMobile
         ? <MobileNavbar ctaLabel={tn.annuler} ctaHref="/flotte" />
         : <DesktopNav step={Math.min(step - 1, 4)} cancelLabel={tn.annuler} navLinks={navLinks} />
       }
 
       {/* Progress line */}
-      <div style={{ position:'fixed', top:navHeight, left:0, right:0, height:1, background:`${C.silver3}33`, zIndex:90 }}>
-        <motion.div style={{ height:'100%', background:'rgba(198,198,198,0.4)', transformOrigin:'left' }}
+      <div style={{ position:'fixed', top:navHeight, left:0, right:0, height:1, background:'var(--c-progress-track)', zIndex:90 }}>
+        <motion.div style={{ height:'100%', background:'var(--c-progress-fill)', transformOrigin:'left' }}
           animate={{ scaleX: step / 5 }} transition={{ duration:0.5, ease:[0.22,1,0.36,1] }} />
       </div>
 

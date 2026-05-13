@@ -75,6 +75,13 @@
   --c-loader:       #9E9890;
   --c-hover-text:   #FDFBF7;
 
+  /* booking / interactive */
+  --c-progress-track: rgba(176,170,159,0.2);
+  --c-progress-fill:  rgba(26,26,26,0.35);
+  --c-dash-active:    rgba(26,26,26,0.55);
+  --c-dash-inactive:  rgba(176,170,159,0.25);
+  --c-pill-bg-hover:  rgba(26,26,26,0.10);
+
   /* nav backgrounds */
   --c-nav-bg:       rgba(253,251,247,0.92);
   --c-nav-bar-bg:   rgba(253,251,247,0.94);
@@ -118,6 +125,13 @@ html.dark {
   --c-label:        #e0e0e0;
   --c-loader:       #c6c6c6;
   --c-hover-text:   #f6f6f6;
+
+  /* booking / interactive — dark mode */
+  --c-progress-track: rgba(60,60,59,0.33);
+  --c-progress-fill:  rgba(198,198,198,0.4);
+  --c-dash-active:    rgba(198,198,198,0.55);
+  --c-dash-inactive:  rgba(60,60,59,0.35);
+  --c-pill-bg-hover:  rgba(198,198,198,0.14);
 
   /* nav backgrounds — dark mode */
   --c-nav-bg:       rgba(10,10,10,0.92);
@@ -166,11 +180,20 @@ body {
   background: transparent;
 }
 
-input::placeholder {
-  color: #B0AA9F;
+input::placeholder,
+textarea::placeholder {
+  color: var(--c-silver3);
   letter-spacing: 0.1em;
   font-family: var(--font-prym);
 }
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: var(--c-silver2);
+}
+
+/* native date/time picker chrome follows theme */
+:root { color-scheme: light; }
+html.dark { color-scheme: dark; }
 
 .prym-field::placeholder {
   color: #B0AA9F;   /* warm taupe — legible on alabaster */
