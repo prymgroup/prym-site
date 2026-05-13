@@ -25,21 +25,20 @@ function useIsMobile() {
 useGLTF.preload(MODEL_PATH)
 
 
-function SignatureModel() {
+function SignatureModel({ modelScale = [3, 3, 3], initialRotationY = -Math.PI / 3 }) {
   const { scene } = useGLTF(MODEL_PATH)
   const ref   = useRef()
   const clone = scene.clone(true)
 
   useEffect(() => {
     if (!ref.current) return
+    ref.current.scale.set(...modelScale)
     const box    = new THREE.Box3().setFromObject(ref.current)
     const center = box.getCenter(new THREE.Vector3())
-    const size   = box.getSize(new THREE.Vector3())
-    const scale  = 3.8 / Math.max(size.x, size.y, size.z)
-    ref.current.scale.setScalar(scale)
-    ref.current.position.x = -center.x * scale
-    ref.current.position.y = -box.min.y * scale
-    ref.current.position.z = -center.z * scale
+    ref.current.position.x = -center.x
+    ref.current.position.y = -box.min.y
+    ref.current.position.z = -center.z
+    ref.current.rotation.y = initialRotationY
   }, [])
 
   useFrame((_, delta) => {
@@ -76,7 +75,7 @@ export default function HomePage() {
         </p>
 
         {/* H2 — primary */}
-        <h2 className="text-stone-900 dark:text-white text-5xl md:text-7xl font-light uppercase mt-5">
+        <h2 className="!text-stone-900 dark:!text-white text-5xl md:text-7xl font-light uppercase mt-5">
           LE MOUVEMENT,<br />ÉLEVÉ AU RANG<br />D'ART.
         </h2>
 
@@ -92,7 +91,7 @@ export default function HomePage() {
         {/* CTA buttons */}
         <div className="flex items-center gap-6 mt-8 relative z-10">
           <button
-            className="px-8 py-3 border border-stone-400 dark:border-stone-600 text-stone-900 dark:text-white uppercase tracking-widest text-sm hover:bg-stone-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+            className="!px-8 !py-4 border border-stone-400 dark:border-stone-600 !text-stone-900 dark:!text-white uppercase tracking-widest text-sm hover:!bg-stone-900 hover:!text-white dark:hover:!bg-white dark:hover:!text-black transition-colors"
             onClick={() => window.location.href = '/reserver'}
           >
             RÉSERVER
@@ -166,7 +165,7 @@ export default function HomePage() {
         <div className="absolute right-0 md:right-[-5%] top-1/2 -translate-y-1/2 w-full md:w-[60%] h-[500px] z-0 pointer-events-none">
           <Suspense fallback={null}>
             <Canvas
-              camera={{ position: [5, 2, 8], fov: 45 }}
+              camera={{ position: [0, 1.5, 6], fov: 35 }}
               gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
               className="w-full h-full"
               style={{ background: 'transparent' }}
@@ -177,7 +176,7 @@ export default function HomePage() {
               <directionalLight position={[0, -4, 6]} intensity={0.5} color="#fff5e8" />
               <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
               <Environment preset="city" />
-              <SignatureModel />
+              <SignatureModel modelScale={[3, 3, 3]} initialRotationY={-Math.PI / 3} />
             </Canvas>
           </Suspense>
         </div>
