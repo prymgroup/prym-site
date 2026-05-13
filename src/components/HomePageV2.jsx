@@ -40,7 +40,7 @@ function SignatureModel() {
     ref.current.position.z = -center.z
   }, [])
 
-  return <group ref={ref}><primitive object={clone} /></group>
+  return <group ref={ref} scale={3}><primitive object={clone} /></group>
 }
 
 const PILLARS = [
@@ -126,7 +126,7 @@ export default function HomePageV2() {
           transition={{ duration: 0.9, delay: 0.78 }}
         >
           <button
-            className="mt-12 px-10 py-4 border font-light uppercase tracking-[0.2em] text-sm transition-all hover:bg-[var(--c-text)] hover:text-[var(--c-bg)] inline-flex justify-center items-center"
+            className="mt-12 !px-10 !py-4 !border font-light uppercase tracking-[0.2em] text-sm transition-all hover:bg-[var(--c-text)] hover:text-[var(--c-bg)] !inline-flex justify-center items-center"
             style={{ borderColor: 'var(--c-silver3)', color: 'var(--c-text)', fontFamily: FONT_EU }}
             onClick={() => window.location.href = '/reserver'}
           >
@@ -306,7 +306,7 @@ export default function HomePageV2() {
           <ModelErrorBoundary fallback={<div style={{ width: '100%', height: '100%' }} />}>
             <Suspense fallback={null}>
               <Canvas
-                camera={{ position: [10, 3, 12], fov: 35 }}
+                camera={{ position: [8, 2, 10], fov: 35 }}
                 className="w-full h-full"
                 gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
                 style={{ background: 'transparent' }}
