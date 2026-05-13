@@ -67,21 +67,27 @@ export default function HomePage() {
       <section className="h-screen w-full snap-start flex flex-col justify-center px-8 md:px-24 relative">
 
         {/* eyebrow */}
-        <p
-          className="text-gray-500 dark:text-gray-400 uppercase tracking-widest"
-          style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.42em' }}
+        <span
+          className="text-xs uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 mb-4 block"
+          style={{ fontFamily: FONT_EU }}
         >
           PRYM Executive Transport — Maroc
-        </p>
+        </span>
 
         {/* H2 — primary */}
-        <h2 className="!text-stone-900 dark:!text-white text-5xl md:text-7xl font-light uppercase mt-5">
+        <h2
+          className="!text-stone-900 dark:!text-white text-5xl md:text-7xl font-light uppercase tracking-[0.08em]"
+          style={{ fontFamily: FONT_EU, lineHeight: 1.05 }}
+        >
           LE MOUVEMENT,<br />ÉLEVÉ AU RANG<br />D'ART.
         </h2>
 
+        {/* separator */}
+        <div className="w-12 h-px bg-stone-300 dark:bg-stone-700 my-6" />
+
         {/* subtitle — secondary */}
         <p
-          className="text-gray-500 dark:text-gray-400 mt-6 max-w-md"
+          className="text-stone-500 dark:text-stone-400 max-w-md"
           style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.2vw,16px)', lineHeight: 1.9 }}
         >
           Service de chauffeur privé ultra-premium au Maroc.<br />
@@ -126,19 +132,22 @@ export default function HomePage() {
 
         {/* text — z-10 so it sits above the car */}
         <div className="relative z-10 max-w-xs md:max-w-sm">
-          <p
-            className="text-gray-500 dark:text-gray-400 uppercase tracking-widest"
-            style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.42em' }}
+          <span
+            className="text-xs uppercase tracking-[0.2em] text-stone-500 dark:text-stone-400 mb-4 block"
+            style={{ fontFamily: FONT_EU }}
           >
             PRYM Signature — Tier III
-          </p>
+          </span>
+
+          {/* separator above heading */}
+          <div className="w-12 h-px bg-stone-300 dark:bg-stone-700 mb-6" />
 
           <h2
-            className="text-gray-900 dark:text-white mt-4"
+            className="text-stone-900 dark:text-white font-light uppercase tracking-[0.08em]"
             style={{
-              fontFamily: FONT_EU, fontWeight: 300,
+              fontFamily: FONT_EU,
               fontSize: 'clamp(28px,4vw,52px)',
-              letterSpacing: '0.04em', textTransform: 'uppercase', lineHeight: 0.97,
+              lineHeight: 1.18,
             }}
           >
             L'objet<br />de désir.
@@ -176,7 +185,7 @@ export default function HomePage() {
               <directionalLight position={[0, -4, 6]} intensity={0.5} color="#fff5e8" />
               <ContactShadows position={[0, -0.01, 0]} opacity={0.2} scale={20} blur={3} far={8} />
               <Environment preset="city" />
-              <SignatureModel modelScale={[3, 3, 3]} initialRotationY={-Math.PI / 3} />
+              <SignatureModel modelScale={[4, 4, 4]} initialRotationY={-0.5} />
             </Canvas>
           </Suspense>
         </div>
