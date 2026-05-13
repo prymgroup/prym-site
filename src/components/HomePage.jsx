@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, Suspense } from 'react'
 import { motion } from 'framer-motion'
-import RevealOnScroll from './RevealOnScroll'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { useGLTF, Environment, ContactShadows, Html, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
@@ -10,14 +9,26 @@ import MobileNavbar from './MobileNavbar'
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 const C = {
-  bg:      '#FDFBF7',
-  silver:  '#6B6867',
-  silver2: '#9E9890',
-  silver3: '#B0AA9F',
-  white:   '#1A1A1A',
+  bg:      'var(--c-bg)',
+  silver:  'var(--c-silver)',
+  silver2: 'var(--c-silver2)',
+  silver3: 'var(--c-silver3)',
+  white:   'var(--c-text)',
 }
 const GX  = 'clamp(24px,6vw,80px)'
 const GXM = 'clamp(24px,5vw,40px)'
+
+// Snap section base — all three sections share this
+const SNAP = {
+  height: '100vh',
+  scrollSnapAlign: 'start',
+  scrollSnapStop: 'always',
+  overflow: 'hidden',
+  position: 'relative',
+}
+
+// Top pad clears the fixed navbar
+const NAV_PAD = 'clamp(64px,10vh,80px)'
 
 /* ── Hooks ─────────────────────────────────────────────────────────────────── */
 function useIsMobile() {
@@ -36,7 +47,7 @@ useGLTF.preload(SIGNATURE_PATH)
 
 function SignatureModel() {
   const { scene } = useGLTF(SIGNATURE_PATH)
-  const ref = useRef()
+  const ref   = useRef()
   const clone = scene.clone(true)
 
   useEffect(() => {
@@ -61,7 +72,7 @@ function SignatureModel() {
 function Scene3DLoader() {
   return (
     <Html center>
-      <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', color: 'rgba(26,26,26,0.2)' }}>
+      <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', color: 'var(--c-silver3)' }}>
         CHARGEMENT
       </span>
     </Html>
@@ -103,34 +114,21 @@ function SignatureScene({ isMobile }) {
   )
 }
 
-/* ── 1. Hero ───────────────────────────────────────────────────────────────── */
+/* ── 1. Hero — LE MOUVEMENT ────────────────────────────────────────────────── */
 function HeroSection({ isMobile }) {
   return (
     <section style={{
-      minHeight: '100vh',
-      background: C.bg,
-      position: 'relative',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      paddingTop: 64,
-      paddingLeft:  isMobile ? GXM : GX,
-      paddingRight: isMobile ? GXM : GX,
+      ...SNAP,
+      display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      paddingTop: NAV_PAD,
+      paddingLeft:   isMobile ? GXM : GX,
+      paddingRight:  isMobile ? GXM : GX,
       paddingBottom: 'clamp(40px,6vh,60px)',
-      overflow: 'hidden',
     }}>
-
-      {/* Video placeholder */}
-      <div style={{ position: 'absolute', inset: 0, zIndex: 0, overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 65% 35%, #EDE9E3 0%, #FDFBF7 68%)' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(160deg, #EAE6DE 0%, #FDFBF7 55%)', opacity: 0.55 }} />
-        <span style={{
-          position: 'absolute', bottom: 20, right: isMobile ? 20 : 40,
-          fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.28em',
-          textTransform: 'uppercase', color: 'rgba(176,170,159,0.6)',
-        }}>
-          Video background — 1920×1080 — opacity 20%
-        </span>
+      {/* Background */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'var(--c-canvas-grad)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'var(--c-panel-grad)', opacity: 0.55 }} />
       </div>
 
       {/* Text block */}
@@ -139,7 +137,7 @@ function HeroSection({ isMobile }) {
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.7 }}
           style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.48em', textTransform: 'uppercase', color: C.silver3, marginBottom: isMobile ? 20 : 28 }}>
-          PRYM Executive Transport — Casablanca
+          PRYM Executive Transport — Maroc
         </motion.p>
 
         <motion.h1
@@ -161,12 +159,7 @@ function HeroSection({ isMobile }) {
         <motion.p
           initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ delay: 1.0, duration: 0.9 }}
-          style={{
-            fontFamily: FONT_SE,
-            fontSize: 'clamp(13px,1.3vw,16px)', color: C.silver2,
-            lineHeight: 1.9, maxWidth: 420,
-            marginBottom: isMobile ? 44 : 60,
-          }}>
+          style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,16px)', color: C.silver2, lineHeight: 1.9, maxWidth: 420, marginBottom: isMobile ? 44 : 60 }}>
           Service de chauffeur privé ultra-premium au Maroc.<br />
           Discrétion absolue. Ponctualité chirurgicale.
         </motion.p>
@@ -176,26 +169,23 @@ function HeroSection({ isMobile }) {
           transition={{ delay: 1.2, duration: 0.7 }}
           style={{ display: 'flex', gap: isMobile ? 24 : 40, alignItems: 'center', flexWrap: 'wrap' }}>
 
-          <a href="/reserver" data-cursor="hover"
+          <a href="/reserver"
             style={{
               fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.36em', textTransform: 'uppercase',
               color: C.white, textDecoration: 'none',
-              border: `1px solid ${C.silver3}`,
+              border: '1px solid var(--c-silver3)',
               padding: isMobile ? '13px 32px' : '18px 56px',
               transition: 'all 0.4s ease', display: 'inline-block',
             }}
-            onMouseEnter={e => { e.currentTarget.style.borderColor = C.silver; e.currentTarget.style.background = 'rgba(26,26,26,0.05)' }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = C.silver3; e.currentTarget.style.background = 'transparent' }}>
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)'; e.currentTarget.style.background = 'var(--c-pill-bg)' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)'; e.currentTarget.style.background = 'transparent' }}>
             Réserver
           </a>
 
           <a href="/flotte"
-            style={{
-              fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.36em', textTransform: 'uppercase',
-              color: C.silver3, textDecoration: 'none', transition: 'color 0.35s ease',
-            }}
-            onMouseEnter={e => e.currentTarget.style.color = C.silver}
-            onMouseLeave={e => e.currentTarget.style.color = C.silver3}>
+            style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.36em', textTransform: 'uppercase', color: C.silver3, textDecoration: 'none', transition: 'color 0.35s ease' }}
+            onMouseEnter={e => e.currentTarget.style.color = 'var(--c-silver)'}
+            onMouseLeave={e => e.currentTarget.style.color = 'var(--c-silver3)'}>
             La flotte &nbsp;→
           </a>
         </motion.div>
@@ -205,15 +195,11 @@ function HeroSection({ isMobile }) {
       <motion.div
         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         transition={{ delay: 2.2, duration: 1.2 }}
-        style={{
-          position: 'absolute', bottom: isMobile ? 28 : 40,
-          left: isMobile ? GXM : GX,
-          display: 'flex', flexDirection: 'column', gap: 10,
-        }}>
+        style={{ position: 'absolute', bottom: isMobile ? 28 : 40, left: isMobile ? GXM : GX, display: 'flex', flexDirection: 'column', gap: 10 }}>
         <motion.div
           animate={{ scaleY: [0, 1, 0] }}
           transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut', repeatDelay: 0.4 }}
-          style={{ width: 1, height: 40, background: `linear-gradient(180deg, transparent, ${C.silver3})`, transformOrigin: 'top' }} />
+          style={{ width: 1, height: 40, background: 'linear-gradient(180deg, transparent, var(--c-silver3))', transformOrigin: 'top' }} />
         <span style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.32em', textTransform: 'uppercase', color: C.silver3 }}>
           Scroll
         </span>
@@ -222,12 +208,12 @@ function HeroSection({ isMobile }) {
   )
 }
 
-/* ── 2. Section Flotte — L'OBJET DE DÉSIR ─────────────────────────────────── */
+/* ── 2. Flotte — L'OBJET DE DÉSIR ─────────────────────────────────────────── */
 function SectionFlotte({ isMobile }) {
   return (
     <section style={{
+      ...SNAP,
       background: C.bg,
-      minHeight: isMobile ? 'auto' : '100vh',
       display: isMobile ? 'flex' : 'grid',
       flexDirection: isMobile ? 'column' : undefined,
       gridTemplateColumns: isMobile ? undefined : 'repeat(12, 1fr)',
@@ -240,9 +226,10 @@ function SectionFlotte({ isMobile }) {
         viewport={{ once: true, margin: '-100px' }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
         style={{
           gridColumn: isMobile ? undefined : '1 / 5',
+          flexShrink: 0,
           padding: isMobile
-            ? `clamp(80px,12vw,120px) ${GXM} 40px`
-            : `clamp(80px,10vw,140px) 0 clamp(80px,10vw,140px) ${GX}`,
+            ? `${NAV_PAD} ${GXM} 32px`
+            : `clamp(64px,8vw,100px) 0 clamp(64px,8vw,100px) ${GX}`,
         }}>
         <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.42em', textTransform: 'uppercase', color: C.silver3, marginBottom: 20 }}>
           PRYM Signature — Tier III
@@ -255,21 +242,13 @@ function SectionFlotte({ isMobile }) {
         }}>
           L'objet<br />de désir.
         </h2>
-        <p style={{
-          fontFamily: FONT_SE,
-          fontSize: 'clamp(13px,1.2vw,15px)', color: C.silver2,
-          lineHeight: 1.9, maxWidth: 300, marginBottom: 44,
-        }}>
+        <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.2vw,15px)', color: C.silver2, lineHeight: 1.9, maxWidth: 300, marginBottom: 44 }}>
           La Mercedes Classe S. Le summum du raffinement, mis à votre service dans chaque déplacement.
         </p>
         <a href="/flotte"
-          style={{
-            fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase',
-            color: C.silver3, textDecoration: 'none', transition: 'color 0.35s ease',
-            display: 'inline-flex', alignItems: 'center', gap: 10,
-          }}
-          onMouseEnter={e => e.currentTarget.style.color = C.silver}
-          onMouseLeave={e => e.currentTarget.style.color = C.silver3}>
+          style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver3, textDecoration: 'none', transition: 'color 0.35s ease', display: 'inline-flex', alignItems: 'center', gap: 10 }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--c-silver)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'var(--c-silver3)'}>
           Explorer toute la flotte &nbsp;→
         </a>
       </motion.div>
@@ -280,9 +259,10 @@ function SectionFlotte({ isMobile }) {
         viewport={{ once: true, margin: '-80px' }} transition={{ duration: 1.6, delay: 0.2 }}
         style={{
           gridColumn: isMobile ? undefined : '5 / 13',
-          width:     isMobile ? '100vw' : undefined,
-          height:    isMobile ? '85vw'  : '100vh',
-          minHeight: isMobile ? 320     : 520,
+          flex: isMobile ? 1 : undefined,
+          width:     isMobile ? '100%' : undefined,
+          height:    isMobile ? undefined : '100vh',
+          minHeight: isMobile ? 260 : 520,
         }}>
         <Suspense fallback={null}>
           <SignatureScene isMobile={isMobile} />
@@ -292,21 +272,25 @@ function SectionFlotte({ isMobile }) {
   )
 }
 
-/* ── 3. CTA — Découvrez notre définition du temps ──────────────────────────── */
-function SectionCTA({ isMobile }) {
+/* ── 3. Closing — DÉCOUVREZ NOTRE DÉFINITION ───────────────────────────────── */
+function SectionClosing({ isMobile }) {
   return (
-    <motion.section
-      initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-80px' }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
-      style={{
-        background: C.bg,
-        borderTop: `1px solid ${C.silver3}50`,
-        padding: isMobile
-          ? `clamp(100px,18vw,140px) ${GXM}`
-          : `clamp(140px,18vw,220px) ${GX}`,
-      }}>
+    <section style={{
+      ...SNAP,
+      background: C.bg,
+      borderTop: '1px solid var(--c-border)',
+      display: 'flex', flexDirection: 'column', justifyContent: 'center',
+      paddingTop: NAV_PAD,
+      paddingLeft:   isMobile ? GXM : GX,
+      paddingRight:  isMobile ? GXM : GX,
+      paddingBottom: 'clamp(32px,5vh,48px)',
+    }}>
 
-      <div style={{ maxWidth: 720 }}>
+      <motion.div
+        initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+        style={{ maxWidth: 720 }}
+      >
         {/* Thin rule */}
         <div style={{ width: 48, height: 1, background: C.silver3, marginBottom: 48 }} />
 
@@ -315,22 +299,16 @@ function SectionCTA({ isMobile }) {
           fontFamily: FONT_EU, fontWeight: 300,
           fontSize: isMobile ? 'clamp(22px,7vw,36px)' : 'clamp(28px,3.2vw,44px)',
           letterSpacing: '0.06em', textTransform: 'uppercase',
-          color: C.silver, lineHeight: 1.25,
-          marginBottom: 56,
+          color: C.silver, lineHeight: 1.25, marginBottom: 56,
         }}>
           Découvrez notre<br />définition du temps.
         </p>
 
-        {/* Link */}
+        {/* CTA link */}
         <a href="/experience"
-          style={{
-            fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.42em', textTransform: 'uppercase',
-            color: C.silver3, textDecoration: 'none',
-            display: 'inline-flex', alignItems: 'center', gap: 14,
-            transition: 'color 0.35s ease',
-          }}
-          onMouseEnter={e => e.currentTarget.style.color = C.silver}
-          onMouseLeave={e => e.currentTarget.style.color = C.silver3}>
+          style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.42em', textTransform: 'uppercase', color: C.silver3, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 14, transition: 'color 0.35s ease' }}
+          onMouseEnter={e => e.currentTarget.style.color = 'var(--c-silver)'}
+          onMouseLeave={e => e.currentTarget.style.color = 'var(--c-silver3)'}>
           L'expérience PRYM
           <motion.span
             animate={{ x: [0, 5, 0] }}
@@ -339,31 +317,24 @@ function SectionCTA({ isMobile }) {
             →
           </motion.span>
         </a>
-      </div>
+      </motion.div>
 
-    </motion.section>
-  )
-}
-
-/* ── Footer ────────────────────────────────────────────────────────────────── */
-function PageFooter() {
-  return (
-    <RevealOnScroll delay={0.1} y={12}>
-      <footer style={{
-        background: C.bg,
-        padding: `32px ${GX}`,
-        borderTop: `1px solid ${C.silver3}50`,
+      {/* Footer line — pinned to bottom of section */}
+      <div style={{
+        position: 'absolute', bottom: 'clamp(20px,3vh,32px)',
+        left: isMobile ? GXM : GX, right: isMobile ? GXM : GX,
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        flexWrap: 'wrap', gap: 12,
+        flexWrap: 'wrap', gap: 8,
+        borderTop: '1px solid var(--c-border)', paddingTop: 20,
       }}>
         <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.38em', textTransform: 'uppercase', color: C.silver3, margin: 0 }}>
-          PRYM Executive Transport &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Casablanca
+          PRYM Executive Transport &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; Maroc
         </p>
         <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase', color: C.silver3, margin: 0 }}>
           prym.ma
         </p>
-      </footer>
-    </RevealOnScroll>
+      </div>
+    </section>
   )
 }
 
@@ -372,17 +343,20 @@ export default function HomePage() {
   const isMobile = useIsMobile()
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-    document.title = 'PRYM Executive Transport — Chauffeur Privé Luxe Casablanca'
+    document.title = 'PRYM Executive Transport — Chauffeur Privé Luxe Maroc'
   }, [])
 
   return (
-    <div style={{ background: C.bg, minHeight: '100vh', color: C.white, overflowX: 'hidden' }}>
+    <div style={{
+      background: C.bg, color: C.white,
+      height: '100vh', overflowY: 'scroll',
+      scrollSnapType: 'y mandatory',
+      transition: 'background 0.3s ease, color 0.3s ease',
+    }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
-      <HeroSection   isMobile={isMobile} />
-      <SectionFlotte isMobile={isMobile} />
-      <SectionCTA    isMobile={isMobile} />
-      <PageFooter />
+      <HeroSection    isMobile={isMobile} />
+      <SectionFlotte  isMobile={isMobile} />
+      <SectionClosing isMobile={isMobile} />
     </div>
   )
 }
