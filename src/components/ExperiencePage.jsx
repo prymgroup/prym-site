@@ -18,9 +18,19 @@ const C = {
   body:    'var(--c-silver)',
 }
 
-const GUTTER = 'clamp(40px, 6vw, 120px)'
-const SEC_V  = 'clamp(120px, 14vw, 200px)'
+const GUTTER  = 'clamp(40px, 6vw, 120px)'
 const COL_GAP = 'clamp(24px, 3vw, 52px)'
+
+// Shared snap base
+const SNAP = {
+  height: '100vh',
+  scrollSnapAlign: 'start',
+  scrollSnapStop: 'always',
+  overflow: 'hidden',
+}
+
+// Top pad clears the fixed navbar
+const SEC_PAD = `clamp(72px,10vh,96px) ${GUTTER} clamp(32px,5vh,48px)`
 
 function useIsMobile() {
   const [m, setM] = useState(() => window.innerWidth < 900)
@@ -32,6 +42,7 @@ function useIsMobile() {
   return m
 }
 
+/* ── Sub-components ────────────────────────────────────────────────────────── */
 function OlfactifVisual({ notes, credit, isAR }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
@@ -42,8 +53,7 @@ function OlfactifVisual({ notes, credit, isAR }) {
           style={{ display: 'flex', alignItems: 'center', gap: 20, flexDirection: isAR ? 'row-reverse' : 'row' }}
         >
           <div style={{
-            height: 1, flexShrink: 0,
-            width: `${72 - i * 12}px`,
+            height: 1, flexShrink: 0, width: `${72 - i * 12}px`,
             background: isAR
               ? 'linear-gradient(270deg, var(--c-silver), transparent)'
               : 'linear-gradient(90deg, var(--c-silver), transparent)',
@@ -67,20 +77,14 @@ function TempDisplay({ label, sub, isAR }) {
       viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       style={{ display: 'flex', flexDirection: 'column', gap: 16, direction: isAR ? 'rtl' : 'ltr' }}
     >
-      <p style={{
-        fontFamily: FONT_EU, fontWeight: 300,
-        fontSize: 'clamp(80px, 18vw, 120px)',
-        letterSpacing: '-0.02em', color: C.white, lineHeight: 1,
-      }}>
+      <p style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(80px, 18vw, 120px)', letterSpacing: '-0.02em', color: C.white, lineHeight: 1 }}>
         21°
       </p>
       <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
         {label}
       </p>
       <div style={{ width: 48, height: 1, background: C.silver3 }} />
-      <p style={{ fontFamily: FONT_SE, fontSize: 12, color: C.silver3 }}>
-        {sub}
-      </p>
+      <p style={{ fontFamily: FONT_SE, fontSize: 12, color: C.silver3 }}>{sub}</p>
     </motion.div>
   )
 }
@@ -100,9 +104,7 @@ function NDAList({ title, items, protect, isAR }) {
           <div key={item} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexDirection: isAR ? 'row-reverse' : 'row' }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%', border: '1px solid var(--c-silver3)', flexShrink: 0 }} />
-              <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body }}>
-                {item}
-              </span>
+              <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body }}>{item}</span>
             </div>
             <span style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: isAR ? '0.02em' : '0.22em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
               {protect}
@@ -141,72 +143,9 @@ function Timeline({ steps, isAR }) {
   )
 }
 
-function Hero({ t, isAR }) {
-  return (
-    <section style={{
-      minHeight: '100vh', display: 'flex', flexDirection: 'column',
-      alignItems: isAR ? 'flex-end' : 'flex-start', justifyContent: 'center',
-      padding: `clamp(80px, 12vw, 140px) ${GUTTER}`,
-      position: 'relative',
-      background: 'var(--c-hero-bg)',
-      direction: isAR ? 'rtl' : 'ltr',
-    }}>
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: 'var(--c-grid-line)',
-      }} />
-
-      <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}
-        style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.45em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 32 }}>
-        {t.eyebrow}
-      </motion.p>
-
-      <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(32px, 6vw, 72px)', letterSpacing: isAR ? '0.02em' : '0.12em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, lineHeight: 1.05, marginBottom: 32, maxWidth: 900 }}>
-        {t.h1a}<br />
-        <span style={{ color: C.silver }}>{t.h1b}</span>
-      </motion.h1>
-
-      <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.9, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        style={{ width: 80, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver), transparent)' : 'linear-gradient(90deg, var(--c-silver), transparent)', marginBottom: 36, transformOrigin: isAR ? 'right' : 'left' }} />
-
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.8 }}
-        style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px, 1.8vw, 18px)', color: C.body, lineHeight: 1.8, maxWidth: 560, whiteSpace: 'pre-line' }}>
-        {t.body}
-      </motion.p>
-
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.8 }}
-        style={{ position: 'absolute', bottom: 48, [isAR ? 'right' : 'left']: GUTTER, display: 'flex', flexDirection: 'column', alignItems: isAR ? 'flex-end' : 'flex-start', gap: 8 }}>
-        <span style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>{t.discover}</span>
-        <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut' }}
-          style={{ width: 1, height: 32, background: 'linear-gradient(180deg, var(--c-silver3), transparent)' }} />
-      </motion.div>
-    </section>
-  )
-}
-
-function Sec({ children, isMobile }) {
-  return (
-    <section style={{ padding: `${SEC_V} ${GUTTER}`, borderTop: '1px solid var(--c-border)', background: 'var(--c-bg)' }}>
-      <div style={{
-        display: isMobile ? 'flex' : 'grid',
-        flexDirection: 'column',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        gap: isMobile ? 'clamp(40px, 10vw, 64px)' : `0 ${COL_GAP}`,
-        maxWidth: 1400, margin: '0 auto',
-        alignItems: 'start',
-      }}>
-        {children}
-      </div>
-    </section>
-  )
-}
-
 function Narrative({ n, label, title, body, isAR }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', direction: isAR ? 'rtl' : 'ltr', textAlign: isAR ? 'right' : 'left' }}>
-
-      {/* number + optional label */}
       <RevealOnScroll delay={0} y={16} style={{ marginBottom: 28 }}>
         <span style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.3em', color: C.silver3, display: 'block', marginBottom: label ? 16 : 0 }}>
           {String(n).padStart(2, '0')} —
@@ -218,194 +157,226 @@ function Narrative({ n, label, title, body, isAR }) {
         )}
       </RevealOnScroll>
 
-      {/* heading + rule */}
-      <RevealOnScroll delay={0.1} y={20} style={{ marginBottom: 'clamp(28px, 4vw, 36px)' }}>
-        <h2 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(22px, 2.6vw, 32px)', letterSpacing: isAR ? '0.02em' : '0.08em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 'clamp(28px, 4vw, 36px)', lineHeight: 1.18 }}>
+      <RevealOnScroll delay={0.1} y={20} style={{ marginBottom: 'clamp(24px,3vw,32px)' }}>
+        <h2 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(22px, 2.6vw, 32px)', letterSpacing: isAR ? '0.02em' : '0.08em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 'clamp(24px,3vw,32px)', lineHeight: 1.18 }}>
           {title.split('\n').map((l, i, a) => <span key={i}>{l}{i < a.length - 1 && <br />}</span>)}
         </h2>
         <div style={{ width: 48, height: 1, background: C.silver3 }} />
       </RevealOnScroll>
 
-      {/* body text */}
       <RevealOnScroll delay={0.22} y={16}>
         <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px, 1.35vw, 15px)', color: C.body, lineHeight: 1.9 }}>
           {body}
         </p>
       </RevealOnScroll>
-
     </div>
   )
 }
 
-/* ── 50/50 Split — Image placeholder ↔ 21° + NDA ─────────────────────────── */
+/* ── Grid section wrapper ──────────────────────────────────────────────────── */
+function Sec({ children, isMobile }) {
+  return (
+    <section style={{
+      ...SNAP,
+      display: 'flex', alignItems: 'center',
+      padding: SEC_PAD,
+      borderTop: '1px solid var(--c-border)',
+      background: 'var(--c-bg)',
+    }}>
+      <div style={{
+        display: isMobile ? 'flex' : 'grid',
+        flexDirection: 'column',
+        gridTemplateColumns: 'repeat(12, 1fr)',
+        gap: isMobile ? 'clamp(32px, 8vw, 56px)' : `0 ${COL_GAP}`,
+        maxWidth: 1400, margin: '0 auto', width: '100%',
+        alignItems: 'start',
+      }}>
+        {children}
+      </div>
+    </section>
+  )
+}
+
+/* ── 50/50 Split ───────────────────────────────────────────────────────────── */
 function SplitSection({ s, isAR, isMobile }) {
   return (
-    <motion.section
-      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: '-60px' }} transition={{ duration: 1 }}
-      style={{ borderTop: '1px solid var(--c-border)', background: 'var(--c-bg)' }}
-    >
+    <section style={{
+      ...SNAP,
+      borderTop: '1px solid var(--c-border)',
+      background: 'var(--c-bg)',
+    }}>
       <div style={{
         display: isMobile ? 'flex' : 'grid',
         flexDirection: 'column',
         gridTemplateColumns: '1fr 1fr',
-        minHeight: isMobile ? 'auto' : 640,
+        height: '100%',
       }}>
-
         {/* Left — image placeholder */}
         <div style={{
           background: 'var(--c-split-img)',
-          height: isMobile ? '72vw' : 'auto',
-          minHeight: isMobile ? 280 : 640,
-          position: 'relative',
-          overflow: 'hidden',
-          display: 'flex',
-          alignItems: 'flex-end',
+          height: isMobile ? '45vh' : '100%',
+          position: 'relative', overflow: 'hidden',
+          display: 'flex', alignItems: 'flex-end',
           padding: 'clamp(20px,3vw,40px)',
         }}>
-          <div style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: 'var(--c-panel-grad)',
-          }} />
-          {/* Subtle vertical line texture */}
-          <div style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none',
-            background: 'var(--c-grid-line)',
-          }} />
-          <span style={{
-            position: 'relative', zIndex: 1,
-            fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.38em',
-            textTransform: 'uppercase', color: C.silver3, opacity: 0.45,
-          }}>
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'var(--c-panel-grad)' }} />
+          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'var(--c-grid-line)' }} />
+          <span style={{ position: 'relative', zIndex: 1, fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.38em', textTransform: 'uppercase', color: C.silver3, opacity: 0.45 }}>
             Intérieur PRYM Signature — Cuir nappa
           </span>
         </div>
 
-        {/* Right — 21° + NDA, vertically centered with breathing room */}
+        {/* Right — 21° + NDA */}
         <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          gap: 'clamp(52px, 9vw, 88px)',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+          gap: 'clamp(40px,7vw,72px)',
           padding: isMobile
-            ? `clamp(64px,14vw,80px) ${GUTTER}`
-            : `clamp(80px,10vw,120px) clamp(56px,7vw,96px)`,
+            ? `clamp(48px,10vw,64px) ${GUTTER}`
+            : `clamp(64px,8vw,96px) clamp(56px,7vw,96px)`,
+          overflowY: 'auto',
         }}>
           <TempDisplay label={s[3].tempLabel} sub={s[3].tempSub} isAR={isAR} />
           <NDAList title={s[4].ndaTitle} items={s[4].ndaItems} protect={s[4].ndaProtect} isAR={isAR} />
         </div>
-
       </div>
-    </motion.section>
+    </section>
   )
 }
 
-/* ── Full Screen Quote ─────────────────────────────────────────────────────── */
+/* ── Full-screen quote ─────────────────────────────────────────────────────── */
 function FullScreenQuote() {
   return (
-    <motion.section
-      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: '-100px' }} transition={{ duration: 1.4 }}
-      style={{
-        minHeight: '80vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: `clamp(80px, 12vw, 140px) ${GUTTER}`,
-        background: 'var(--c-quote-bg)',
-        borderTop: '1px solid var(--c-border)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Background numeral — purely decorative */}
+    <section style={{
+      ...SNAP,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: `0 ${GUTTER}`,
+      background: 'var(--c-quote-bg)',
+      borderTop: '1px solid var(--c-border)',
+      position: 'relative',
+    }}>
       <span aria-hidden style={{
         position: 'absolute',
         fontFamily: FONT_EU, fontWeight: 300,
         fontSize: 'clamp(160px, 35vw, 420px)',
         letterSpacing: '-0.04em',
         color: 'var(--c-prym-numeral)',
-        lineHeight: 1,
-        userSelect: 'none',
-        pointerEvents: 'none',
-        bottom: '-0.15em',
-        right: GUTTER,
+        lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
+        bottom: '-0.15em', right: GUTTER,
       }}>
         PRYM
       </span>
-
-      <p style={{
-        position: 'relative', zIndex: 1,
-        fontFamily: FONT_EU, fontWeight: 300,
-        fontSize: 'clamp(28px, 5.5vw, 72px)',
-        letterSpacing: '0.06em',
-        textTransform: 'uppercase',
-        color: C.white,
-        lineHeight: 1.2,
-        textAlign: 'center',
-        maxWidth: 1100,
-      }}>
+      <motion.p
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: '-100px' }} transition={{ duration: 1.4 }}
+        style={{
+          position: 'relative', zIndex: 1,
+          fontFamily: FONT_EU, fontWeight: 300,
+          fontSize: 'clamp(28px, 5.5vw, 72px)',
+          letterSpacing: '0.06em', textTransform: 'uppercase',
+          color: C.white, lineHeight: 1.2,
+          textAlign: 'center', maxWidth: 1100,
+        }}>
         Le silence est notre<br />
         <span style={{ color: C.silver }}>plus grand luxe.</span>
-      </p>
-    </motion.section>
+      </motion.p>
+    </section>
   )
 }
 
+/* ── Closing ───────────────────────────────────────────────────────────────── */
 function Closing({ t, isAR }) {
   return (
-    <motion.section
-      initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
-      viewport={{ once: true }} transition={{ duration: 1 }}
-      style={{ padding: `clamp(80px, 12vw, 140px) ${GUTTER}`, textAlign: 'center', background: 'var(--c-closing-bg)', borderTop: '1px solid var(--c-border)', direction: isAR ? 'rtl' : 'ltr' }}
-    >
-      <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.45em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 24 }}>
-        {t.eyebrow}
-      </p>
-      <h2 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(24px, 4vw, 48px)', letterSpacing: isAR ? '0.02em' : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 20, lineHeight: 1.1 }}>
-        {t.h2a}<br />
-        <span style={{ color: C.silver }}>{t.h2b}</span>
-      </h2>
-      <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px, 1.5vw, 16px)', color: C.body, lineHeight: 1.8, maxWidth: 480, margin: '0 auto 48px', whiteSpace: 'pre-line' }}>
-        {t.body}
-      </p>
-      <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <a href="/reserver" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-bg)', background: 'var(--c-silver)', padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
-          onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-text)' }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-silver)' }}>
-          {t.ctaBook}
-        </a>
-        <a href="/flotte" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver)', background: 'transparent', border: '1px solid var(--c-silver3)', padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)' }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)' }}>
-          {t.ctaFlotte}
-        </a>
-      </div>
-    </motion.section>
+    <section style={{
+      ...SNAP,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: `clamp(72px,10vh,96px) ${GUTTER} clamp(32px,5vh,48px)`,
+      textAlign: 'center',
+      background: 'var(--c-closing-bg)',
+      borderTop: '1px solid var(--c-border)',
+      direction: isAR ? 'rtl' : 'ltr',
+    }}>
+      <motion.div
+        initial={{ opacity: 0 }} whileInView={{ opacity: 1 }}
+        viewport={{ once: true }} transition={{ duration: 1 }}
+        style={{ maxWidth: 640 }}
+      >
+        <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.45em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 24 }}>
+          {t.eyebrow}
+        </p>
+        <h2 style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(24px, 4vw, 48px)', letterSpacing: isAR ? '0.02em' : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 20, lineHeight: 1.1 }}>
+          {t.h2a}<br /><span style={{ color: C.silver }}>{t.h2b}</span>
+        </h2>
+        <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px, 1.5vw, 16px)', color: C.body, lineHeight: 1.8, maxWidth: 480, margin: '0 auto 40px', whiteSpace: 'pre-line' }}>
+          {t.body}
+        </p>
+        <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a href="/reserver" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-bg)', background: 'var(--c-silver)', padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-text)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--c-silver)' }}>
+            {t.ctaBook}
+          </a>
+          <a href="/flotte" style={{ fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver)', background: 'transparent', border: '1px solid var(--c-silver3)', padding: '16px 40px', textDecoration: 'none', display: 'inline-block', transition: 'all 0.3s' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--c-silver)' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--c-silver3)' }}>
+            {t.ctaFlotte}
+          </a>
+        </div>
+      </motion.div>
+    </section>
   )
 }
 
+/* ── Page ──────────────────────────────────────────────────────────────────── */
 export default function ExperiencePage() {
   const isMobile = useIsMobile()
   const { lang } = useLanguage()
-  const te = T[lang].experience
+  const te   = T[lang].experience
   const isAR = lang === 'AR'
-  const s = te.sections
+  const s    = te.sections
 
   useEffect(() => {
-    window.scrollTo(0, 0)
-    document.title = 'L\'Expérience — PRYM Executive Transport'
+    document.title = "L'Expérience — PRYM Executive Transport"
   }, [])
 
   const tc = (col) => ({ gridColumn: isMobile ? undefined : col })
 
   return (
-    <div style={{ background: 'var(--c-bg)', minHeight: '100vh', color: 'var(--c-text)' }}>
+    <div style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
-      <Hero t={te.hero} isAR={isAR} />
+      {/* ── 1 · Hero ─────────────────────────────────────────────────── */}
+      <section style={{
+        ...SNAP,
+        display: 'flex', flexDirection: 'column',
+        alignItems: isAR ? 'flex-end' : 'flex-start', justifyContent: 'flex-end',
+        padding: `0 ${GUTTER} clamp(48px,8vh,80px)`,
+        background: 'var(--c-hero-bg)',
+        direction: isAR ? 'rtl' : 'ltr',
+        position: 'relative',
+      }}>
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'var(--c-grid-line)' }} />
 
-      {/* 01 — CHAUFFEUR */}
+        <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.8 }}
+          style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.45em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 32, position: 'relative', zIndex: 1 }}>
+          {te.hero.eyebrow}
+        </motion.p>
+
+        <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(32px, 6vw, 72px)', letterSpacing: isAR ? '0.02em' : '0.12em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, lineHeight: 1.05, marginBottom: 32, maxWidth: 900, position: 'relative', zIndex: 1 }}>
+          {te.hero.h1a}<br />
+          <span style={{ color: C.silver }}>{te.hero.h1b}</span>
+        </motion.h1>
+
+        <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.9, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          style={{ width: 80, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver), transparent)' : 'linear-gradient(90deg, var(--c-silver), transparent)', marginBottom: 36, transformOrigin: isAR ? 'right' : 'left', position: 'relative', zIndex: 1 }} />
+
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1, duration: 0.8 }}
+          style={{ fontFamily: FONT_SE, fontSize: 'clamp(14px, 1.8vw, 18px)', color: C.body, lineHeight: 1.8, maxWidth: 560, whiteSpace: 'pre-line', position: 'relative', zIndex: 1 }}>
+          {te.hero.body}
+        </motion.p>
+      </section>
+
+      {/* ── 2 · Chauffeur ────────────────────────────────────────────── */}
       <Sec isMobile={isMobile}>
         <div style={{ ...tc('1 / span 5') }}>
           <Narrative n={s[0].n} label={s[0].label} title={s[0].title} body={s[0].body} isAR={isAR} />
@@ -417,7 +388,7 @@ export default function ExperiencePage() {
         </div>
       </Sec>
 
-      {/* 02 — SIGNATURE OLFACTIVE */}
+      {/* ── 3 · Signature Olfactive ───────────────────────────────────── */}
       <Sec isMobile={isMobile}>
         <div style={{ ...tc('1 / span 5'), order: isMobile ? 2 : 1 }}>
           <OlfactifVisual notes={s[1].fragranceNotes} credit={s[1].fragranceCredit} isAR={isAR} />
@@ -427,13 +398,13 @@ export default function ExperiencePage() {
         </div>
       </Sec>
 
-      {/* 50/50 — Image placeholder + 21° & NDA */}
+      {/* ── 4 · 50/50 split — image + 21° + NDA ─────────────────────── */}
       <SplitSection s={s} isAR={isAR} isMobile={isMobile} />
 
-      {/* Full Screen Quote */}
+      {/* ── 5 · Full-screen quote ─────────────────────────────────────── */}
       <FullScreenQuote />
 
-      {/* 06 — PONCTUALITÉ */}
+      {/* ── 6 · Ponctualité ──────────────────────────────────────────── */}
       <Sec isMobile={isMobile}>
         <div style={{ ...tc('1 / span 5'), order: isMobile ? 2 : 1 }}>
           <Timeline steps={s[5].timeline} isAR={isAR} />
@@ -443,6 +414,7 @@ export default function ExperiencePage() {
         </div>
       </Sec>
 
+      {/* ── 7 · Closing ───────────────────────────────────────────────── */}
       <Closing t={te.closing} isAR={isAR} />
     </div>
   )

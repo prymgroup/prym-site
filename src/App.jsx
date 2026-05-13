@@ -4,7 +4,6 @@ import {
   useScroll,
   useSpring,
 } from 'framer-motion'
-import Lenis from 'lenis'
 import { ThemeProvider } from './context/ThemeContext'
 
 import HeroSection        from './components/HeroSection'
@@ -25,33 +24,6 @@ const HomePage    = lazy(() => import('./components/HomePage'))
 
 const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
-/* ── Lenis smooth scroll ────────────────────────────────────────── */
-function useLenis() {
-  useEffect(() => {
-    // Skip on touch devices (mobile/tablet) and when user prefers reduced motion.
-    // Lenis adds JS-driven scroll momentum on top of native scroll — on touch
-    // devices this doubles the scroll handling and causes dropped frames.
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const isTouch = window.matchMedia('(pointer: coarse)').matches
-    if (prefersReduced || isTouch) return
-
-    const lenis = new Lenis({
-      duration: 1.4,
-      easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smoothWheel: true,
-    })
-    let raf
-    function loop(time) {
-      lenis.raf(time)
-      raf = requestAnimationFrame(loop)
-    }
-    raf = requestAnimationFrame(loop)
-    return () => {
-      cancelAnimationFrame(raf)
-      lenis.destroy()
-    }
-  }, [])
-}
 
 /* ── Scroll progress bar ────────────────────────────────────────── */
 function ScrollProgress() {
@@ -119,19 +91,33 @@ function useLandingIsMobile() {
 }
 
 function LandingPage() {
-  useLenis()
   const isMobile = useLandingIsMobile()
   return (
-    <div className="grain" style={{ backgroundColor: 'var(--c-bg)', position: 'relative', minHeight: '100vh' }}>
-      <ScrollProgress />
+    <div className="grain" style={{ backgroundColor: 'var(--c-bg)', height: '100vh', overflow: 'hidden' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
-      <main style={{ position: 'relative', zIndex: 1 }}>
+      <main style={{
+        height: '100vh', overflowY: 'scroll',
+        scrollSnapType: 'y mandatory',
+      }}>
         <HeroSection />
         <ManifestoSection />
         <ScrollSection />
         <PromiseSection />
         <LeadCaptureSection />
       </main>
+    </div>
+  )
+}
+
+/* ── Global snap shell — wraps every multi-section page ────────── */
+function SnapPageShell({ children }) {
+  return (
+    <div className="grain" style={{
+      height: '100vh',
+      overflowY: 'scroll',
+      scrollSnapType: 'y mandatory',
+    }}>
+      {children}
     </div>
   )
 }
@@ -196,10 +182,10 @@ export default function App() {
   const isAfterTeasing = path === '/afterteasing'|| path === '/afterteasing/'
 
   function renderPage() {
-    if (isAPropos)      return <Suspense fallback={<BookingLoader />}><AProposPage /></Suspense>
-    if (isEntreprises)  return <Suspense fallback={<BookingLoader />}><EntreprisesPage /></Suspense>
+    if (isAPropos)      return <Suspense fallback={<BookingLoader />}><SnapPageShell><AProposPage /></SnapPageShell></Suspense>
+    if (isEntreprises)  return <Suspense fallback={<BookingLoader />}><SnapPageShell><EntreprisesPage /></SnapPageShell></Suspense>
     if (isFlotte)       return <Suspense fallback={<BookingLoader />}><FlottePage /></Suspense>
-    if (isExperience)   return <Suspense fallback={<BookingLoader />}><ExperiencePage /></Suspense>
+    if (isExperience)   return <Suspense fallback={<BookingLoader />}><SnapPageShell><ExperiencePage /></SnapPageShell></Suspense>
     if (isBooking)      return <Suspense fallback={<BookingLoader />}><BookingFlow /></Suspense>
     if (isAfterTeasing) return <Suspense fallback={<BookingLoader />}><HomePage /></Suspense>
     return <LandingPage />

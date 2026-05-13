@@ -225,11 +225,12 @@ export default function LeadCaptureSection() {
 
   return (
     <section style={{
-      minHeight: '100vh', display: 'flex', flexDirection: 'column',
+      height: '100vh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
-      padding: isMobile ? '5rem 2rem 4rem' : 'clamp(5rem, 10vh, 8rem) clamp(1.25rem, 5vw, 3rem)',
+      padding: isMobile ? '2rem 2rem 2rem' : 'clamp(2rem, 4vh, 3rem) clamp(1.25rem, 5vw, 3rem)',
       backgroundColor: 'var(--c-bg)', position: 'relative',
       transition: 'background-color 0.3s ease',
+      scrollSnapAlign: 'start', scrollSnapStop: 'always',
       direction: isAR ? 'rtl' : 'ltr',
     }}>
       <motion.div ref={cardRef}

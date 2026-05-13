@@ -307,7 +307,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
 
   return (
     <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}
-      style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden' }}>
+      style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden', scrollSnapAlign:'start', scrollSnapStop:'always' }}>
       <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:'1px solid var(--c-border-faint)', overflowY:'auto', scrollbarWidth:'none' }}>
         <motion.div initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.6, delay:0.1 }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:48 }}>
@@ -388,7 +388,6 @@ export default function FlottePage() {
   const tf = T[lang].flotte
 
   useEffect(() => {
-    window.scrollTo(0, 0)
     document.title = "La Flotte PRYM \u2014 6 Niveaux d'Excellence | Transport Executive Maroc"
     document.querySelector('meta[name="description"]')?.setAttribute('content', 'Découvrez la flotte PRYM : Select, Executive, Signature, Voyage, Lounge, Suite. Mercedes, Audi, BMW, Sprinter VIP. Chauffeur privé luxe au Maroc.')
     const params = new URLSearchParams(window.location.search)

@@ -1,5 +1,4 @@
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
@@ -47,30 +46,25 @@ function PromiseLine({ text, lang, index }) {
 }
 
 export default function PromiseSection() {
-  const { lang }   = useLanguage()
-  const t          = T[lang].teasing
-  const sectionRef = useRef(null)
-
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
-  const y       = useTransform(scrollYProgress, [0, 1],              [50, -50])
-  const opacity = useTransform(scrollYProgress, [0, 0.15, 0.85, 1], [0, 1, 1, 0])
+  const { lang } = useLanguage()
+  const t        = T[lang].teasing
 
   return (
-    <section ref={sectionRef} style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    <section style={{
+      height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '0 clamp(2rem, 8vw, 8rem)',
       backgroundColor: 'var(--c-bg)', position: 'relative',
       transition: 'background-color 0.3s ease',
+      scrollSnapAlign: 'start', scrollSnapStop: 'always',
     }}>
-      <motion.div style={{
-        y, opacity,
+      <div style={{
         display: 'flex', flexDirection: 'column', gap: 'clamp(1.8rem, 4vh, 3rem)',
-        maxWidth: 720, width: '100%', willChange: 'transform, opacity',
+        maxWidth: 720, width: '100%',
       }}>
         {t.promise.map((line, i) => (
           <PromiseLine key={i} text={line} lang={lang} index={i} />
         ))}
-      </motion.div>
+      </div>
     </section>
   )
 }

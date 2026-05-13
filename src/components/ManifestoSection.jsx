@@ -1,5 +1,4 @@
-import { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useInView } from '../hooks/useInView'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
@@ -40,30 +39,20 @@ function WordReveal({ text, lang, delay = 0 }) {
 }
 
 export default function ManifestoSection() {
-  const { lang }   = useLanguage()
-  const t          = T[lang].teasing
-  const sectionRef = useRef(null)
-
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
-  const y          = useTransform(scrollYProgress, [0, 0.5, 1],          [60, 0, -60])
-  const opacity    = useTransform(scrollYProgress, [0, 0.2,  0.7,  1],   [0, 1, 1, 0])
-  const blurVal    = useTransform(scrollYProgress, [0, 0.18, 0.72, 1],   [14, 0, 0, 14])
-  const blurFilter = useTransform(blurVal, v => `blur(${v}px)`)
+  const { lang } = useLanguage()
+  const t        = T[lang].teasing
 
   return (
-    <section ref={sectionRef} style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    <section style={{
+      height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '0 clamp(1.5rem, 6vw, 5rem)',
       backgroundColor: 'var(--c-bg)', position: 'relative',
       transition: 'background-color 0.3s ease',
+      scrollSnapAlign: 'start', scrollSnapStop: 'always',
     }}>
-      <motion.div style={{
-        y, opacity, filter: blurFilter,
-        textAlign: 'center', maxWidth: 1000,
-        willChange: 'transform, opacity, filter',
-      }}>
+      <div style={{ textAlign: 'center', maxWidth: 1000 }}>
         <WordReveal text={t.manifesto} lang={lang} delay={0} />
-      </motion.div>
+      </div>
     </section>
   )
 }

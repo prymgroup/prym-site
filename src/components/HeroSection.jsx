@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 
@@ -17,13 +17,6 @@ export default function HeroSection() {
   const t = T[lang].teasing
   const isAR = lang === 'AR'
 
-  const { scrollY } = useScroll()
-  const yOffset = useTransform(scrollY, [0, 700], [0, -100])
-  const opacity  = useTransform(scrollY, [0, 500], [1, 0])
-  const scale    = useTransform(scrollY, [0, 700], [1, 0.94])
-  const blurRaw  = useTransform(scrollY, [0, 500], [0, 8])
-  const filter   = useTransform(blurRaw, v => `blur(${v}px)`)
-
   return (
     <section style={{
       height: '100vh', display: 'flex', flexDirection: 'column',
@@ -31,6 +24,7 @@ export default function HeroSection() {
       position: 'relative', overflow: 'hidden',
       backgroundColor: 'var(--c-bg)',
       transition: 'background-color 0.3s ease',
+      scrollSnapAlign: 'start', scrollSnapStop: 'always',
     }}>
       {/* Subtle warm radial highlight */}
       <div aria-hidden style={{
@@ -40,10 +34,8 @@ export default function HeroSection() {
       }} />
 
       <motion.div style={{
-        y: yOffset, opacity, scale, filter,
         position: 'relative', zIndex: 2,
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        willChange: 'transform, opacity, filter',
       }}>
         {/* ── Logo — native silver chrome, wipe-in reveal ───────────────── */}
         <motion.img
@@ -82,7 +74,7 @@ export default function HeroSection() {
           position: 'absolute', bottom: '2.8rem', left: '50%',
           transform: 'translateX(-50%)',
           display: 'flex', flexDirection: 'column', alignItems: 'center',
-          gap: '0.75rem', opacity,
+          gap: '0.75rem',
         }}
       >
         <span style={{
