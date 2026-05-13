@@ -12,7 +12,7 @@ export const T = {
       'La précision du timing.',
     ],
     scroll:  'Scroll',
-    tagline: 'Casablanca · 2026',
+    tagline: 'Maroc · 2026',
     lead: {
       label:       'Accès Prioritaire — Conciergerie Privée',
       intro:       "L'accès à notre flotte initiale sera restreint. Déposez vos coordonnées pour un accès prioritaire.",
@@ -22,7 +22,7 @@ export const T = {
       error:       'Champs incomplets ou email invalide.',
       success:     'Accès demandé.',
       discretion:  'Discrétion absolue. Aucune communication secondaire.',
-      footer:      'PRYM Executive Transport · 2026 · Casablanca',
+      footer:      'PRYM Executive Transport · 2026 · Maroc',
     },
   },
 
@@ -35,7 +35,7 @@ export const T = {
       'The accuracy of timing.',
     ],
     scroll:  'Scroll',
-    tagline: 'Casablanca · 2026',
+    tagline: 'Maroc · 2026',
     lead: {
       label:       'Priority Access — Private Concierge',
       intro:       'Access to our initial fleet will be restricted. Submit your details for priority access.',
@@ -45,7 +45,7 @@ export const T = {
       error:       'Incomplete fields or invalid email.',
       success:     'Access requested.',
       discretion:  'Absolute discretion. No secondary communications.',
-      footer:      'PRYM Executive Transport · 2026 · Casablanca',
+      footer:      'PRYM Executive Transport · 2026 · Maroc',
     },
   },
 
@@ -58,7 +58,7 @@ export const T = {
       'ضبط التوقيت.',
     ],
     scroll:  'مرر',
-    tagline: 'الدار البيضاء · 2026',
+    tagline: 'المغرب · 2026',
     lead: {
       label:       'وصول أولوي — كونسيرج خاص',
       intro:       'سيكون الوصول إلى أسطولنا الأولي محدوداً. أودع بياناتك للحصول على وصول أولوي.',
@@ -68,7 +68,7 @@ export const T = {
       error:       'حقول غير مكتملة أو بريد إلكتروني غير صالح.',
       success:     'تم طلب الوصول.',
       discretion:  'سرية تامة. لا اتصالات ثانوية.',
-      footer:      'PRYM Executive Transport · 2026 · الدار البيضاء',
+      footer:      'PRYM Executive Transport · 2026 · المغرب',
     },
   },
 }
