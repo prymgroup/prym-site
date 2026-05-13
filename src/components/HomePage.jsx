@@ -62,14 +62,16 @@ function CarCanvas({ isMobile }) {
     <Canvas
       camera={{ fov: isMobile ? 52 : 38, near: 0.1, far: 100 }}
       gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2 }}
-      style={{ background: 'transparent', width: '100%', height: '100%' }}
+      className="w-full h-full"
+      style={{ background: 'transparent' }}
     >
       <SceneCamera isMobile={isMobile} />
-      <directionalLight position={[6, 8, -4]}  intensity={2.5} color="#fff5e8" castShadow />
-      <directionalLight position={[-8, 4, 2]}  intensity={0.8} color="#e8f0ff" />
-      <directionalLight position={[-1, 5, 6]}  intensity={1.8} color="#c8d8ff" />
-      <ambientLight intensity={0.12} />
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.35} scale={20} blur={3} far={8} />
+      {/* Action 2 — boosted lighting so black-painted GLB reflects on light bg */}
+      <ambientLight intensity={1.5} />
+      <directionalLight position={[10, 10, 5]}  intensity={2} />
+      <directionalLight position={[-6, 8, -4]} intensity={1.2} color="#e8f0ff" />
+      <directionalLight position={[0, -4, 6]}  intensity={0.6} color="#fff5e8" />
+      <ContactShadows position={[0, -0.01, 0]} opacity={0.25} scale={20} blur={3} far={8} />
       <Environment preset="studio" />
       <Suspense fallback={null}>
         <SignatureModel />
@@ -126,23 +128,24 @@ export default function HomePage() {
           Discrétion absolue. Ponctualité chirurgicale.
         </p>
 
-        {/* ghost button — exact classes from spec */}
-        <button
-          className="mt-10 px-8 py-3 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white uppercase tracking-widest text-sm hover:bg-gray-900 hover:text-white transition-colors w-fit"
-          style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.32em', background: 'none', cursor: 'pointer' }}
-          onClick={() => window.location.href = '/reserver'}
-        >
-          RÉSERVER
-        </button>
+        {/* Action 3 — flex wrapper eliminates overlap between button and link */}
+        <div className="flex flex-wrap items-center gap-6 mt-8">
+          <button
+            className="px-8 py-3 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white uppercase tracking-widest text-sm hover:bg-gray-900 hover:text-white transition-colors w-fit"
+            style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.32em', background: 'none', cursor: 'pointer' }}
+            onClick={() => window.location.href = '/reserver'}
+          >
+            RÉSERVER
+          </button>
 
-        {/* secondary link */}
-        <a
-          href="/flotte"
-          className="mt-6 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest"
-          style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.32em', textDecoration: 'none' }}
-        >
-          La flotte &nbsp;→
-        </a>
+          <a
+            href="/flotte"
+            className="text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors uppercase tracking-widest"
+            style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.32em', textDecoration: 'none' }}
+          >
+            La flotte &nbsp;→
+          </a>
+        </div>
 
         {/* scroll pulse */}
         <div className="absolute bottom-10 left-8 md:left-24 flex flex-col items-center gap-2">
@@ -201,8 +204,8 @@ export default function HomePage() {
           </a>
         </div>
 
-        {/* car — absolutely positioned, never breaks text flow */}
-        <div className="absolute right-[-10%] top-1/2 -translate-y-1/2 w-[80%] md:w-[60%] z-0 pointer-events-none" style={{ height: '80%' }}>
+        {/* Action 1 — explicit h-[400px] md:h-[700px] so Canvas has a real height to render into */}
+        <div className="absolute right-[-20%] md:right-[-10%] top-1/2 -translate-y-1/2 w-[100%] md:w-[60%] h-[400px] md:h-[700px] z-0 pointer-events-none">
           <CarCanvas isMobile={isMobile} />
         </div>
       </section>
