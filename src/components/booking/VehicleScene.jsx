@@ -1,10 +1,10 @@
 import { Suspense, useRef, useEffect, useState, useCallback, Component } from 'react'
 import { useIsMobile } from '../../hooks/useIsMobile'
-
-const FONT_EU = FONT_EU
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { useGLTF, OrbitControls, Environment, ContactShadows, Html } from '@react-three/drei'
 import * as THREE from 'three'
+
+const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
 // Catches useGLTF errors (e.g. 404 in production) so a missing GLB never
 // crashes the whole page. key=modelPath resets the boundary on tier switch.

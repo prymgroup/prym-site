@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useLanguage } from '../../../context/LanguageContext'
 import { T } from '../../../i18n/translations'
 
-const FONT_EU = FONT_EU
+const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
 const IS = {
   width: '100%',

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-const FONT_EU = FONT_EU
+const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
 const PASSWORD   = 'tahra'
 const STORAGE_KEY = 'prym_auth'
