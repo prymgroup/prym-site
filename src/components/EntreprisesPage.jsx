@@ -159,7 +159,7 @@ function ContactForm({ isMobile }) {
             const active = form.besoins.includes(b)
             return (
               <button key={b} onClick={()=>toggleBesoin(b)}
-                style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', padding:'4px 0', cursor:'pointer', transition:'color 0.2s', background:'none', border:'none', color: active ? 'var(--c-text)' : 'var(--c-silver3)', fontWeight: active ? 500 : 300 }}>
+                style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.22em', textTransform:'uppercase', padding:'4px 0', cursor:'pointer', transition:'color 0.2s', background:'none', border:'none', color: active ? 'var(--c-text)' : 'var(--c-silver3)', fontWeight: active ? 400 : 300 }}>
                 {b}
               </button>
             )
@@ -188,7 +188,7 @@ function ContactForm({ isMobile }) {
         {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
       </button>
       {status === 'error' && (
-        <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:12, color:'rgba(200,100,100,0.7)' }}>
+        <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:12, color:'var(--c-error)' }}>
           Une erreur est survenue. Veuillez nous contacter directement.
         </p>
       )}

@@ -26,10 +26,10 @@ export default function HeroSection() {
       transition: 'background-color 0.3s ease',
       scrollSnapAlign: 'start', scrollSnapStop: 'always',
     }}>
-      {/* Subtle warm radial highlight */}
+      {/* Warm radial highlight — adapts to theme via --c-hero-glow */}
       <div aria-hidden style={{
         position: 'absolute', inset: 0,
-        background: 'radial-gradient(ellipse 60% 50% at 50% 48%, rgba(214,208,196,0.18) 0%, transparent 70%)',
+        background: 'var(--c-hero-glow)',
         pointerEvents: 'none',
       }} />
 

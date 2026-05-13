@@ -6,7 +6,7 @@ import { useLanguage } from '../context/LanguageContext'
 import { T } from '../i18n/translations'
 import RevealOnScroll from './RevealOnScroll'
 
-const FONT_EU = '"Eurostile", "Russo One", "Helvetica Neue", Arial, sans-serif'
+const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
 
 const C = {
@@ -233,7 +233,6 @@ function SplitSection({ s, isAR, isMobile }) {
           padding: isMobile
             ? `clamp(48px,10vw,64px) ${GUTTER}`
             : `clamp(64px,8vw,96px) clamp(56px,7vw,96px)`,
-          overflowY: 'auto',
         }}>
           <TempDisplay label={s[3].tempLabel} sub={s[3].tempSub} isAR={isAR} />
           <NDAList title={s[4].ndaTitle} items={s[4].ndaItems} protect={s[4].ndaProtect} isAR={isAR} />

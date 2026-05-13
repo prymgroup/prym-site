@@ -86,7 +86,7 @@ function SceneContent({ modelPath, isMobile }) {
       <directionalLight position={[-8, 4, 2]} intensity={0.8} color="#e8f0ff" />
       <directionalLight position={[-1, 5, 6]} intensity={1.8} color="#c8d8ff" />
       <ambientLight intensity={1.4} />
-      <ContactShadows position={[0, -0.01, 0]} opacity={0.5} scale={20} blur={2.5} far={8} color="#000" />
+      <ContactShadows position={[0, -0.01, 0]} opacity={0.5} scale={20} blur={2.5} far={8} color="#4a4a48" />
       <Environment preset="studio" />
       <Suspense fallback={<Loader3D label="..." />}>
         <VehicleModel path={modelPath} />

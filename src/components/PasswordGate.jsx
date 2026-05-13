@@ -39,7 +39,7 @@ export default function PasswordGate({ children }) {
 
   return (
     <div style={{
-      background: '#0a0a0a',
+      background: '#0a0a0a', /* intentionally dark-locked — pre-theme access gate */
       height: '100dvh',
       display: 'flex',
       flexDirection: 'column',
@@ -96,7 +96,7 @@ export default function PasswordGate({ children }) {
             width: '100%',
             background: 'transparent',
             border: 'none',
-            borderBottom: `1px solid ${error ? 'rgba(180,60,60,0.7)' : 'rgba(198,198,198,0.25)'}`,
+            borderBottom: `1px solid ${error ? 'var(--c-error)' : 'rgba(198,198,198,0.25)'}`,
             color: '#f6f6f6',
             textAlign: 'center',
             fontSize: 14,
@@ -122,7 +122,7 @@ export default function PasswordGate({ children }) {
                 fontSize: 8,
                 letterSpacing: '0.3em',
                 textTransform: 'uppercase',
-                color: 'rgba(180,60,60,0.85)',
+                color: 'var(--c-error)',
               }}
             >
               Accès refusé

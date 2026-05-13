@@ -120,7 +120,7 @@ function TabSwitch({ mode, onChange, labels }) {
             style={{
               background: 'none', border: 'none', cursor: 'pointer', fontFamily: FONT,
               fontSize: '0.62rem', letterSpacing: '0.36em', textTransform: 'uppercase',
-              fontWeight: active ? 500 : 300,
+              fontWeight: active ? 400 : 300,
               color: active ? 'var(--c-text)' : (hovered === tab.id ? 'var(--c-text)' : 'var(--c-silver2)'),
               padding: 0, transition: 'color 0.35s',
             }}>
