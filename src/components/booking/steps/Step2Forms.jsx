@@ -95,64 +95,58 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
 }
 
 // ── PlaceInput ────────────────────────────────────────────────────────────────
-// Uses google.maps.places.AutocompleteService (programmatic API — not blocked
-// for new accounts) instead of the deprecated Autocomplete UI widget.
-// Renders a fully custom dropdown so the design system is preserved exactly.
-// Falls back to a plain <input> when isLoaded=false (no API key / not ready).
+// Uses google.maps.places.AutocompleteSuggestion (new Places API, 2025).
+// Static async method — no service instances needed.
+// Custom dropdown keeps full design-system control; 'ma' restriction preserved.
 function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder, focused, onFocus, onBlur, isAR }) {
-  const [predictions, setPredictions] = useState([])
-  const [open, setOpen] = useState(false)
-  const svcRef = useRef(null)
-  const geoRef = useRef(null)
+  const [suggestions, setSuggestions] = useState([])
+  const [open, setOpen]               = useState(false)
+  const debounceRef                   = useRef(null)
 
-  // Initialise services once the Maps script is ready
-  useEffect(() => {
-    if (isLoaded && window.google?.maps?.places) {
-      svcRef.current = new window.google.maps.places.AutocompleteService()
-      geoRef.current  = new window.google.maps.Geocoder()
+  // Cancel pending debounce on unmount
+  useEffect(() => () => clearTimeout(debounceRef.current), [])
+
+  const fetchSuggestions = async (val) => {
+    if (!val.trim() || !isLoaded || !window.google?.maps?.places?.AutocompleteSuggestion) {
+      setSuggestions([])
+      return
     }
-  }, [isLoaded])
-
-  const fetchPredictions = (val) => {
-    if (!val.trim() || !svcRef.current) { setPredictions([]); return }
-    svcRef.current.getPlacePredictions(
-      { input: val, componentRestrictions: { country: 'ma' } },
-      (results, status) => {
-        setPredictions(status === 'OK' ? (results || []) : [])
-      }
-    )
+    try {
+      const { suggestions: results } =
+        await window.google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input: val,
+          componentRestrictions: { country: 'ma' },
+        })
+      setSuggestions(results || [])
+    } catch {
+      setSuggestions([])
+    }
   }
 
   const handleChange = (val) => {
     onTextChange(val)
-    fetchPredictions(val)
     setOpen(true)
+    clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => fetchSuggestions(val), 250)
   }
 
-  const handleSelect = (prediction) => {
-    onTextChange(prediction.description)
-    setPredictions([])
+  const handleSelect = async (suggestion) => {
+    const pred        = suggestion.placePrediction
+    const displayText = pred.text.text
+    onTextChange(displayText)
+    setSuggestions([])
     setOpen(false)
-    // Resolve coordinates via Geocoder — still fully available for new accounts
-    if (geoRef.current) {
-      geoRef.current.geocode({ placeId: prediction.place_id }, (results, status) => {
-        if (status === 'OK' && results[0]) {
-          const loc = results[0].geometry.location
-          onPlaceSelect(prediction.description, loc.lat(), loc.lng())
-        } else {
-          onPlaceSelect(prediction.description, null, null)
-        }
-      })
-    } else {
-      onPlaceSelect(prediction.description, null, null)
+    try {
+      const place = pred.toPlace()
+      await place.fetchFields({ fields: ['location', 'formattedAddress'] })
+      onPlaceSelect(
+        place.formattedAddress || displayText,
+        place.location.lat(),
+        place.location.lng(),
+      )
+    } catch {
+      onPlaceSelect(displayText, null, null)
     }
-  }
-
-  const inputStyle = {
-    ...IS,
-    ...(focused ? IS_FOCUS : {}),
-    textAlign: isAR ? 'right' : 'left',
-    direction: isAR ? 'rtl' : 'ltr',
   }
 
   return (
@@ -162,27 +156,26 @@ function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder,
         onChange={e => handleChange(e.target.value)}
         placeholder={placeholder}
         autoComplete="off"
-        style={inputStyle}
-        onFocus={() => { onFocus(); if (predictions.length) setOpen(true) }}
+        style={{
+          ...IS,
+          ...(focused ? IS_FOCUS : {}),
+          textAlign: isAR ? 'right' : 'left',
+          direction:  isAR ? 'rtl'   : 'ltr',
+        }}
+        onFocus={() => { onFocus(); if (suggestions.length) setOpen(true) }}
         onBlur={() => { onBlur(); setTimeout(() => setOpen(false), 160) }}
       />
-      {open && predictions.length > 0 && (
+      {open && suggestions.length > 0 && (
         <div style={{
-          position: 'absolute',
-          top: '100%',
-          left: 0,
-          right: 0,
-          zIndex: 1000,
+          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 1000,
           background: 'var(--c-bg)',
-          borderWidth: 1,
-          borderStyle: 'solid',
-          borderColor: 'var(--c-silver3)',
+          borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)',
           borderTopWidth: 0,
         }}>
-          {predictions.map((p, i) => (
+          {suggestions.map((s, i) => (
             <div
-              key={p.place_id}
-              onMouseDown={() => handleSelect(p)}
+              key={s.placePrediction.placeId}
+              onMouseDown={() => handleSelect(s)}
               style={{
                 padding: '10px 14px',
                 cursor: 'pointer',
@@ -198,7 +191,7 @@ function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder,
               onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-surface)' }}
               onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
             >
-              {p.description}
+              {s.placePrediction.text.text}
             </div>
           ))}
         </div>
