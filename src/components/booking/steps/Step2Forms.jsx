@@ -251,6 +251,126 @@ function DatePicker({ value, onChange, min, style }) {
   )
 }
 
+// ── TimePicker ────────────────────────────────────────────────────────────────
+// Two-column overlay (hours 00-23 · minutes 00/05/…/55). Selecting a minute
+// fires onChange and closes. Selecting an hour updates value and stays open.
+// API matches native <input type="time">: value='HH:MM', onChange({ target }).
+const HOURS   = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0'))
+const MINUTES = ['00','05','10','15','20','25','30','35','40','45','50','55']
+
+function TimePicker({ value, onChange, style }) {
+  const [open, setOpen] = useState(false)
+  const wrapRef  = useRef(null)
+  const hRef     = useRef(null)
+  const mRef     = useRef(null)
+
+  const [selH, selM] = value ? value.split(':') : ['', '']
+
+  // Outside-click closes
+  useEffect(() => {
+    if (!open) return
+    const h = (e) => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [open])
+
+  // Scroll selected row into view on open
+  useEffect(() => {
+    if (!open) return
+    const scrollTo = (ref, val, list) => {
+      if (!ref.current || !val) return
+      const idx = list.indexOf(val)
+      if (idx < 0) return
+      const itemH = ref.current.scrollHeight / list.length
+      ref.current.scrollTop = itemH * idx - (ref.current.clientHeight - itemH) / 2
+    }
+    setTimeout(() => { scrollTo(hRef, selH, HOURS); scrollTo(mRef, selM, MINUTES) }, 0)
+  }, [open]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const colStyle = { overflowY: 'auto', scrollbarWidth: 'none', msOverflowStyle: 'none' }
+  const itemStyle = (isSel) => ({
+    display: 'block', width: '100%', padding: '9px 0', textAlign: 'center',
+    fontFamily: FONT_EU, fontSize: 11, letterSpacing: '0.08em',
+    borderRadius: 0, border: 'none', cursor: 'pointer',
+    background: isSel ? 'var(--c-text)' : 'transparent',
+    color:      isSel ? 'var(--c-bg)'   : 'var(--c-text)',
+    transition: 'background 0.12s',
+  })
+
+  const pickH = (h) => {
+    onChange({ target: { value: `${h}:${selM || '00'}` } })
+    // keep open so user can then pick minutes
+  }
+  const pickM = (m) => {
+    onChange({ target: { value: `${selH || '00'}:${m}` } })
+    setOpen(false)
+  }
+
+  return (
+    <div ref={wrapRef} style={{ position: 'relative' }}>
+      {/* Trigger */}
+      <input
+        readOnly
+        value={value || ''}
+        placeholder="HH : MM"
+        onClick={() => setOpen(v => !v)}
+        style={{ ...style, cursor: 'pointer', caretColor: 'transparent' }}
+      />
+
+      {/* Overlay */}
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 6px)', left: 0,
+          zIndex: 200, width: '100%', minWidth: 160,
+          background: 'var(--c-bg)',
+          borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)',
+          borderRadius: 0, boxShadow: 'none', overflow: 'hidden',
+        }}>
+          {/* Column headers */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr',
+            borderBottomWidth: 1, borderBottomStyle: 'solid', borderBottomColor: 'var(--c-silver3)' }}>
+            {['HEURE','MIN'].map((l, i) => (
+              <div key={l} style={{
+                fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.3em', textTransform: 'uppercase',
+                color: 'var(--c-silver3)', padding: '7px 0', textAlign: 'center',
+                borderRightWidth: i === 0 ? 1 : 0, borderRightStyle: 'solid', borderRightColor: 'var(--c-silver3)',
+              }}>{l}</div>
+            ))}
+          </div>
+
+          {/* Scrollable columns */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', height: 200 }}>
+            <div ref={hRef} style={{ ...colStyle, borderRightWidth: 1, borderRightStyle: 'solid', borderRightColor: 'var(--c-silver3)' }}>
+              {HOURS.map(h => {
+                const isSel = h === selH
+                return (
+                  <button key={h} type="button" onClick={() => pickH(h)} style={itemStyle(isSel)}
+                    onMouseEnter={e => { if (!isSel) e.currentTarget.style.background = 'var(--c-surface)' }}
+                    onMouseLeave={e => { if (!isSel) e.currentTarget.style.background = 'transparent' }}>
+                    {h}
+                  </button>
+                )
+              })}
+            </div>
+            <div ref={mRef} style={colStyle}>
+              {MINUTES.map(m => {
+                const isSel = m === selM
+                return (
+                  <button key={m} type="button" onClick={() => pickM(m)} style={itemStyle(isSel)}
+                    onMouseEnter={e => { if (!isSel) e.currentTarget.style.background = 'var(--c-surface)' }}
+                    onMouseLeave={e => { if (!isSel) e.currentTarget.style.background = 'transparent' }}>
+                    {m}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── MapPicker ─────────────────────────────────────────────────────────────────
 // Flow: click → drop pin + geocode → show confirmation bar → CONFIRMER closes.
 function MapPicker({ isLoaded, center, onConfirm }) {
@@ -554,13 +674,10 @@ export function Step2aTransfer({ data, onChange, onNext, onBack, isLoaded }) {
           </div>
           <div>
             <label style={LS(isAR)}>{tb.time}</label>
-            <input
-              type="time"
-              style={{ ...IS, ...(focused === 'time' ? IS_FOCUS : {}) }}
+            <TimePicker
               value={data.time || ''}
               onChange={e => onChange({ ...data, time: e.target.value })}
-              onFocus={() => setFocused('time')}
-              onBlur={() => setFocused(null)}
+              style={{ ...IS }}
             />
           </div>
         </div>
@@ -649,11 +766,10 @@ export function Step2bDisposal({ data, onChange, onNext, onBack, isLoaded }) {
           </div>
           <div>
             <label style={LS(isAR)}>{tb.startTime}</label>
-            <input
-              type="time"
-              style={{ ...IS }}
+            <TimePicker
               value={data.time || ''}
               onChange={e => onChange({ ...data, time: e.target.value })}
+              style={{ ...IS }}
             />
           </div>
         </div>
