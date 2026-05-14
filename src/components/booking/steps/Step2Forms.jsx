@@ -1,13 +1,45 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { GoogleMap, Marker } from '@react-google-maps/api'
 import { useLanguage } from '../../../context/LanguageContext'
 import { T } from '../../../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
+// Morocco center — default map position when no address is selected yet
+const CASABLANCA = { lat: 33.5731, lng: -7.5898 }
+
+// ── Sober dark map style ──────────────────────────────────────────────────────
+// CSS variables can't be used inside Google Maps styles JSON; hex equivalents
+// of the PRYM design tokens are used instead.
+export const DARK_MAP_STYLE = [
+  // Land — near-black
+  { elementType: 'geometry',                                    stylers: [{ color: '#0e0e0d' }] },
+  { elementType: 'labels.text.fill',                            stylers: [{ color: '#6B6867' }] },
+  { elementType: 'labels.text.stroke',                          stylers: [{ color: '#0e0e0d' }] },
+  // Roads — dark with silver-grey tones
+  { featureType: 'road',           elementType: 'geometry',     stylers: [{ color: '#252523' }] },
+  { featureType: 'road',           elementType: 'geometry.stroke', stylers: [{ color: '#181817' }] },
+  { featureType: 'road',           elementType: 'labels.text.fill', stylers: [{ color: '#6B6867' }] },
+  { featureType: 'road.highway',   elementType: 'geometry',     stylers: [{ color: '#3c3c3a' }] },
+  { featureType: 'road.highway',   elementType: 'geometry.stroke', stylers: [{ color: '#2a2a28' }] },
+  { featureType: 'road.highway',   elementType: 'labels.text.fill', stylers: [{ color: '#9A948F' }] },
+  // Water — deepest black
+  { featureType: 'water',          elementType: 'geometry',     stylers: [{ color: '#060606' }] },
+  { featureType: 'water',          elementType: 'labels.text.fill', stylers: [{ color: '#2a2a28' }] },
+  // Landscape
+  { featureType: 'landscape',      elementType: 'geometry',     stylers: [{ color: '#111110' }] },
+  // Administrative borders — subtle
+  { featureType: 'administrative',                elementType: 'geometry.stroke', stylers: [{ color: '#2e2e2c' }] },
+  { featureType: 'administrative.country',        elementType: 'geometry.stroke', stylers: [{ color: '#4a4a48' }] },
+  { featureType: 'administrative.locality',       elementType: 'labels.text.fill', stylers: [{ color: '#9A948F' }] },
+  // POIs — completely hidden
+  { featureType: 'poi',            stylers: [{ visibility: 'off' }] },
+  // Transit — completely hidden
+  { featureType: 'transit',        stylers: [{ visibility: 'off' }] },
+]
+
 // ── Shared input style ────────────────────────────────────────────────────────
-// Only specific border sub-properties are used — never mix 'border' shorthand
-// with 'borderColor' on the same element (triggers React rerender warning).
 const IS = {
   width: '100%',
   background: 'var(--c-bg)',
@@ -26,7 +58,6 @@ const IS = {
   boxSizing: 'border-box',
 }
 
-// Focus override — uses the same specific sub-property, no conflict
 const IS_FOCUS = { borderBottomColor: 'var(--c-text)' }
 
 function LS(isAR) {
@@ -62,13 +93,7 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
     <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
       <button
         onClick={onBack}
-        style={{
-          ...IS,
-          width: 'auto',
-          padding: '14px 24px',
-          cursor: 'pointer',
-          color: 'var(--c-silver3)',
-        }}
+        style={{ ...IS, width: 'auto', padding: '14px 24px', cursor: 'pointer', color: 'var(--c-silver3)' }}
       >
         {backLabel}
       </button>
@@ -79,8 +104,7 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
           flex: 1, padding: 14,
           cursor: valid ? 'pointer' : 'not-allowed',
           background: 'transparent',
-          borderWidth: 1,
-          borderStyle: 'solid',
+          borderWidth: 1, borderStyle: 'solid',
           borderColor: valid ? 'var(--c-text)' : 'var(--c-silver3)',
           borderRadius: 0,
           fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
@@ -94,107 +118,209 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
   )
 }
 
+// ── MapPicker ─────────────────────────────────────────────────────────────────
+// Renders an interactive GoogleMap. Clicking drops a pin and reverse-geocodes
+// the address back into the input via onPick(address, lat, lng).
+function MapPicker({ isLoaded, center, onPick }) {
+  const [pin, setPin]   = useState(null)
+  const geoRef          = useRef(null)
+
+  useEffect(() => {
+    if (isLoaded && window.google?.maps) {
+      geoRef.current = new window.google.maps.Geocoder()
+    }
+  }, [isLoaded])
+
+  const handleMapClick = (e) => {
+    const lat = e.latLng.lat()
+    const lng = e.latLng.lng()
+    setPin({ lat, lng })
+    geoRef.current?.geocode({ location: { lat, lng } }, (results, status) => {
+      const address = status === 'OK' && results[0] ? results[0].formatted_address : ''
+      onPick(address, lat, lng)
+    })
+  }
+
+  if (!isLoaded) return (
+    <div style={{ height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)', marginTop: 12 }}>
+      <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-silver3)' }}>
+        CHARGEMENT
+      </span>
+    </div>
+  )
+
+  const mapCenter = center || CASABLANCA
+
+  return (
+    <div
+      style={{
+        marginTop: 12,
+        height: 260,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: 'var(--c-silver3)',
+        borderRadius: 0,
+        overflow: 'hidden',
+      }}
+    >
+      <GoogleMap
+        mapContainerStyle={{ width: '100%', height: '100%' }}
+        center={mapCenter}
+        zoom={center ? 13 : 10}
+        options={{
+          styles: DARK_MAP_STYLE,
+          disableDefaultUI: true,
+          zoomControl: false,
+          streetViewControl: false,
+          mapTypeControl: false,
+          fullscreenControl: false,
+          clickableIcons: false,
+          gestureHandling: 'cooperative',
+        }}
+        onClick={handleMapClick}
+      >
+        {pin && (
+          <Marker
+            position={pin}
+            icon={{
+              path: window.google.maps.SymbolPath.CIRCLE,
+              scale: 6,
+              fillColor: '#FDFBF7',
+              fillOpacity: 1,
+              strokeColor: '#9A948F',
+              strokeWeight: 1.5,
+            }}
+          />
+        )}
+      </GoogleMap>
+    </div>
+  )
+}
+
 // ── PlaceInput ────────────────────────────────────────────────────────────────
-// Uses google.maps.places.AutocompleteSuggestion (new Places API, 2025).
-// Static async method — no service instances needed.
-// Custom dropdown keeps full design-system control; 'ma' restriction preserved.
-function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder, focused, onFocus, onBlur, isAR }) {
+function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder, focused, onFocus, onBlur, isAR, coords }) {
   const [suggestions, setSuggestions] = useState([])
-  const [open, setOpen]               = useState(false)
+  const [isFocused, setIsFocused]     = useState(false)
+  const [showMap, setShowMap]         = useState(false)
   const debounceRef                   = useRef(null)
 
-  // Cancel pending debounce on unmount
   useEffect(() => () => clearTimeout(debounceRef.current), [])
 
   const fetchSuggestions = async (val) => {
-    if (!val.trim() || !isLoaded || !window.google?.maps?.places?.AutocompleteSuggestion) {
-      setSuggestions([])
-      return
-    }
+    if (!val.trim() || !isLoaded) { setSuggestions([]); return }
+    const AC = window.google?.maps?.places?.AutocompleteSuggestion
+    if (!AC) { console.warn('AutocompleteSuggestion not available'); setSuggestions([]); return }
     try {
-      const { suggestions: results } =
-        await window.google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions({
-          input: val,
-          componentRestrictions: { country: 'ma' },
-        })
+      const { suggestions: results } = await AC.fetchAutocompleteSuggestions({
+        input: val,
+        includedRegionCodes: ['MA'],
+      })
+      console.log('Google Predictions:', results)
       setSuggestions(results || [])
-    } catch {
+    } catch (err) {
+      console.error('AutocompleteSuggestion error:', err)
       setSuggestions([])
     }
   }
 
   const handleChange = (val) => {
     onTextChange(val)
-    setOpen(true)
     clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => fetchSuggestions(val), 250)
   }
 
   const handleSelect = async (suggestion) => {
-    const pred        = suggestion.placePrediction
+    const pred = suggestion.placePrediction
     const displayText = pred.text.text
     onTextChange(displayText)
     setSuggestions([])
-    setOpen(false)
+    setIsFocused(false)
     try {
       const place = pred.toPlace()
       await place.fetchFields({ fields: ['location', 'formattedAddress'] })
-      onPlaceSelect(
-        place.formattedAddress || displayText,
-        place.location.lat(),
-        place.location.lng(),
-      )
+      onPlaceSelect(place.formattedAddress || displayText, place.location.lat(), place.location.lng())
     } catch {
       onPlaceSelect(displayText, null, null)
     }
   }
 
+  const handleMapPick = (address, lat, lng) => {
+    if (address) onTextChange(address)
+    onPlaceSelect(address, lat, lng)
+  }
+
+  const showDropdown = isFocused && suggestions.length > 0
+
   return (
-    <div style={{ position: 'relative' }}>
-      <input
-        value={value}
-        onChange={e => handleChange(e.target.value)}
-        placeholder={placeholder}
-        autoComplete="off"
+    <div>
+      {/* Text input */}
+      <div style={{ position: 'relative' }}>
+        <input
+          value={value}
+          onChange={e => handleChange(e.target.value)}
+          placeholder={placeholder}
+          autoComplete="off"
+          style={{
+            ...IS,
+            ...(focused ? IS_FOCUS : {}),
+            textAlign: isAR ? 'right' : 'left',
+            direction:  isAR ? 'rtl'   : 'ltr',
+          }}
+          onFocus={() => { onFocus(); setIsFocused(true) }}
+          onBlur={() => { onBlur(); setTimeout(() => setIsFocused(false), 160) }}
+        />
+        {/* Autocomplete dropdown */}
+        {showDropdown && (
+          <div
+            className="absolute z-50 w-full top-full mt-2 left-0 max-h-60 overflow-y-auto"
+            style={{ background: 'var(--c-bg)', borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)' }}
+          >
+            {suggestions.map((s, i) => (
+              <div
+                key={s.placePrediction.placeId}
+                onMouseDown={() => handleSelect(s)}
+                style={{
+                  padding: '10px 14px', cursor: 'pointer',
+                  fontFamily: FONT_EU, fontSize: 11, letterSpacing: '0.05em', color: 'var(--c-text)',
+                  borderTopWidth: i === 0 ? 0 : 1, borderTopStyle: 'solid', borderTopColor: 'var(--c-border-faint)',
+                  transition: 'background 0.15s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-surface)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+              >
+                {s.placePrediction.text.text}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Map toggle link */}
+      <button
+        type="button"
+        onClick={() => setShowMap(v => !v)}
         style={{
-          ...IS,
-          ...(focused ? IS_FOCUS : {}),
-          textAlign: isAR ? 'right' : 'left',
-          direction:  isAR ? 'rtl'   : 'ltr',
+          marginTop: 8,
+          background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+          fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase',
+          color: showMap ? 'var(--c-silver)' : 'var(--c-silver3)',
+          transition: 'color 0.2s',
+          display: 'block',
         }}
-        onFocus={() => { onFocus(); if (suggestions.length) setOpen(true) }}
-        onBlur={() => { onBlur(); setTimeout(() => setOpen(false), 160) }}
-      />
-      {open && suggestions.length > 0 && (
-        <div style={{
-          position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 1000,
-          background: 'var(--c-bg)',
-          borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)',
-          borderTopWidth: 0,
-        }}>
-          {suggestions.map((s, i) => (
-            <div
-              key={s.placePrediction.placeId}
-              onMouseDown={() => handleSelect(s)}
-              style={{
-                padding: '10px 14px',
-                cursor: 'pointer',
-                fontFamily: FONT_EU,
-                fontSize: 11,
-                letterSpacing: '0.05em',
-                color: 'var(--c-text)',
-                borderTopWidth: i === 0 ? 0 : 1,
-                borderTopStyle: 'solid',
-                borderTopColor: 'var(--c-border-faint)',
-                transition: 'background 0.15s',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-surface)' }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
-            >
-              {s.placePrediction.text.text}
-            </div>
-          ))}
-        </div>
+        onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-silver)' }}
+        onMouseLeave={e => { if (!showMap) e.currentTarget.style.color = 'var(--c-silver3)' }}
+      >
+        {showMap ? '— FERMER LA CARTE' : '+ CHOISIR SUR LA CARTE'}
+      </button>
+
+      {/* Inline map picker */}
+      {showMap && (
+        <MapPicker
+          isLoaded={isLoaded}
+          center={coords || null}
+          onPick={(address, lat, lng) => { handleMapPick(address, lat, lng); setShowMap(false) }}
+        />
       )}
     </div>
   )
@@ -230,6 +356,7 @@ export function Step2aTransfer({ data, onChange, onNext, onBack, isLoaded }) {
           <PlaceInput
             isLoaded={isLoaded}
             value={data.from || ''}
+            coords={data.fromCoords}
             onTextChange={v => setField('from', v)}
             onPlaceSelect={(addr, lat, lng) => setField('from', addr, lat, lng)}
             placeholder={tb.fromPh}
@@ -246,6 +373,7 @@ export function Step2aTransfer({ data, onChange, onNext, onBack, isLoaded }) {
           <PlaceInput
             isLoaded={isLoaded}
             value={data.to || ''}
+            coords={data.toCoords}
             onTextChange={v => setField('to', v)}
             onPlaceSelect={(addr, lat, lng) => setField('to', addr, lat, lng)}
             placeholder={tb.toPh}
@@ -343,6 +471,7 @@ export function Step2bDisposal({ data, onChange, onNext, onBack, isLoaded }) {
           <PlaceInput
             isLoaded={isLoaded}
             value={data.location || ''}
+            coords={data.locationCoords}
             onTextChange={v => setLocation(v)}
             onPlaceSelect={(addr, lat, lng) => setLocation(addr, lat, lng)}
             placeholder={tb.locationPh}
