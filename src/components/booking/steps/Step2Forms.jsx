@@ -119,11 +119,12 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
 }
 
 // ── MapPicker ─────────────────────────────────────────────────────────────────
-// Renders an interactive GoogleMap. Clicking drops a pin and reverse-geocodes
-// the address back into the input via onPick(address, lat, lng).
-function MapPicker({ isLoaded, center, onPick }) {
-  const [pin, setPin]   = useState(null)
-  const geoRef          = useRef(null)
+// Flow: click → drop pin + geocode → show confirmation bar → CONFIRMER closes.
+function MapPicker({ isLoaded, center, onConfirm }) {
+  const [pin,       setPin]       = useState(null)   // { lat, lng }
+  const [pending,   setPending]   = useState(null)   // { address, lat, lng }
+  const [geocoding, setGeocoding] = useState(false)
+  const geoRef                    = useRef(null)
 
   useEffect(() => {
     if (isLoaded && window.google?.maps) {
@@ -135,65 +136,97 @@ function MapPicker({ isLoaded, center, onPick }) {
     const lat = e.latLng.lat()
     const lng = e.latLng.lng()
     setPin({ lat, lng })
+    setPending(null)
+    setGeocoding(true)
     geoRef.current?.geocode({ location: { lat, lng } }, (results, status) => {
       const address = status === 'OK' && results[0] ? results[0].formatted_address : ''
-      onPick(address, lat, lng)
+      setPending({ address, lat, lng })
+      setGeocoding(false)
     })
   }
 
   if (!isLoaded) return (
-    <div style={{ height: 260, display: 'flex', alignItems: 'center', justifyContent: 'center',
-      borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)', marginTop: 12 }}>
+    <div style={{ height: 260, marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'center',
+      borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)' }}>
       <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-silver3)' }}>
         CHARGEMENT
       </span>
     </div>
   )
 
-  const mapCenter = center || CASABLANCA
+  const ready = !!pending && !geocoding
 
   return (
-    <div
-      style={{
-        marginTop: 12,
-        height: 260,
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: 'var(--c-silver3)',
-        borderRadius: 0,
-        overflow: 'hidden',
-      }}
-    >
-      <GoogleMap
-        mapContainerStyle={{ width: '100%', height: '100%' }}
-        center={mapCenter}
-        zoom={center ? 13 : 10}
-        options={{
-          styles: DARK_MAP_STYLE,
-          disableDefaultUI: true,
-          zoomControl: false,
-          streetViewControl: false,
-          mapTypeControl: false,
-          fullscreenControl: false,
-          clickableIcons: false,
-          gestureHandling: 'cooperative',
-        }}
-        onClick={handleMapClick}
-      >
-        {pin && (
-          <Marker
-            position={pin}
-            icon={{
-              path: window.google.maps.SymbolPath.CIRCLE,
-              scale: 6,
-              fillColor: '#FDFBF7',
-              fillOpacity: 1,
-              strokeColor: '#9A948F',
-              strokeWeight: 1.5,
+    <div style={{ marginTop: 12, borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)', borderRadius: 0 }}>
+
+      {/* Map canvas */}
+      <div style={{ height: 260 }}>
+        <GoogleMap
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          center={center || CASABLANCA}
+          zoom={center ? 13 : 10}
+          options={{
+            styles: DARK_MAP_STYLE,
+            disableDefaultUI: true,
+            clickableIcons: false,
+            gestureHandling: 'cooperative',
+          }}
+          onClick={handleMapClick}
+        >
+          {pin && (
+            <Marker
+              position={pin}
+              icon={{
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 7,
+                fillColor: '#FDFBF7',
+                fillOpacity: 1,
+                strokeColor: '#9A948F',
+                strokeWeight: 1.5,
+              }}
+            />
+          )}
+        </GoogleMap>
+      </div>
+
+      {/* Confirmation bar — visible once pin is dropped */}
+      {pin && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 12,
+          padding: '12px 16px',
+          borderTopWidth: 1, borderTopStyle: 'solid', borderTopColor: 'var(--c-silver3)',
+          background: 'var(--c-bg)',
+        }}>
+          {/* Geocoded address */}
+          <span style={{
+            flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.05em',
+            color: geocoding ? 'var(--c-silver3)' : 'var(--c-silver)',
+          }}>
+            {geocoding ? 'LOCALISATION…' : (pending?.address || '—')}
+          </span>
+
+          {/* Confirm button */}
+          <button
+            type="button"
+            disabled={!ready}
+            onClick={() => ready && onConfirm(pending.address, pending.lat, pending.lng)}
+            style={{
+              flexShrink: 0,
+              fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase',
+              padding: '8px 16px',
+              borderWidth: 1, borderStyle: 'solid', borderRadius: 0,
+              borderColor: ready ? 'var(--c-text)' : 'var(--c-silver3)',
+              color:        ready ? 'var(--c-text)' : 'var(--c-silver3)',
+              background: 'transparent',
+              cursor: ready ? 'pointer' : 'not-allowed',
+              transition: 'all 0.2s',
             }}
-          />
-        )}
-      </GoogleMap>
+          >
+            CONFIRMER CE POINT
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -296,20 +329,11 @@ function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder,
         )}
       </div>
 
-      {/* Map toggle link */}
+      {/* Map toggle */}
       <button
         type="button"
-        onClick={() => setShowMap(v => !v)}
-        style={{
-          marginTop: 8,
-          background: 'none', border: 'none', padding: 0, cursor: 'pointer',
-          fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.28em', textTransform: 'uppercase',
-          color: showMap ? 'var(--c-silver)' : 'var(--c-silver3)',
-          transition: 'color 0.2s',
-          display: 'block',
-        }}
-        onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-silver)' }}
-        onMouseLeave={e => { if (!showMap) e.currentTarget.style.color = 'var(--c-silver3)' }}
+        onClick={() => setShowMap(!showMap)}
+        className="text-[10px] text-stone-400 uppercase tracking-widest mt-2 flex items-center hover:text-[var(--c-text)] transition-colors"
       >
         {showMap ? '— FERMER LA CARTE' : '+ CHOISIR SUR LA CARTE'}
       </button>
@@ -319,7 +343,7 @@ function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder,
         <MapPicker
           isLoaded={isLoaded}
           center={coords || null}
-          onPick={(address, lat, lng) => { handleMapPick(address, lat, lng); setShowMap(false) }}
+          onConfirm={(address, lat, lng) => { handleMapPick(address, lat, lng); setShowMap(false) }}
         />
       )}
     </div>
