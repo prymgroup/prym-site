@@ -1,17 +1,20 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Autocomplete } from '@react-google-maps/api'
 import { useLanguage } from '../../../context/LanguageContext'
 import { T } from '../../../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
 // ── Shared input style ────────────────────────────────────────────────────────
+// Only specific border sub-properties are used — never mix 'border' shorthand
+// with 'borderColor' on the same element (triggers React rerender warning).
 const IS = {
   width: '100%',
   background: 'var(--c-bg)',
-  border: 'none',
-  borderBottom: '1px solid var(--c-silver3)',
+  borderWidth: 0,
+  borderBottomWidth: 1,
+  borderBottomStyle: 'solid',
+  borderBottomColor: 'var(--c-silver3)',
   borderRadius: 0,
   padding: '12px 0',
   color: 'var(--c-text)',
@@ -19,12 +22,12 @@ const IS = {
   fontSize: 12,
   letterSpacing: '0.08em',
   outline: 'none',
-  transition: 'border-color 0.2s',
+  transition: 'border-bottom-color 0.2s',
   boxSizing: 'border-box',
 }
 
-// Active (focused) border override
-const IS_FOCUS = { borderColor: 'var(--c-text)' }
+// Focus override — uses the same specific sub-property, no conflict
+const IS_FOCUS = { borderBottomColor: 'var(--c-text)' }
 
 function LS(isAR) {
   return {
@@ -59,7 +62,13 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
     <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
       <button
         onClick={onBack}
-        style={{ ...IS, borderBottom: '1px solid var(--c-silver3)', width: 'auto', padding: '14px 24px', cursor: 'pointer', color: 'var(--c-silver3)' }}
+        style={{
+          ...IS,
+          width: 'auto',
+          padding: '14px 24px',
+          cursor: 'pointer',
+          color: 'var(--c-silver3)',
+        }}
       >
         {backLabel}
       </button>
@@ -70,7 +79,9 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
           flex: 1, padding: 14,
           cursor: valid ? 'pointer' : 'not-allowed',
           background: 'transparent',
-          border: `1px solid ${valid ? 'var(--c-text)' : 'var(--c-silver3)'}`,
+          borderWidth: 1,
+          borderStyle: 'solid',
+          borderColor: valid ? 'var(--c-text)' : 'var(--c-silver3)',
           borderRadius: 0,
           fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.3em', textTransform: 'uppercase',
           color: valid ? 'var(--c-text)' : 'var(--c-silver3)',
@@ -83,49 +94,116 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
   )
 }
 
-// ── PlaceInput — Autocomplete wrapper with plain-input fallback ───────────────
-// When isLoaded=false (API key missing or not yet ready) it renders a plain
-// <input> so the form always stays functional.
+// ── PlaceInput ────────────────────────────────────────────────────────────────
+// Uses google.maps.places.AutocompleteService (programmatic API — not blocked
+// for new accounts) instead of the deprecated Autocomplete UI widget.
+// Renders a fully custom dropdown so the design system is preserved exactly.
+// Falls back to a plain <input> when isLoaded=false (no API key / not ready).
 function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder, focused, onFocus, onBlur, isAR }) {
-  const acRef = useRef(null)
+  const [predictions, setPredictions] = useState([])
+  const [open, setOpen] = useState(false)
+  const svcRef = useRef(null)
+  const geoRef = useRef(null)
 
-  const handlePlaceChanged = () => {
-    if (!acRef.current) return
-    const place = acRef.current.getPlace()
-    if (!place) return
-    const address = place.formatted_address || place.name || ''
-    const lat = place.geometry?.location?.lat() ?? null
-    const lng = place.geometry?.location?.lng() ?? null
-    onPlaceSelect(address, lat, lng)
+  // Initialise services once the Maps script is ready
+  useEffect(() => {
+    if (isLoaded && window.google?.maps?.places) {
+      svcRef.current = new window.google.maps.places.AutocompleteService()
+      geoRef.current  = new window.google.maps.Geocoder()
+    }
+  }, [isLoaded])
+
+  const fetchPredictions = (val) => {
+    if (!val.trim() || !svcRef.current) { setPredictions([]); return }
+    svcRef.current.getPlacePredictions(
+      { input: val, componentRestrictions: { country: 'ma' } },
+      (results, status) => {
+        setPredictions(status === 'OK' ? (results || []) : [])
+      }
+    )
   }
 
-  const inputEl = (
-    <input
-      value={value}
-      onChange={e => onTextChange(e.target.value)}
-      placeholder={placeholder}
-      autoComplete="off"
-      style={{
-        ...IS,
-        ...(focused ? IS_FOCUS : {}),
-        textAlign: isAR ? 'right' : 'left',
-        direction: isAR ? 'rtl' : 'ltr',
-      }}
-      onFocus={onFocus}
-      onBlur={onBlur}
-    />
-  )
+  const handleChange = (val) => {
+    onTextChange(val)
+    fetchPredictions(val)
+    setOpen(true)
+  }
 
-  if (!isLoaded) return inputEl
+  const handleSelect = (prediction) => {
+    onTextChange(prediction.description)
+    setPredictions([])
+    setOpen(false)
+    // Resolve coordinates via Geocoder — still fully available for new accounts
+    if (geoRef.current) {
+      geoRef.current.geocode({ placeId: prediction.place_id }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+          const loc = results[0].geometry.location
+          onPlaceSelect(prediction.description, loc.lat(), loc.lng())
+        } else {
+          onPlaceSelect(prediction.description, null, null)
+        }
+      })
+    } else {
+      onPlaceSelect(prediction.description, null, null)
+    }
+  }
+
+  const inputStyle = {
+    ...IS,
+    ...(focused ? IS_FOCUS : {}),
+    textAlign: isAR ? 'right' : 'left',
+    direction: isAR ? 'rtl' : 'ltr',
+  }
 
   return (
-    <Autocomplete
-      onLoad={ref => { acRef.current = ref }}
-      onPlaceChanged={handlePlaceChanged}
-      options={{ componentRestrictions: { country: 'ma' }, fields: ['formatted_address', 'geometry', 'name'] }}
-    >
-      {inputEl}
-    </Autocomplete>
+    <div style={{ position: 'relative' }}>
+      <input
+        value={value}
+        onChange={e => handleChange(e.target.value)}
+        placeholder={placeholder}
+        autoComplete="off"
+        style={inputStyle}
+        onFocus={() => { onFocus(); if (predictions.length) setOpen(true) }}
+        onBlur={() => { onBlur(); setTimeout(() => setOpen(false), 160) }}
+      />
+      {open && predictions.length > 0 && (
+        <div style={{
+          position: 'absolute',
+          top: '100%',
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          background: 'var(--c-bg)',
+          borderWidth: 1,
+          borderStyle: 'solid',
+          borderColor: 'var(--c-silver3)',
+          borderTopWidth: 0,
+        }}>
+          {predictions.map((p, i) => (
+            <div
+              key={p.place_id}
+              onMouseDown={() => handleSelect(p)}
+              style={{
+                padding: '10px 14px',
+                cursor: 'pointer',
+                fontFamily: FONT_EU,
+                fontSize: 11,
+                letterSpacing: '0.05em',
+                color: 'var(--c-text)',
+                borderTopWidth: i === 0 ? 0 : 1,
+                borderTopStyle: 'solid',
+                borderTopColor: 'var(--c-border-faint)',
+                transition: 'background 0.15s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--c-surface)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+            >
+              {p.description}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -136,7 +214,6 @@ export function Step2aTransfer({ data, onChange, onNext, onBack, isLoaded }) {
   const isAR = lang === 'AR'
   const [focused, setFocused] = useState(null)
 
-  // Typed-text fallback when user edits without picking a suggestion
   const setField = (key, address, lat = null, lng = null) => {
     onChange({ ...data, [key]: address, [`${key}Coords`]: lat !== null ? { lat, lng } : null })
   }
