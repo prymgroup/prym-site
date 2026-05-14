@@ -118,6 +118,139 @@ function BackNext({ onBack, onNext, valid, backLabel, nextLabel }) {
   )
 }
 
+// ── DatePicker ────────────────────────────────────────────────────────────────
+// Headless custom calendar — no external deps, zero border-radius,
+// full PRYM design token compliance. API matches native <input type="date">:
+// value = 'YYYY-MM-DD', onChange({ target: { value } }).
+const MONTHS_FR = ['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE']
+const DAYS_FR   = ['LU','MA','ME','JE','VE','SA','DI']
+
+function DatePicker({ value, onChange, min, style }) {
+  const parse     = (s) => s ? new Date(s + 'T12:00:00') : null
+  const selected  = parse(value)
+  const minDate   = parse(min)
+
+  const [open, setOpen] = useState(false)
+  const [view, setView] = useState(() => {
+    const b = selected || new Date()
+    return { y: b.getFullYear(), m: b.getMonth() }
+  })
+  const wrapRef = useRef(null)
+
+  // Sync view to value when parent resets/changes it
+  useEffect(() => {
+    if (selected) setView({ y: selected.getFullYear(), m: selected.getMonth() })
+  }, [value]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Close on outside click
+  useEffect(() => {
+    if (!open) return
+    const h = (e) => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [open])
+
+  const prevMonth = () => setView(v => v.m === 0  ? { y: v.y - 1, m: 11 } : { y: v.y, m: v.m - 1 })
+  const nextMonth = () => setView(v => v.m === 11 ? { y: v.y + 1, m: 0  } : { y: v.y, m: v.m + 1 })
+
+  const today       = new Date(); today.setHours(0, 0, 0, 0)
+  const daysInMonth = new Date(view.y, view.m + 1, 0).getDate()
+  const offset      = (new Date(view.y, view.m, 1).getDay() + 6) % 7 // Mon=0
+  const cells       = [...Array(offset).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)]
+
+  const handleDay = (d) => {
+    const dt = new Date(view.y, view.m, d); dt.setHours(0, 0, 0, 0)
+    if (minDate && dt < minDate) return
+    const iso = `${view.y}-${String(view.m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+    onChange({ target: { value: iso } })
+    setOpen(false)
+  }
+
+  const display = selected
+    ? `${String(selected.getDate()).padStart(2, '0')} ${MONTHS_FR[selected.getMonth()].slice(0, 3)} ${selected.getFullYear()}`
+    : ''
+
+  const navBtn = { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--c-silver3)', fontFamily: FONT_EU, fontSize: 16, lineHeight: 1, padding: '0 6px' }
+
+  return (
+    <div ref={wrapRef} style={{ position: 'relative' }}>
+      {/* Trigger */}
+      <input
+        readOnly
+        value={display}
+        placeholder="DATE"
+        onClick={() => setOpen(v => !v)}
+        style={{ ...style, cursor: 'pointer', caretColor: 'transparent' }}
+      />
+
+      {/* Calendar overlay */}
+      {open && (
+        <div style={{
+          position: 'absolute', top: 'calc(100% + 6px)', left: 0,
+          zIndex: 200,
+          width: '100%', minWidth: 252,
+          background: 'var(--c-bg)',
+          borderWidth: 1, borderStyle: 'solid', borderColor: 'var(--c-silver3)', borderRadius: 0,
+          padding: '14px 10px',
+          boxShadow: 'none',
+        }}>
+
+          {/* Month navigation */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <button type="button" onClick={prevMonth} style={navBtn}>‹</button>
+            <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', fontWeight: 300 }}>
+              {MONTHS_FR[view.m]} {view.y}
+            </span>
+            <button type="button" onClick={nextMonth} style={navBtn}>›</button>
+          </div>
+
+          {/* Day-of-week headers */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2, marginBottom: 4 }}>
+            {DAYS_FR.map(h => (
+              <div key={h} style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: '0.2em', textAlign: 'center', color: 'var(--c-silver3)', padding: '2px 0' }}>
+                {h}
+              </div>
+            ))}
+          </div>
+
+          {/* Day cells */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 2 }}>
+            {cells.map((day, i) => {
+              if (!day) return <div key={`_${i}`} />
+              const dt       = new Date(view.y, view.m, day); dt.setHours(0, 0, 0, 0)
+              const isSel    = selected && dt.getTime() === selected.getTime()
+              const isToday  = dt.getTime() === today.getTime()
+              const disabled = minDate ? dt < minDate : false
+              return (
+                <button
+                  key={day}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => handleDay(day)}
+                  style={{
+                    padding: '7px 0', textAlign: 'center', borderRadius: 0,
+                    borderWidth: isToday && !isSel ? 1 : 0, borderStyle: 'solid', borderColor: 'var(--c-silver3)',
+                    background: isSel ? 'var(--c-text)' : 'transparent',
+                    color: isSel ? 'var(--c-bg)' : disabled ? 'var(--c-silver3)' : 'var(--c-text)',
+                    fontFamily: FONT_EU, fontSize: 10,
+                    cursor: disabled ? 'default' : 'pointer',
+                    opacity: disabled ? 0.25 : 1,
+                    transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={e => { if (!isSel && !disabled) e.currentTarget.style.background = 'var(--c-surface)' }}
+                  onMouseLeave={e => { if (!isSel) e.currentTarget.style.background = 'transparent' }}
+                >
+                  {String(day).padStart(2, '0')}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── MapPicker ─────────────────────────────────────────────────────────────────
 // Flow: click → drop pin + geocode → show confirmation bar → CONFIRMER closes.
 function MapPicker({ isLoaded, center, onConfirm }) {
@@ -412,14 +545,11 @@ export function Step2aTransfer({ data, onChange, onNext, onBack, isLoaded }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <div>
             <label style={LS(isAR)}>{tb.date}</label>
-            <input
-              type="date"
-              style={{ ...IS, ...(focused === 'date' ? IS_FOCUS : {}) }}
+            <DatePicker
               value={data.date || ''}
               onChange={e => onChange({ ...data, date: e.target.value })}
-              onFocus={() => setFocused('date')}
-              onBlur={() => setFocused(null)}
               min={new Date().toISOString().split('T')[0]}
+              style={{ ...IS, ...(focused === 'date' ? IS_FOCUS : {}) }}
             />
           </div>
           <div>
@@ -510,12 +640,11 @@ export function Step2bDisposal({ data, onChange, onNext, onBack, isLoaded }) {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <div>
             <label style={LS(isAR)}>{tb.date}</label>
-            <input
-              type="date"
-              style={{ ...IS }}
+            <DatePicker
               value={data.date || ''}
               onChange={e => onChange({ ...data, date: e.target.value })}
               min={new Date().toISOString().split('T')[0]}
+              style={{ ...IS }}
             />
           </div>
           <div>
