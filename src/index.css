@@ -254,3 +254,37 @@ html.dark .grain::before {
   mix-blend-mode: screen;
   opacity: 0.04;
 }
+
+/* ─── GOOGLE MAPS AUTOCOMPLETE DROPDOWN ─────────────────────────────────── */
+.pac-container {
+  background: var(--c-bg) !important;
+  border: 1px solid var(--c-silver3) !important;
+  border-top: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: "Eurostile","Russo One","Helvetica Neue",Arial,sans-serif;
+  margin-top: 2px;
+}
+.pac-item {
+  background: var(--c-bg) !important;
+  border-top: 1px solid var(--c-border-faint) !important;
+  color: var(--c-text) !important;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.pac-item:hover,
+.pac-item-selected {
+  background: var(--c-surface) !important;
+}
+.pac-item-query {
+  color: var(--c-text) !important;
+  font-size: 11px;
+}
+.pac-matched {
+  color: var(--c-silver) !important;
+  font-weight: 400;
+}
+.pac-icon { display: none !important; }
+.pac-logo::after { display: none !important; }

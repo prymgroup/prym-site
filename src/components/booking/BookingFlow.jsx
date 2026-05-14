@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useIsMobile } from '../../hooks/useIsMobile'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useJsApiLoader } from '@react-google-maps/api'
 import { FLEET } from '../../data/fleet'
 import VehicleScene from './VehicleScene'
 import Step1Mode from './steps/Step1Mode'
@@ -12,6 +13,10 @@ import { useLanguage } from '../../context/LanguageContext'
 import { T } from '../../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
+
+// Stable reference — must live outside component to avoid re-creating the
+// libraries array on every render (useJsApiLoader compares by reference)
+const MAPS_LIBRARIES = ['places']
 
 // ── Navs ─────────────────────────────────────────────────────────────────────
 
@@ -286,6 +291,13 @@ export default function BookingFlow() {
   const tn = T[lang].nav
   const tb3 = T[lang].booking.step3
 
+  // Load Google Maps JS API (Places library) once for the whole booking flow
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+    libraries: MAPS_LIBRARIES,
+  })
+
   // Nav links for desktop booking nav
   const navLinks = [
     [T[lang].nav.experience, '/experience'],
@@ -369,8 +381,8 @@ export default function BookingFlow() {
           <div style={{ flex:1, display:'flex', flexDirection:'column', overflowY:'auto' }}>
             <AnimatePresence mode="wait">
               {step===1 && <motion.div key="s1" style={{flex:1,display:'flex',flexDirection:'column'}}><Step1Mode onSelect={m => { setMode(m); setStep(2) }} /></motion.div>}
-              {step===2 && mode==='transfer' && <motion.div key="s2a" style={{flex:1}}><Step2aTransfer data={transfer} onChange={setTransfer} onNext={() => setStep(preselected ? 4 : 3)} onBack={() => setStep(1)} /></motion.div>}
-              {step===2 && mode==='disposal' && <motion.div key="s2b" style={{flex:1}}><Step2bDisposal data={disposal} onChange={setDisposal} onNext={() => setStep(preselected ? 4 : 3)} onBack={() => setStep(1)} /></motion.div>}
+              {step===2 && mode==='transfer' && <motion.div key="s2a" style={{flex:1}}><Step2aTransfer data={transfer} onChange={setTransfer} onNext={() => setStep(preselected ? 4 : 3)} onBack={() => setStep(1)} isLoaded={isLoaded} /></motion.div>}
+              {step===2 && mode==='disposal' && <motion.div key="s2b" style={{flex:1}}><Step2bDisposal data={disposal} onChange={setDisposal} onNext={() => setStep(preselected ? 4 : 3)} onBack={() => setStep(1)} isLoaded={isLoaded} /></motion.div>}
               {step===4 && <motion.div key="s4" style={{flex:1}}><Step4Passenger data={passenger} onChange={setPassenger}
                 onNext={async () => {
                   const r = genRef(); setRef(r)
