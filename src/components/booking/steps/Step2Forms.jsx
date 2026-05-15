@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { GoogleMap, Marker } from '@react-google-maps/api'
 import { useLanguage } from '../../../context/LanguageContext'
+import { useTheme } from '../../../context/ThemeContext'
 import { T } from '../../../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
@@ -33,6 +34,34 @@ export const DARK_MAP_STYLE = [
   { featureType: 'administrative',                elementType: 'geometry.stroke', stylers: [{ color: '#2e2e2c' }] },
   { featureType: 'administrative.country',        elementType: 'geometry.stroke', stylers: [{ color: '#4a4a48' }] },
   { featureType: 'administrative.locality',       elementType: 'labels.text.fill', stylers: [{ color: '#9A948F' }] },
+  // POIs — completely hidden
+  { featureType: 'poi',            stylers: [{ visibility: 'off' }] },
+  // Transit — completely hidden
+  { featureType: 'transit',        stylers: [{ visibility: 'off' }] },
+]
+
+// ── Sober light map style — Silver/Paper aesthetic ───────────────────────────
+export const LIGHT_MAP_STYLE = [
+  // Land — warm paper white
+  { elementType: 'geometry',                                       stylers: [{ color: '#f5f4f2' }] },
+  { elementType: 'labels.text.fill',                               stylers: [{ color: '#8a8a88' }] },
+  { elementType: 'labels.text.stroke',                             stylers: [{ color: '#f5f4f2' }] },
+  // Roads — cool light grey
+  { featureType: 'road',           elementType: 'geometry',        stylers: [{ color: '#e0dfdc' }] },
+  { featureType: 'road',           elementType: 'geometry.stroke',  stylers: [{ color: '#d4d3d0' }] },
+  { featureType: 'road',           elementType: 'labels.text.fill', stylers: [{ color: '#8a8a88' }] },
+  { featureType: 'road.highway',   elementType: 'geometry',        stylers: [{ color: '#d1cfcc' }] },
+  { featureType: 'road.highway',   elementType: 'geometry.stroke',  stylers: [{ color: '#c5c3c0' }] },
+  { featureType: 'road.highway',   elementType: 'labels.text.fill', stylers: [{ color: '#6e6e6c' }] },
+  // Water — soft grey
+  { featureType: 'water',          elementType: 'geometry',        stylers: [{ color: '#e4e3e0' }] },
+  { featureType: 'water',          elementType: 'labels.text.fill', stylers: [{ color: '#b0afad' }] },
+  // Landscape — slightly warmer off-white
+  { featureType: 'landscape',      elementType: 'geometry',        stylers: [{ color: '#edecea' }] },
+  // Administrative borders — barely-there
+  { featureType: 'administrative',           elementType: 'geometry.stroke', stylers: [{ color: '#d0cfcc' }] },
+  { featureType: 'administrative.country',   elementType: 'geometry.stroke', stylers: [{ color: '#bcbbb8' }] },
+  { featureType: 'administrative.locality',  elementType: 'labels.text.fill', stylers: [{ color: '#7a7a78' }] },
   // POIs — completely hidden
   { featureType: 'poi',            stylers: [{ visibility: 'off' }] },
   // Transit — completely hidden
@@ -374,6 +403,7 @@ function TimePicker({ value, onChange, style }) {
 // ── MapPicker ─────────────────────────────────────────────────────────────────
 // Flow: click → drop pin + geocode → show confirmation bar → CONFIRMER closes.
 function MapPicker({ isLoaded, center, onConfirm }) {
+  const { isDark }                = useTheme()
   const [pin,       setPin]       = useState(null)   // { lat, lng }
   const [pending,   setPending]   = useState(null)   // { address, lat, lng }
   const [geocoding, setGeocoding] = useState(false)
@@ -419,7 +449,7 @@ function MapPicker({ isLoaded, center, onConfirm }) {
           center={center || CASABLANCA}
           zoom={center ? 13 : 10}
           options={{
-            styles: DARK_MAP_STYLE,
+            styles: isDark ? DARK_MAP_STYLE : LIGHT_MAP_STYLE,
             disableDefaultUI: true,
             clickableIcons: false,
             gestureHandling: 'cooperative',
@@ -432,9 +462,9 @@ function MapPicker({ isLoaded, center, onConfirm }) {
               icon={{
                 path: window.google.maps.SymbolPath.CIRCLE,
                 scale: 7,
-                fillColor: '#FDFBF7',
-                fillOpacity: 1,
-                strokeColor: '#9A948F',
+                fillColor:    isDark ? '#FDFBF7' : '#1a1a18',
+                fillOpacity:  1,
+                strokeColor:  isDark ? '#9A948F' : '#5a5a58',
                 strokeWeight: 1.5,
               }}
             />
