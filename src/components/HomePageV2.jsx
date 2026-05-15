@@ -62,7 +62,7 @@ const PILLARS = [
 ]
 
 export default function HomePageV2() {
-  const isMobile = useIsMobile()
+  useIsMobile() // reserved for future responsive breakpoints
 
   useEffect(() => {
     document.title = 'PRYM Executive Transport — Chauffeur Privé Luxe Maroc'

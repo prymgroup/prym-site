@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
