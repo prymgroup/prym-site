@@ -616,18 +616,29 @@ function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder,
       <button
         type="button"
         onClick={() => setShowMap(!showMap)}
-        className="text-[10px] text-stone-400 uppercase tracking-widest mt-2 flex items-center hover:text-[var(--c-text)] transition-colors"
+        style={{
+          display: 'flex', alignItems: 'center', gap: 6,
+          marginTop: 24, marginBottom: showMap ? 0 : 32,
+          fontFamily: FONT_EU, fontSize: 10, letterSpacing: '0.28em',
+          textTransform: 'uppercase', color: 'var(--c-silver3)',
+          background: 'none', border: 'none', cursor: 'pointer',
+          padding: 0, transition: 'color 0.2s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-text)' }}
+        onMouseLeave={e => { e.currentTarget.style.color = 'var(--c-silver3)' }}
       >
         {showMap ? '— FERMER LA CARTE' : '+ CHOISIR SUR LA CARTE'}
       </button>
 
       {/* Inline map picker */}
       {showMap && (
-        <MapPicker
-          isLoaded={isLoaded}
-          center={coords || null}
-          onConfirm={(address, lat, lng) => { handleMapPick(address, lat, lng); setShowMap(false) }}
-        />
+        <div style={{ marginBottom: 32 }}>
+          <MapPicker
+            isLoaded={isLoaded}
+            center={coords || null}
+            onConfirm={(address, lat, lng) => { handleMapPick(address, lat, lng); setShowMap(false) }}
+          />
+        </div>
       )}
     </div>
   )
