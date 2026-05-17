@@ -13,6 +13,7 @@ function WordReveal({ text, lang, delay = 0 }) {
   if (isAR) {
     return (
       <motion.p ref={ref}
+        className="tracking-normal"
         initial={{ opacity: 0, y: 28, filter: 'blur(10px)' }}
         animate={inView
           ? { opacity: 1, y: 0,  filter: 'blur(0px)' }
@@ -23,6 +24,7 @@ function WordReveal({ text, lang, delay = 0 }) {
           fontSize: 'clamp(2.4rem, 7vw, 7.5rem)',
           color: 'var(--c-text)', lineHeight: 1.1,
           textAlign: 'center',
+          letterSpacing: 0,
           direction: 'rtl', unicodeBidi: 'plaintext',
           willChange: 'transform, opacity, filter',
         }}

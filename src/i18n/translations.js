@@ -707,8 +707,8 @@ export const T = {
     },
 
     teasing: {
-      manifesto:   'الفخامة لا تُعلَن.',
-      scroll_line: 'تُنفَّذ.',
+      manifesto:   'الفخامة لا تعلن.',
+      scroll_line: 'تنفذ.',
       promise: [
         'دقة الحركات.',
         'صواب الصمت.',
