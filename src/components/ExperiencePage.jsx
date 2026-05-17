@@ -37,25 +37,27 @@ const SEC_PAD = `clamp(72px,10vh,96px) ${GUTTER} clamp(32px,5vh,48px)`
 /* ── Sub-components ────────────────────────────────────────────────────────── */
 function OlfactifVisual({ notes, credit, isAR }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24, direction: isAR ? 'rtl' : 'ltr' }}>
       {notes.map((note, i) => (
         <motion.div key={note}
           initial={{ opacity: 0, x: isAR ? -20 : 20 }} whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }} transition={{ delay: i * 0.12, duration: 0.6 }}
-          style={{ display: 'flex', alignItems: 'center', gap: 20, flexDirection: isAR ? 'row-reverse' : 'row' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 20 }}
         >
+          {/* In RTL direction: inherited dir makes row go right-to-left,
+              so this line appears on the right side, fading toward the text on the left. */}
           <div style={{
             height: 1, flexShrink: 0, width: `${72 - i * 12}px`,
             background: isAR
               ? 'linear-gradient(270deg, var(--c-silver), transparent)'
               : 'linear-gradient(90deg, var(--c-silver), transparent)',
           }} />
-          <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body, letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+          <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body, letterSpacing: isAR ? 0 : '0.04em', whiteSpace: 'nowrap' }}>
             {note}
           </span>
         </motion.div>
       ))}
-      <p style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: isAR ? '0.02em' : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginTop: 12, textAlign: isAR ? 'right' : 'left' }}>
+      <p style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: isAR ? 0 : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginTop: 12 }}>
         {credit}
       </p>
     </div>
@@ -67,16 +69,23 @@ function TempDisplay({ label, sub, isAR }) {
     <motion.div
       initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      style={{ display: 'flex', flexDirection: 'column', gap: 16, direction: isAR ? 'rtl' : 'ltr' }}
+      style={{
+        display: 'flex', flexDirection: 'column', gap: 16,
+        direction: isAR ? 'rtl' : 'ltr',
+        /* alignItems groups the 21° number, label, divider, and sub-text
+           on the same edge — right in RTL, left in LTR — preventing
+           the number from floating to the opposite end of the panel. */
+        alignItems: isAR ? 'flex-end' : 'flex-start',
+      }}
     >
       <p style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(80px, 18vw, 120px)', letterSpacing: '-0.02em', color: C.white, lineHeight: 1 }}>
         21°
       </p>
-      <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
+      <p style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? 0 : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, textAlign: isAR ? 'right' : 'left' }}>
         {label}
       </p>
       <div style={{ width: 48, height: 1, background: C.silver3 }} />
-      <p style={{ fontFamily: FONT_SE, fontSize: 12, color: C.silver3 }}>{sub}</p>
+      <p style={{ fontFamily: FONT_SE, fontSize: 12, color: C.silver3, textAlign: isAR ? 'right' : 'left' }}>{sub}</p>
     </motion.div>
   )
 }
@@ -94,11 +103,15 @@ function NDAList({ title, items, protect, isAR }) {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
         {items.map((item) => (
           <div key={item} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexDirection: isAR ? 'row-reverse' : 'row' }}>
+            {/* No explicit flexDirection — inherited direction: rtl on the wrapper
+                already makes this flex row go right→left, placing the dot on the
+                far right and the item name to its left (correct for Arabic lists).
+                row-reverse would double-reverse back to LTR, which was the bug. */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <div style={{ width: 5, height: 5, borderRadius: '50%', border: '1px solid var(--c-silver3)', flexShrink: 0 }} />
               <span style={{ fontFamily: FONT_SE, fontSize: 14, color: C.body }}>{item}</span>
             </div>
-            <span style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: isAR ? '0.02em' : '0.22em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
+            <span style={{ fontFamily: FONT_EU, fontSize: 7, letterSpacing: isAR ? 0 : '0.22em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
               {protect}
             </span>
           </div>
@@ -236,7 +249,8 @@ function SplitSection({ s, isAR, isMobile }) {
 }
 
 /* ── Full-screen quote ─────────────────────────────────────────────────────── */
-function FullScreenQuote() {
+function FullScreenQuote({ te, isAR }) {
+  const q = te.quote
   return (
     <section style={{
       ...SNAP,
@@ -245,7 +259,10 @@ function FullScreenQuote() {
       background: 'var(--c-quote-bg)',
       borderTop: '1px solid var(--c-border)',
       position: 'relative',
+      direction: isAR ? 'rtl' : 'ltr',
     }}>
+      {/* PRYM watermark — mirrors to opposite side in RTL so it sits
+          behind the Arabic text which starts from the right */}
       <span aria-hidden style={{
         position: 'absolute',
         fontFamily: FONT_EU, fontWeight: 300,
@@ -253,7 +270,9 @@ function FullScreenQuote() {
         letterSpacing: '-0.04em',
         color: 'var(--c-prym-numeral)',
         lineHeight: 1, userSelect: 'none', pointerEvents: 'none',
-        bottom: '-0.15em', right: GUTTER,
+        bottom: '-0.15em',
+        right: isAR ? 'auto' : GUTTER,
+        left:  isAR ? GUTTER : 'auto',
       }}>
         PRYM
       </span>
@@ -264,12 +283,15 @@ function FullScreenQuote() {
           position: 'relative', zIndex: 1,
           fontFamily: FONT_EU, fontWeight: 300,
           fontSize: 'clamp(28px, 5.5vw, 72px)',
-          letterSpacing: '0.06em', textTransform: 'uppercase',
-          color: C.white, lineHeight: 1.2,
+          letterSpacing: isAR ? 0 : '0.06em',
+          textTransform: isAR ? 'none' : 'uppercase',
+          color: C.white, lineHeight: isAR ? 1.5 : 1.2,
           textAlign: 'center', maxWidth: 1100,
+          direction: isAR ? 'rtl' : 'ltr',
+          unicodeBidi: 'plaintext',
         }}>
-        Le silence est notre<br />
-        <span style={{ color: C.silver }}>plus grand luxe.</span>
+        {q.line1}<br />
+        <span style={{ color: C.silver }}>{q.line2}</span>
       </motion.p>
     </section>
   )
@@ -402,11 +424,11 @@ export default function ExperiencePage() {
             style={{ display: 'flex', flexDirection: 'column', gap: 32, width: '100%', direction: isAR ? 'rtl' : 'ltr' }}
           >
             {s[2].details.map((d) => (
-              <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
+              <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8, textAlign: isAR ? 'right' : 'left' }}>
+                <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, display: 'block' }}>
                   {d.label}
                 </span>
-                <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line', margin: 0 }}>
                   {d.value}
                 </p>
               </div>
@@ -419,7 +441,7 @@ export default function ExperiencePage() {
       <SplitSection s={s} isAR={isAR} isMobile={isMobile} />
 
       {/* ── 5 · Full-screen quote ─────────────────────────────────────── */}
-      <FullScreenQuote />
+      <FullScreenQuote te={te} isAR={isAR} />
 
       {/* ── 6 · Ponctualité ──────────────────────────────────────────── */}
       <Sec isMobile={isMobile}>
@@ -444,11 +466,11 @@ export default function ExperiencePage() {
           >
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 24 }}>
               {s[6].details.map((d) => (
-                <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
+                <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8, textAlign: isAR ? 'right' : 'left' }}>
+                  <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, display: 'block' }}>
                     {d.label}
                   </span>
-                  <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                  <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line', margin: 0 }}>
                     {d.value}
                   </p>
                 </div>

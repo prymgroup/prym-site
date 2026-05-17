@@ -122,6 +122,10 @@ export const T = {
         'Photographie — Lumière d\'habitacle au crépuscule',
         "Photographie — Le chauffeur, une minute avant l'heure",
       ],
+      quote: {
+        line1: 'Le silence est notre',
+        line2: 'plus grand luxe.',
+      },
       closing: {
         eyebrow:   'Driven by Excellence',
         h2a:       "Le standard n'a pas changé.",
@@ -463,6 +467,10 @@ export const T = {
         'Photography — Cabin light at dusk',
         'Photography — The driver, one minute early',
       ],
+      quote: {
+        line1: 'Silence is our',
+        line2: 'greatest luxury.',
+      },
       closing: {
         eyebrow:   'Driven by Excellence',
         h2a:       "The standard hasn't changed.",
@@ -804,6 +812,10 @@ export const T = {
         'تصوير — إضاءة المقصورة عند الغسق',
         'تصوير — السائق، دقيقة قبل الموعد',
       ],
+      quote: {
+        line1: 'الصمت هو',
+        line2: 'أعظم رفاهياتنا.',
+      },
       closing: {
         eyebrow:   'Driven by Excellence',
         h2a:       'المعيار لم يتغير.',
