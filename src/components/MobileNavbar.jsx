@@ -126,6 +126,8 @@ export default function MobileNavbar({ ctaLabel, ctaHref = '/reserver' }) {
                 const [lbl, href] = fn(t)
                 return (
                   <a key={href} href={href}
+                    aria-current={typeof window !== 'undefined' && (window.location.pathname === href || window.location.pathname === href + '/') ? 'page' : undefined}
+                    onClick={() => setOpen(false)}
                     style={{ fontFamily: FONT_EU, fontSize: 24, letterSpacing: '0.15em', textTransform: 'uppercase', color: C.text, textDecoration: 'none', fontWeight: 300 }}>
                     {lbl}
                   </a>

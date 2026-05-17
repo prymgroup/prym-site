@@ -3,12 +3,19 @@ import { motion, AnimatePresence } from 'framer-motion'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 
-const PASSWORD   = 'tahra'
-const STORAGE_KEY = 'prym_auth'
+// SHA-256 of the access password — never stored as plaintext.
+// To update the password: sha256sum <(echo -n 'newpassword') and update VITE_GATE_HASH.
+const EXPECTED_HASH = import.meta.env.VITE_GATE_HASH || '9b1eba78db157841e45116dcce949d98bee45e4ab60696ff8d257fc8a8c8e816'
+const STORAGE_KEY   = 'prym_auth_h' // stores the hash, never the raw secret
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str))
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
+}
 
 export default function PasswordGate({ children }) {
   const [auth, setAuth]     = useState(() => {
-    try { return localStorage.getItem(STORAGE_KEY) === PASSWORD } catch { return false }
+    try { return localStorage.getItem(STORAGE_KEY) === EXPECTED_HASH } catch { return false }
   })
   const [value, setValue]   = useState('')
   const [error, setError]   = useState(false)
@@ -19,9 +26,10 @@ export default function PasswordGate({ children }) {
     if (!auth) setTimeout(() => inputRef.current?.focus(), 400)
   }, [auth])
 
-  const submit = () => {
-    if (value === PASSWORD) {
-      try { localStorage.setItem(STORAGE_KEY, PASSWORD) } catch { /* noop */ }
+  const submit = async () => {
+    const hash = await sha256(value)
+    if (hash === EXPECTED_HASH) {
+      try { localStorage.setItem(STORAGE_KEY, EXPECTED_HASH) } catch { /* noop */ }
       setAuth(true)
     } else {
       setError(true)
@@ -90,7 +98,7 @@ export default function PasswordGate({ children }) {
           value={value}
           onChange={e => setValue(e.target.value)}
           onKeyDown={onKey}
-          autoComplete="off"
+          autoComplete="current-password"
           placeholder="••••••"
           animate={shake ? { x: [-8, 8, -6, 6, -4, 4, 0] } : { x: 0 }}
           transition={{ duration: 0.5 }}

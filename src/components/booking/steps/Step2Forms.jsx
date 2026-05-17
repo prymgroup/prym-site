@@ -532,7 +532,6 @@ function PlaceInput({ isLoaded, value, onTextChange, onPlaceSelect, placeholder,
         input: val,
         includedRegionCodes: ['MA'],
       })
-      console.log('Google Predictions:', results)
       setSuggestions(results || [])
     } catch (err) {
       console.error('AutocompleteSuggestion error:', err)

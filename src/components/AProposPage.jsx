@@ -21,7 +21,7 @@ const GUTTER = 'clamp(40px,7vw,120px)'
 
 // Shared snap section style
 const SNAP = {
-  height: '100vh',
+  height: '100dvh',
   scrollSnapAlign: 'start',
   scrollSnapStop: 'always',
   overflow: 'hidden',
@@ -126,7 +126,45 @@ export default function AProposPage() {
         </div>
       </section>
 
-      {/* ── 3 · Notre Philosophie ────────────────────────────────────── */}
+      {/* ── 3 · Stats ────────────────────────────────────────────────── */}
+      <section style={{
+        ...SNAP,
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: SEC_PAD,
+        borderBottom: '1px solid var(--c-border)',
+      }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+          <motion.p initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.7 }}
+            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.5em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 48 }}>
+            {ta.stats.eyebrow}
+          </motion.p>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)',
+            gap: isMobile ? '32px 24px' : 'clamp(24px,4vw,56px)',
+          }}>
+            {ta.stats.items.map((item, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.7, delay: i * 0.1 }}>
+                <p style={{ fontFamily: FONT_EU, fontSize: 'clamp(36px,5vw,64px)', fontWeight: 300, letterSpacing: '0.06em', color: C.white, marginBottom: 8 }}>
+                  {item.value}
+                </p>
+                <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver3, marginBottom: 4 }}>
+                  {item.label}
+                </p>
+                <p style={{ fontFamily: FONT_SE, fontStyle: 'italic', fontSize: 12, color: C.silver2 }}>
+                  {item.sub}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 4 · Notre Philosophie ────────────────────────────────────── */}
       <section style={{
         ...SNAP,
         display: 'flex', alignItems: 'center',
@@ -153,7 +191,48 @@ export default function AProposPage() {
         </div>
       </section>
 
-      {/* ── 4 · Positionnement ───────────────────────────────────────── */}
+      {/* ── 5 · Piliers ──────────────────────────────────────────────── */}
+      <section style={{
+        ...SNAP,
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: SEC_PAD,
+        borderBottom: '1px solid var(--c-border)',
+      }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', width: '100%' }}>
+          <motion.p initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.7 }}
+            style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: isAR ? '0.02em' : '0.5em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3, marginBottom: 48 }}>
+            {ta.pillars.eyebrow}
+          </motion.p>
+
+          <div style={{
+            display: isMobile ? 'flex' : 'grid',
+            flexDirection: 'column',
+            gridTemplateColumns: isMobile ? undefined : 'repeat(3,1fr)',
+            gap: isMobile ? 40 : 'clamp(28px,4vw,56px)',
+          }}>
+            {ta.pillars.items.map((item, i) => (
+              <motion.div key={i}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ duration: 0.7, delay: i * 0.1 }}
+                style={{ textAlign: isAR ? 'right' : 'left' }}>
+                <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.35em', color: C.silver3, marginBottom: 12 }}>
+                  {item.n}
+                </p>
+                <p style={{ fontFamily: FONT_EU, fontWeight: 300, fontSize: 'clamp(18px,2vw,24px)', letterSpacing: '0.1em', textTransform: isAR ? 'none' : 'uppercase', color: C.white, marginBottom: 16 }}>
+                  {item.title}
+                </p>
+                <div style={{ width: 32, height: 1, background: isAR ? 'linear-gradient(270deg, var(--c-silver3), transparent)' : 'linear-gradient(90deg, var(--c-silver3), transparent)', marginBottom: 20, marginLeft: isAR ? 'auto' : 0 }} />
+                <p style={{ fontFamily: FONT_SE, fontStyle: 'italic', fontSize: 13, color: C.silver2, lineHeight: 1.85 }}>
+                  {item.body}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── 6 · Positionnement ───────────────────────────────────────── */}
       <section style={{
         ...SNAP,
         display: 'flex', alignItems: 'center',
@@ -186,7 +265,7 @@ export default function AProposPage() {
         </div>
       </section>
 
-      {/* ── 5 · Closing + footer ─────────────────────────────────────── */}
+      {/* ── 7 · Closing + footer ─────────────────────────────────────── */}
       <section style={{
         ...SNAP,
         display: 'flex', alignItems: 'center', justifyContent: 'center',

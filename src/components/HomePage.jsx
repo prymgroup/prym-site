@@ -59,12 +59,12 @@ export default function HomePage() {
 
   return (
     /* Action 1 */
-    <div className="w-full h-screen overflow-y-scroll snap-y snap-mandatory" style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}>
+    <div className="w-full h-[100dvh] overflow-y-scroll snap-y snap-mandatory" style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}>
 
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
       {/* ── Action 2 — Hero ───────────────────────────────────────────────────── */}
-      <section className="h-screen w-full snap-start flex flex-col justify-center px-8 md:px-24 relative">
+      <section className="h-[100dvh] w-full snap-start flex flex-col justify-center px-8 md:px-24 relative">
 
         {/* eyebrow */}
         <span
@@ -132,7 +132,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Action 3 — Car ────────────────────────────────────────────────────── */}
-      <section className="h-screen w-full snap-start flex flex-col justify-center px-8 md:px-24 relative overflow-hidden">
+      <section className="h-[100dvh] w-full snap-start flex flex-col justify-center px-8 md:px-24 relative overflow-hidden">
 
         {/* text — z-10 so it sits above the car */}
         <div className="relative z-10 max-w-xs md:max-w-sm">
@@ -223,7 +223,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Action 4 — Closing ────────────────────────────────────────────────── */}
-      <section className="h-screen w-full snap-start flex flex-col justify-center px-8 md:px-24 relative">
+      <section className="h-[100dvh] w-full snap-start flex flex-col justify-center px-8 md:px-24 relative">
 
         {/* rule */}
         <div className="w-12 h-px mb-12" style={{ background: 'var(--c-border)' }} />

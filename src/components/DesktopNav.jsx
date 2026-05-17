@@ -51,6 +51,7 @@ function LangSwitcher() {
 export default function DesktopNav() {
   const { lang } = useLanguage()
   const t = T[lang]
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : ''
 
   return (
     <nav style={{
@@ -82,9 +83,10 @@ export default function DesktopNav() {
           const [label, href] = fn(t)
           return (
             <a key={href} href={href}
-              style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', textDecoration: 'none', transition: 'color 0.3s ease', opacity: 0.7 }}
+              aria-current={currentPath === href || currentPath === href + '/' ? 'page' : undefined}
+              style={{ fontFamily: FONT_EU, fontSize: 8, letterSpacing: '0.3em', textTransform: 'uppercase', color: 'var(--c-text)', textDecoration: 'none', transition: 'color 0.3s ease', opacity: currentPath === href || currentPath === href + '/' ? 1 : 0.7 }}
               onMouseEnter={e => { e.target.style.opacity = '1' }}
-              onMouseLeave={e => { e.target.style.opacity = '0.7' }}>
+              onMouseLeave={e => { if (currentPath !== href && currentPath !== href + '/') e.target.style.opacity = '0.7' }}>
               {label}
             </a>
           )

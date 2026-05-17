@@ -156,6 +156,7 @@ FLEET.forEach(t => {
 function ChevronArrow({ direction, onClick, bottom }) {
   return (
     <motion.button onClick={onClick} whileHover={{ opacity: 1 }} whileTap={{ opacity: 0.4 }}
+      aria-label={direction === 'left' ? 'Véhicule précédent' : 'Véhicule suivant'}
       style={{
         position: 'absolute',
         ...(bottom
@@ -317,7 +318,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
 
   return (
     <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}
-      style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100vh - 64px)', overflow:'hidden' }}>
+      style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100dvh - 64px)', overflow:'hidden' }}>
       <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:'1px solid var(--c-border-faint)', overflowY:'auto', scrollbarWidth:'none' }}>
         <motion.div initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.6, delay:0.1 }}>
           <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:48 }}>
@@ -406,7 +407,7 @@ export default function FlottePage() {
   }, [])
 
   return (
-    <div style={{ background:C.bg, color:C.white, overflowX:'hidden', height:isMobile?'auto':'100vh', overflow:isMobile?'auto':'hidden' }}>
+    <div style={{ background:C.bg, color:C.white, overflowX:'hidden', height:isMobile?'auto':'100dvh', overflow:isMobile?'auto':'hidden' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
       <div style={{ paddingTop: isMobile ? 48 : 64 }}>
         <AnimatePresence mode="wait">

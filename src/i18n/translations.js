@@ -196,6 +196,78 @@ export const T = {
       footer: 'PRYM Executive Transport — Maroc',
     },
 
+    entreprises: {
+      hero: {
+        eyebrow: 'Comptes Entreprises',
+        h1a:     'La mobilité executive,',
+        h1b:     'sans friction.',
+        body:    "PRYM propose aux entreprises un service de mobilité executive sur mesure. Un seul interlocuteur, une facturation centralisée, et le standard PRYM pour chaque trajet de vos équipes.",
+      },
+      avantages: {
+        eyebrow: 'Ce que PRYM entreprise inclut',
+        items: [
+          { n: '01', title: 'Chauffeur attitré',         body: 'Un chauffeur dédié à votre compte. Il connaît vos préférences, votre agenda, vos adresses habituelles. Pas besoin de répéter deux fois ce qui vous convient.' },
+          { n: '02', title: 'Facturation mensuelle',     body: 'Récapitulatif détaillé en fin de mois. Intégration comptable simplifiée. Aucune avance de frais pour vos collaborateurs.' },
+          { n: '03', title: 'Priorité de disponibilité', body: 'Les comptes entreprise sont servis en priorité. Même en période de forte demande, votre véhicule est là.' },
+          { n: '04', title: 'Reporting & suivi',          body: 'Rapport mensuel de toutes vos courses : coûts, trajets, collaborateurs. Visibilité totale sur vos dépenses de mobilité.' },
+          { n: '05', title: 'NDA étendu',                 body: "Accord de confidentialité signé pour l'ensemble de votre compte. Discrétion absolue pour tous vos collaborateurs et invités." },
+          { n: '06', title: 'Flotte dédiée',              body: "Accès à l'ensemble des 6 tiers PRYM selon vos besoins — transfert aéroport, mise à disposition, événement, délégation." },
+        ],
+      },
+      clients: {
+        eyebrow: 'Ils font confiance à PRYM',
+        items: [
+          { label: 'Cabinets & Conseil',    desc: 'Transferts clients, partenaires et candidats. Discrétion garantie.' },
+          { label: 'Hôtels & Palaces',      desc: 'Service de conciergerie mobilité pour vos clients VIP.' },
+          { label: 'Agences de voyage',     desc: 'Transferts haut de gamme pour vos groupes et UHNWI.' },
+          { label: 'Entreprises Corporate', desc: 'Mobilité exécutive pour vos dirigeants et équipes.' },
+        ],
+      },
+      divider: {
+        caption: 'Visuel : Détail flotte / Service B2B',
+        credit:  'PRYM Corporate — Service B2B',
+      },
+      contact: {
+        eyebrow:  'Ouvrir un compte',
+        h2:       'Parlons de votre mobilité.',
+        body:     'Remplissez ce formulaire et un conseiller PRYM vous contactera sous 24 heures pour construire ensemble une offre adaptée.',
+        bullets:  ['Aucun engagement initial', 'Offre personnalisée sous 24h', 'Contrat NDA inclus'],
+        company:  'Entreprise *',
+        name:     'Nom complet *',
+        role:     'Fonction',
+        phone:    'Téléphone *',
+        email:    'Email professionnel *',
+        volume:   'Volume estimé *',
+        besoins:  'Besoins (sélection multiple)',
+        message:  'Message (optionnel)',
+        consent:  "J'accepte d'être contacté par un conseiller PRYM pour étudier ma demande. Les informations partagées restent strictement confidentielles.",
+        submit:   'Envoyer la demande',
+        sending:  'Envoi en cours...',
+        success: {
+          eyebrow: 'Demande reçue',
+          h3:      'Nous vous contactons sous 24h.',
+          body:    'Un conseiller PRYM analysera votre demande et reviendra vers vous pour construire une offre sur mesure.',
+        },
+        error:   'Une erreur est survenue. Veuillez nous contacter directement.',
+        volumeOptions: [
+          '1 à 5 courses/mois',
+          '5 à 15 courses/mois',
+          '15 à 30 courses/mois',
+          '30+ courses/mois',
+          'Événementiel ponctuel',
+        ],
+        besoinsOptions: [
+          'Transferts aéroport',
+          'Mise à disposition',
+          'Événements & séminaires',
+          'Délégations & VIP',
+          'Navettes régulières',
+          'Voyages inter-villes',
+        ],
+      },
+      footer: 'Driven by Excellence — prym.ma',
+    },
+
     booking: {
       step1: {
         eyebrow:  'Type de service',
@@ -465,6 +537,78 @@ export const T = {
       footer: 'PRYM Executive Transport — Maroc',
     },
 
+    entreprises: {
+      hero: {
+        eyebrow: 'Corporate Accounts',
+        h1a:     'Executive mobility,',
+        h1b:     'without friction.',
+        body:    "PRYM offers companies a bespoke executive mobility service. A single point of contact, centralised billing, and the PRYM standard on every journey for your teams.",
+      },
+      avantages: {
+        eyebrow: 'What PRYM corporate includes',
+        items: [
+          { n: '01', title: 'Dedicated driver',          body: 'A driver dedicated to your account. He knows your preferences, your schedule, your usual addresses. No need to repeat what suits you.' },
+          { n: '02', title: 'Monthly billing',           body: 'Detailed statement at month end. Simplified accounting integration. No expense advances required from your staff.' },
+          { n: '03', title: 'Priority availability',     body: 'Corporate accounts are served first. Even during peak demand, your vehicle will be there.' },
+          { n: '04', title: 'Reporting & tracking',      body: 'Monthly report of all your rides: costs, routes, employees. Full visibility over your mobility spend.' },
+          { n: '05', title: 'Extended NDA',              body: 'Confidentiality agreement signed for your entire account. Absolute discretion for all your staff and guests.' },
+          { n: '06', title: 'Dedicated fleet',           body: 'Access to all 6 PRYM tiers as needed — airport transfer, chauffeur disposal, events, delegations.' },
+        ],
+      },
+      clients: {
+        eyebrow: 'They trust PRYM',
+        items: [
+          { label: 'Consulting & Law Firms', desc: 'Transfers for clients, partners and candidates. Discretion guaranteed.' },
+          { label: 'Hotels & Palaces',       desc: 'Mobility concierge service for your VIP guests.' },
+          { label: 'Travel Agencies',        desc: 'Premium transfers for your groups and UHNWIs.' },
+          { label: 'Corporate Companies',    desc: 'Executive mobility for your leadership and teams.' },
+        ],
+      },
+      divider: {
+        caption: 'Visual: Fleet detail / B2B Service',
+        credit:  'PRYM Corporate — B2B Service',
+      },
+      contact: {
+        eyebrow:  'Open an account',
+        h2:       'Let\'s talk about your mobility.',
+        body:     'Fill in this form and a PRYM advisor will contact you within 24 hours to build a tailored offer together.',
+        bullets:  ['No initial commitment', 'Personalised offer within 24h', 'NDA contract included'],
+        company:  'Company *',
+        name:     'Full name *',
+        role:     'Position',
+        phone:    'Phone *',
+        email:    'Professional email *',
+        volume:   'Estimated volume *',
+        besoins:  'Needs (multiple selection)',
+        message:  'Message (optional)',
+        consent:  "I agree to be contacted by a PRYM advisor to review my request. Information shared remains strictly confidential.",
+        submit:   'Send request',
+        sending:  'Sending...',
+        success: {
+          eyebrow: 'Request received',
+          h3:      'We will contact you within 24h.',
+          body:    'A PRYM advisor will review your request and get back to you to build a bespoke offer.',
+        },
+        error:   'An error occurred. Please contact us directly.',
+        volumeOptions: [
+          '1 to 5 rides/month',
+          '5 to 15 rides/month',
+          '15 to 30 rides/month',
+          '30+ rides/month',
+          'One-off event',
+        ],
+        besoinsOptions: [
+          'Airport transfers',
+          'Chauffeur disposal',
+          'Events & seminars',
+          'Delegations & VIP',
+          'Regular shuttles',
+          'Inter-city travel',
+        ],
+      },
+      footer: 'Driven by Excellence — prym.ma',
+    },
+
     booking: {
       step1: {
         eyebrow:  'Service type',
@@ -645,7 +789,7 @@ export const T = {
           ],
         },
         {
-          n: 7, label: 'التخصيص', title: 'سائقك\nyعرفك.',
+          n: 7, label: 'التخصيص', title: 'سائقك\nيعرفك.',
           body: 'للعملاء المنتظمين، يحفظ سائقك تفضيلاتك. المسار المعتاد. الموسيقى أو الصمت. إعدادات المناخ. مقعدك المفضل. لن تضطر إلى تكرار ما يناسبك. PRYM يتذكر.',
           details: [
             { label: 'المسار',        value: 'محفوظ منذ\nأول رحلة' },
@@ -732,6 +876,78 @@ export const T = {
         ctaBook: 'طلب رحلة',
       },
       footer: 'PRYM Executive Transport — المغرب',
+    },
+
+    entreprises: {
+      hero: {
+        eyebrow: 'حسابات الشركات',
+        h1a:     'تنقل تنفيذي،',
+        h1b:     'بلا عوائق.',
+        body:    "تقدم PRYM للشركات خدمة تنقل تنفيذية مصممة خصيصاً. جهة اتصال واحدة، فوترة مركزية، ومعيار PRYM في كل رحلة لفرقك.",
+      },
+      avantages: {
+        eyebrow: 'ما يشمله حساب PRYM للشركات',
+        items: [
+          { n: '01', title: 'سائق مخصص',              body: 'سائق مكرس لحسابك. يعرف تفضيلاتك وجدولك ومواقعك المعتادة. لن تحتاج إلى تكرار ما يناسبك.' },
+          { n: '02', title: 'فوترة شهرية',             body: 'كشف تفصيلي في نهاية الشهر. تكامل محاسبي مبسط. لا سلف مصروفات على موظفيك.' },
+          { n: '03', title: 'أولوية التوافر',           body: 'تُخدَم حسابات الشركات أولاً. حتى في أوقات الذروة، مركبتك ستكون في مكانها.' },
+          { n: '04', title: 'تقارير ومتابعة',           body: 'تقرير شهري لجميع رحلاتك: التكاليف والمسارات والموظفون. رؤية كاملة على نفقات التنقل.' },
+          { n: '05', title: 'اتفاقية سرية موسّعة',     body: 'اتفاقية سرية موقّعة لكامل حسابك. سرية تامة لجميع موظفيك وضيوفك.' },
+          { n: '06', title: 'أسطول مخصص',              body: 'وصول إلى جميع المستويات الستة لـ PRYM حسب احتياجاتك — نقل المطار، التوفر المخصص، الفعاليات، الوفود.' },
+        ],
+      },
+      clients: {
+        eyebrow: 'يثقون في PRYM',
+        items: [
+          { label: 'مكاتب الاستشارات والقانون', desc: 'نقل العملاء والشركاء والمرشحين. سرية مضمونة.' },
+          { label: 'الفنادق والقصور',           desc: 'خدمة كونسيرج التنقل لضيوفك المميزين.' },
+          { label: 'وكالات السفر',              desc: 'نقل راقٍ لمجموعاتك وعملاء الثروات الكبرى.' },
+          { label: 'الشركات الكبرى',            desc: 'تنقل تنفيذي لقياداتك وفرقك.' },
+        ],
+      },
+      divider: {
+        caption: 'صورة: تفاصيل الأسطول / خدمة B2B',
+        credit:  'PRYM Corporate — خدمة B2B',
+      },
+      contact: {
+        eyebrow:  'فتح حساب',
+        h2:       'لنتحدث عن احتياجات تنقلك.',
+        body:     'املأ هذا النموذج وسيتصل بك مستشار PRYM خلال 24 ساعة لبناء عرض مخصص معاً.',
+        bullets:  ['لا التزام مبدئي', 'عرض مخصص خلال 24 ساعة', 'عقد سرية مشمول'],
+        company:  'الشركة *',
+        name:     'الاسم الكامل *',
+        role:     'المنصب',
+        phone:    'الهاتف *',
+        email:    'البريد الإلكتروني المهني *',
+        volume:   'الحجم التقديري *',
+        besoins:  'الاحتياجات (اختيار متعدد)',
+        message:  'رسالة (اختياري)',
+        consent:  'أوافق على أن يتصل بي مستشار PRYM لدراسة طلبي. تبقى المعلومات المشتركة سرية تماماً.',
+        submit:   'إرسال الطلب',
+        sending:  'جارٍ الإرسال...',
+        success: {
+          eyebrow: 'تم استلام الطلب',
+          h3:      'سنتصل بك خلال 24 ساعة.',
+          body:    'سيراجع مستشار PRYM طلبك ويعود إليك لبناء عرض على المقاس.',
+        },
+        error:   'حدث خطأ. يرجى التواصل معنا مباشرة.',
+        volumeOptions: [
+          'من 1 إلى 5 رحلات/شهر',
+          'من 5 إلى 15 رحلة/شهر',
+          'من 15 إلى 30 رحلة/شهر',
+          '30+ رحلة/شهر',
+          'فعالية استثنائية',
+        ],
+        besoinsOptions: [
+          'نقل المطار',
+          'سائق تحت التصرف',
+          'الفعاليات والندوات',
+          'الوفود وكبار الشخصيات',
+          'حافلات منتظمة',
+          'سفر بين المدن',
+        ],
+      },
+      footer: 'Driven by Excellence — prym.ma',
     },
 
     booking: {

@@ -24,7 +24,7 @@ const COL_GAP = 'clamp(24px, 3vw, 52px)'
 
 // Shared snap base
 const SNAP = {
-  height: '100vh',
+  height: '100dvh',
   scrollSnapAlign: 'start',
   scrollSnapStop: 'always',
   overflow: 'hidden',
@@ -389,7 +389,32 @@ export default function ExperiencePage() {
         </div>
       </Sec>
 
-      {/* ── 4 · 50/50 split — image + 21° + NDA ─────────────────────── */}
+      {/* ── 4 · L'Attention ──────────────────────────────────────────── */}
+      <Sec isMobile={isMobile}>
+        <div style={{ ...tc('1 / span 5') }}>
+          <Narrative n={s[2].n} label={s[2].label} title={s[2].title} body={s[2].body} isAR={isAR} />
+        </div>
+        <div style={{ ...tc('7 / span 6'), display: 'flex', alignItems: 'center' }}>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 32, width: '100%' }}
+          >
+            {s[2].details.map((d) => (
+              <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver3 }}>
+                  {d.label}
+                </span>
+                <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                  {d.value}
+                </p>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </Sec>
+
+      {/* ── 5 · 50/50 split — image + 21° + NDA ─────────────────────── */}
       <SplitSection s={s} isAR={isAR} isMobile={isMobile} />
 
       {/* ── 5 · Full-screen quote ─────────────────────────────────────── */}
@@ -405,7 +430,34 @@ export default function ExperiencePage() {
         </div>
       </Sec>
 
-      {/* ── 7 · Closing ───────────────────────────────────────────────── */}
+      {/* ── 8 · La Personnalisation ──────────────────────────────────── */}
+      <Sec isMobile={isMobile}>
+        <div style={{ ...tc('1 / span 5') }}>
+          <Narrative n={s[6].n} label={s[6].label} title={s[6].title} body={s[6].body} isAR={isAR} />
+        </div>
+        <div style={{ ...tc('7 / span 6'), display: 'flex', alignItems: 'center' }}>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }}
+            style={{ width: '100%' }}
+          >
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 24 }}>
+              {s[6].details.map((d) => (
+                <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver3 }}>
+                    {d.label}
+                  </span>
+                  <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
+                    {d.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </Sec>
+
+      {/* ── 9 · Closing ───────────────────────────────────────────────── */}
       <Closing t={te.closing} isAR={isAR} />
     </div>
   )

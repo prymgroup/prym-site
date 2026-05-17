@@ -93,6 +93,7 @@ function TierPill({ tier, active, onClick, domRef }) {
 function Chevron({ direction, onClick }) {
   return (
     <motion.button onClick={onClick} whileHover={{ opacity: 1 }} whileTap={{ opacity: 0.4 }}
+      aria-label={direction === 'left' ? 'Véhicule précédent' : 'Véhicule suivant'}
       style={{
         position: 'absolute', top: '50%', transform: 'translateY(-50%)',
         [direction === 'left' ? 'left' : 'right']: 16,

@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import MobileNavbar from './MobileNavbar'
 import DesktopNav from './DesktopNav'
 import { useIsMobile } from '../hooks/useIsMobile'
+import { useLanguage } from '../context/LanguageContext'
+import { T } from '../i18n/translations'
 
 const FONT_EU = '"Eurostile","Russo One","Helvetica Neue",Arial,sans-serif'
 const FONT_SE = '"Nexa","Nexa Light",sans-serif'
@@ -33,38 +35,12 @@ const LS = {
 
 // Shared snap base
 const SNAP = {
-  height: '100vh',
+  height: '100dvh',
   scrollSnapAlign: 'start',
   scrollSnapStop: 'always',
 }
 
-const AVANTAGES = [
-  { n: '01', title: 'Chauffeur attitré',       body: 'Un chauffeur dédié à votre compte. Il connaît vos préférences, votre agenda, vos adresses habituelles. Pas besoin de répéter deux fois ce qui vous convient.' },
-  { n: '02', title: 'Facturation mensuelle',   body: 'Récapitulatif détaillé en fin de mois. Intégration comptable simplifiée. Aucune avance de frais pour vos collaborateurs.' },
-  { n: '03', title: 'Priorité de disponibilité', body: 'Les comptes entreprise sont servis en priorité. Même en période de forte demande, votre véhicule est là.' },
-  { n: '04', title: 'Reporting & suivi',        body: 'Rapport mensuel de toutes vos courses : coûts, trajets, collaborateurs. Visibilité totale sur vos dépenses de mobilité.' },
-  { n: '05', title: 'NDA étendu',               body: 'Accord de confidentialité signé pour l\'ensemble de votre compte. Discrétion absolue pour tous vos collaborateurs et invités.' },
-  { n: '06', title: 'Flotte dédiée',            body: 'Accès à l\'ensemble des 6 tiers PRYM selon vos besoins — transfert aéroport, mise à disposition, événement, délégation.' },
-]
-
-const CLIENTS = [
-  { label: 'Cabinets & Conseil',     desc: 'Transferts clients, partenaires et candidats. Discrétion garantie.' },
-  { label: 'Hôtels & Palaces',       desc: 'Service de conciergerie mobilité pour vos clients VIP.' },
-  { label: 'Agences de voyage',      desc: 'Transferts haut de gamme pour vos groupes et UHNWI.' },
-  { label: 'Entreprises Corporate',  desc: 'Mobilité exécutive pour vos dirigeants et équipes.' },
-]
-
-const VOLUMES = [
-  '', '1 à 5 courses/mois', '5 à 15 courses/mois',
-  '15 à 30 courses/mois', '30+ courses/mois', 'Événementiel ponctuel',
-]
-
-const BESOINS = [
-  'Transferts aéroport', 'Mise à disposition', 'Événements & séminaires',
-  'Délégations & VIP', 'Navettes régulières', 'Voyages inter-villes',
-]
-
-function ContactForm({ isMobile }) {
+function ContactForm({ isMobile, tc }) {
   const [form, setForm] = useState({
     company: '', name: '', role: '', email: '', phone: '',
     volume: '', besoins: [], message: '', consent: false,
@@ -99,64 +75,68 @@ function ContactForm({ isMobile }) {
         style={{ padding:'40px 0' }}>
         <div style={{ width:48, height:1, background:'var(--c-silver)', marginBottom:32 }} />
         <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:'var(--c-silver3)', marginBottom:16 }}>
-          Demande reçue
+          {tc.success.eyebrow}
         </p>
         <h3 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(16px,1.8vw,24px)', letterSpacing:'0.14em', textTransform:'uppercase', color:'var(--c-text)', marginBottom:16 }}>
-          Nous vous contactons sous 24h.
+          {tc.success.h3}
         </h3>
         <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:13, color:'var(--c-silver2)', lineHeight:1.8 }}>
-          Un conseiller PRYM analysera votre demande et reviendra vers vous pour construire une offre sur mesure.
+          {tc.success.body}
         </p>
       </motion.div>
     )
   }
 
+  const volumeOptions = ['', ...tc.volumeOptions]
+
   return (
     <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
       <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(200px,1fr))', gap: isMobile ? 22 : 14 }}>
         <div>
-          <label style={LS}>Entreprise *</label>
-          <input style={focusStyle('company')} placeholder="Raison sociale" value={form.company}
+          <label style={LS}>{tc.company}</label>
+          <input style={focusStyle('company')} placeholder="PRYM S.A." value={form.company}
             onChange={set('company')} onFocus={()=>setFocus('company')} onBlur={()=>setFocus(null)} />
         </div>
         <div>
-          <label style={LS}>Nom complet *</label>
-          <input style={focusStyle('name')} placeholder="Prénom et nom" value={form.name}
+          <label style={LS}>{tc.name}</label>
+          <input style={focusStyle('name')} placeholder="Ahmed Benali" value={form.name}
             onChange={set('name')} onFocus={()=>setFocus('name')} onBlur={()=>setFocus(null)} />
         </div>
       </div>
       <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(200px,1fr))', gap: isMobile ? 22 : 14 }}>
         <div>
-          <label style={LS}>Fonction</label>
-          <input style={focusStyle('role')} placeholder="Directeur, DRH, Office Manager..." value={form.role}
+          <label style={LS}>{tc.role}</label>
+          <input style={focusStyle('role')} placeholder="CEO, DRH, Office Manager..." value={form.role}
             onChange={set('role')} onFocus={()=>setFocus('role')} onBlur={()=>setFocus(null)} />
         </div>
         <div>
-          <label style={LS}>Téléphone *</label>
+          <label style={LS}>{tc.phone}</label>
           <input type="tel" style={focusStyle('phone')} placeholder="+212 6XX XXX XXX" value={form.phone}
             onChange={set('phone')} onFocus={()=>setFocus('phone')} onBlur={()=>setFocus(null)} />
         </div>
       </div>
       <div>
-        <label style={LS}>Email professionnel *</label>
+        <label style={LS}>{tc.email}</label>
         <input type="email" style={focusStyle('email')} placeholder="vous@entreprise.com" value={form.email}
           onChange={set('email')} onFocus={()=>setFocus('email')} onBlur={()=>setFocus(null)} />
       </div>
       <div style={{ position:'relative' }}>
-        <label style={LS}>Volume estimé *</label>
+        <label style={LS}>{tc.volume}</label>
         <select style={{ ...focusStyle('volume'), cursor:'pointer', colorScheme:'light dark', paddingRight:24 }}
           value={form.volume} onChange={set('volume')}
           onFocus={()=>setFocus('volume')} onBlur={()=>setFocus(null)}>
-          {VOLUMES.map(v => (
-            <option key={v} value={v} style={{ background:'var(--c-bg)' }}>{v || 'Sélectionner un volume'}</option>
+          {volumeOptions.map((v, i) => (
+            <option key={i} value={v} style={{ background:'var(--c-bg)' }}>
+              {v || (tc.volumePlaceholder ?? '—')}
+            </option>
           ))}
         </select>
         <span style={{ position:'absolute', right:0, bottom:14, fontSize:9, color:'var(--c-silver3)', pointerEvents:'none' }}>▾</span>
       </div>
       <div>
-        <label style={{ ...LS, marginBottom:14 }}>Besoins (sélection multiple)</label>
+        <label style={{ ...LS, marginBottom:14 }}>{tc.besoins}</label>
         <div style={{ display:'flex', flexWrap:'wrap', gap:'8px 20px' }}>
-          {BESOINS.map(b => {
+          {tc.besoinsOptions.map(b => {
             const active = form.besoins.includes(b)
             return (
               <button key={b} onClick={()=>toggleBesoin(b)}
@@ -168,9 +148,9 @@ function ContactForm({ isMobile }) {
         </div>
       </div>
       <div>
-        <label style={LS}>Message (optionnel)</label>
+        <label style={LS}>{tc.message}</label>
         <textarea style={{ ...focusStyle('message'), minHeight:80, resize:'none', lineHeight:1.7 }}
-          placeholder="Décrivez votre contexte, vos besoins spécifiques, vos contraintes..."
+          placeholder="..."
           value={form.message} onChange={set('message')}
           onFocus={()=>setFocus('message')} onBlur={()=>setFocus(null)} />
       </div>
@@ -179,18 +159,18 @@ function ContactForm({ isMobile }) {
           onChange={e=>setForm(f=>({...f,consent:e.target.checked}))}
           style={{ marginTop:3, accentColor:'var(--c-silver)', width:14, height:14, flexShrink:0, cursor:'pointer' }} />
         <span style={{ fontSize:11, color:'var(--c-silver3)', lineHeight:1.7, fontFamily:FONT_SE, fontStyle:'italic' }}>
-          J'accepte d'être contacté par un conseiller PRYM pour étudier ma demande. Les informations partagées restent strictement confidentielles.
+          {tc.consent}
         </span>
       </label>
       <button onClick={submit} disabled={!valid || status === 'sending'}
         style={{ padding:'16px', cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-silver)' : 'transparent', border: valid ? '1px solid var(--c-silver)' : '1px solid var(--c-border-faint)', fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.35em', textTransform:'uppercase', color: valid ? 'var(--c-bg)' : 'var(--c-silver3)', transition:'all 0.3s' }}
         onMouseEnter={e=>{ if(valid) e.currentTarget.style.background = 'var(--c-text)' }}
         onMouseLeave={e=>{ if(valid) e.currentTarget.style.background = 'var(--c-silver)' }}>
-        {status === 'sending' ? 'Envoi en cours...' : 'Envoyer la demande'}
+        {status === 'sending' ? tc.sending : tc.submit}
       </button>
       {status === 'error' && (
         <p style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:12, color:'var(--c-error)' }}>
-          Une erreur est survenue. Veuillez nous contacter directement.
+          {tc.error}
         </p>
       )}
     </div>
@@ -200,6 +180,8 @@ function ContactForm({ isMobile }) {
 
 export default function EntreprisesPage() {
   const isMobile = useIsMobile()
+  const { lang } = useLanguage()
+  const te = T[lang].entreprises
 
   useEffect(() => {
     document.title = 'Comptes Entreprises PRYM — Mobilité Executive Maroc'
@@ -207,8 +189,10 @@ export default function EntreprisesPage() {
       ?.setAttribute('content', 'PRYM propose aux entreprises un service de mobilité executive sur mesure : chauffeur attitré, facturation mensuelle, NDA étendu, priorité de disponibilité. Casablanca, Rabat, Marrakech.')
   }, [])
 
+  const isRTL = lang === 'AR'
+
   return (
-    <div style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}>
+    <div style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }} dir={isRTL ? 'rtl' : 'ltr'}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
       {/* ── 1 · Hero ─────────────────────────────────────────────────── */}
@@ -223,36 +207,39 @@ export default function EntreprisesPage() {
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'var(--c-grid-line)' }} />
         <motion.p initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} transition={{delay:0.2,duration:0.8}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.45em',textTransform:'uppercase',color:C.silver3,marginBottom:20,position:'relative',zIndex:1}}>
-          Comptes Entreprises
+          {te.hero.eyebrow}
         </motion.p>
         <motion.h1 initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} transition={{delay:0.4,duration:0.9,ease:[0.22,1,0.36,1]}}
-          style={{fontFamily:FONT_EU,fontWeight:300,fontSize:'clamp(28px,5vw,60px)',letterSpacing:'0.06em',textTransform:'uppercase',color:C.white,lineHeight:1.05,marginBottom:24,maxWidth:700,position:'relative',zIndex:1}}>
-          La mobilité executive,<br />
-          <span style={{color:C.silver}}>sans friction.</span>
+          dir="ltr"
+          style={{fontFamily:FONT_EU,fontWeight:300,fontSize:'clamp(28px,5vw,60px)',letterSpacing:'0.06em',textTransform:'uppercase',color:C.white,lineHeight:1.05,marginBottom:24,maxWidth:700,position:'relative',zIndex:1,direction:'ltr',unicodeBidi:'isolate'}}>
+          {te.hero.h1a}<br />
+          <span style={{color:C.silver,direction:'ltr',unicodeBidi:'isolate'}}>{te.hero.h1b}</span>
         </motion.h1>
         <motion.p initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.8,duration:0.8}}
-          style={{fontFamily:FONT_SE,fontSize:'clamp(13px,1.6vw,16px)',color:C.silver2,lineHeight:1.9,maxWidth:520,position:'relative',zIndex:1}}>
-          PRYM propose aux entreprises un service de mobilité executive sur mesure. Un seul interlocuteur, une facturation centralisée, et le standard PRYM pour chaque trajet de vos équipes.
+          style={{fontFamily:FONT_SE,fontSize:'clamp(13px,1.6vw,16px)',color:C.silver2,lineHeight:1.9,maxWidth:480,position:'relative',zIndex:1}}>
+          {te.hero.body}
         </motion.p>
       </section>
 
       {/* ── 2 · Avantages ────────────────────────────────────────────── */}
       <section style={{
         ...SNAP,
-        padding: `clamp(72px,10vh,96px) ${GUTTER} clamp(40px,6vh,64px)`,
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        padding: `0 ${GUTTER}`,
         borderTop: '1px solid var(--c-border)',
       }}>
         <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
-          style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 36 : 56}}>
-          Ce que PRYM entreprise inclut
+          style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 28 : 44}}>
+          {te.avantages.eyebrow}
         </motion.p>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(280px,1fr))',
-          gap: isMobile ? 32 : 'clamp(32px,4vw,52px)',
-          maxWidth: 1100, margin: '0 auto',
+          gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)',
+          columnGap: isMobile ? 0 : 'clamp(28px,4vw,52px)',
+          rowGap: isMobile ? 28 : 'clamp(28px,4vh,44px)',
+          maxWidth: 1100,
         }}>
-          {AVANTAGES.map((a, i) => (
+          {te.avantages.items.map((a, i) => (
             <motion.div key={a.n}
               initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}}
               viewport={{once:true,margin:'-40px'}} transition={{delay:i*0.08,duration:0.7}}>
@@ -275,10 +262,10 @@ export default function EntreprisesPage() {
         <div style={{ position:'absolute', inset:0, pointerEvents:'none', background:'var(--c-panel-grad)' }} />
         <div style={{ position:'absolute', inset:0, pointerEvents:'none', background:'var(--c-grid-line)' }} />
         <span style={{ position:'relative', zIndex:1, fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3, opacity:0.45 }}>
-          Visuel : Détail flotte / Service B2B
+          {te.divider.caption}
         </span>
         <span style={{ position:'absolute', bottom:'clamp(16px,3vw,28px)', left:'clamp(24px,6vw,80px)', fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3, opacity:0.3 }}>
-          PRYM Corporate — Service B2B
+          {te.divider.credit}
         </span>
       </section>
 
@@ -291,7 +278,7 @@ export default function EntreprisesPage() {
       }}>
         <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
           style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom: isMobile ? 36 : 56}}>
-          Ils font confiance à PRYM
+          {te.clients.eyebrow}
         </motion.p>
         <div style={{
           display: 'grid',
@@ -299,7 +286,7 @@ export default function EntreprisesPage() {
           gap: isMobile ? 36 : 'clamp(28px,3vw,48px)',
           maxWidth: 900,
         }}>
-          {CLIENTS.map((c, i) => (
+          {te.clients.items.map((c, i) => (
             <motion.div key={c.label}
               initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}}
               viewport={{once:true}} transition={{delay:i*0.1,duration:0.6}}>
@@ -318,29 +305,31 @@ export default function EntreprisesPage() {
       }}>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit,minmax(300px,1fr))',
-          gap: isMobile ? 40 : 'clamp(40px,6vw,80px)',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+          columnGap: isMobile ? 0 : 'clamp(40px,6vw,80px)',
+          rowGap: 0,
           maxWidth: 1100, margin: '0 auto',
+          alignItems: 'start',
         }}>
           {/* Left intro */}
-          <div style={{ paddingTop: 8 }}>
+          <div>
             <motion.p initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.9}}
               style={{fontFamily:FONT_EU,fontSize:9,letterSpacing:'0.4em',textTransform:'uppercase',color:C.silver3,marginBottom:20}}>
-              Ouvrir un compte
+              {te.contact.eyebrow}
             </motion.p>
             <motion.h2 initial={{opacity:0,y:16}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.7,delay:0.1}}
               style={{fontFamily:FONT_EU,fontWeight:300,fontSize:'clamp(22px,3.5vw,36px)',letterSpacing:'0.08em',textTransform:'uppercase',color:C.white,marginBottom:24,lineHeight:1.15}}>
-              Parlons de votre mobilité.
+              {te.contact.h2}
             </motion.h2>
             <div style={{width:48,height:1,background:'linear-gradient(90deg, var(--c-silver3), transparent)',marginBottom:24}} />
             <motion.p initial={{opacity:0}} whileInView={{opacity:1}} viewport={{once:true}} transition={{duration:0.7,delay:0.2}}
               style={{fontFamily:FONT_SE,fontStyle:'italic',fontSize:13,color:C.silver2,lineHeight:1.9,marginBottom:28}}>
-              Remplissez ce formulaire et un conseiller PRYM vous contactera sous 24 heures pour construire ensemble une offre adaptée.
+              {te.contact.body}
             </motion.p>
             <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
-              {[['◎','Aucun engagement initial'],['◎','Offre personnalisée sous 24h'],['◎','Contrat NDA inclus']].map(([icon,text]) => (
+              {te.contact.bullets.map(text => (
                 <div key={text} style={{ display:'flex', gap:12, alignItems:'center' }}>
-                  <span style={{ fontFamily:FONT_EU, fontSize:10, color:C.silver3 }}>{icon}</span>
+                  <span style={{ fontFamily:FONT_EU, fontSize:10, color:C.silver3 }}>◎</span>
                   <span style={{ fontFamily:FONT_SE, fontStyle:'italic', fontSize:13, color:C.silver2 }}>{text}</span>
                 </div>
               ))}
@@ -349,14 +338,14 @@ export default function EntreprisesPage() {
 
           {/* Right form */}
           <motion.div initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{duration:0.8,delay:0.15}}>
-            <ContactForm isMobile={isMobile} />
+            <ContactForm isMobile={isMobile} tc={te.contact} />
           </motion.div>
         </div>
 
         {/* Footer note */}
         <div style={{ borderTop:'1px solid var(--c-border)', marginTop:'clamp(40px,6vh,56px)', paddingTop:24 }}>
           <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3 }}>
-            Driven by Excellence — prym.ma
+            {te.footer}
           </p>
         </div>
       </section>
