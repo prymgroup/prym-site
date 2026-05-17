@@ -19,12 +19,13 @@ export default function HeroSection() {
 
   return (
     <section style={{
-      height: '100vh', display: 'flex', flexDirection: 'column',
+      height: '100dvh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       position: 'relative', overflow: 'hidden',
       backgroundColor: 'var(--c-bg)',
       transition: 'background-color 0.3s ease',
       scrollSnapAlign: 'start', scrollSnapStop: 'always',
+      direction: isAR ? 'rtl' : 'ltr',
     }}>
       {/* Warm radial highlight — adapts to theme via --c-hero-glow */}
       <div aria-hidden style={{

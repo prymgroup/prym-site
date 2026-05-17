@@ -230,7 +230,7 @@ function NoModelPlaceholder({ tier, label }) {
   )
 }
 
-function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
+function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf, isAR }) {
   const [modelIdx, setModelIdx] = useState(0)
   const [selectedModel, setSelectedModel] = useState(tier.models?.[0] || null)
   const pillRefs = useRef({})
@@ -283,32 +283,32 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           <div style={{ position:'absolute', bottom:20, right:24, zIndex:2, pointerEvents:'none', fontFamily:FONT_EU, fontSize:8, color:'var(--c-chevron)', opacity:0.5 }}>↓</div>
         </div>
 
-        <div style={{ padding:'28px 24px 48px', background:C.bg }}>
-          <div style={{ display:'flex', gap:6, overflowX:'auto', scrollbarWidth:'none', marginBottom:40, marginLeft:-24, marginRight:-24, paddingLeft:24, paddingRight:24 }}>
+        <div style={{ padding:'28px 24px 48px', background:C.bg, direction: isAR ? 'rtl' : 'ltr' }}>
+          <div style={{ display:'flex', gap:6, overflowX:'auto', scrollbarWidth:'none', marginBottom:40, marginLeft:-24, marginRight:-24, paddingLeft:24, paddingRight:24, direction: isAR ? 'rtl' : 'ltr' }}>
             {FLEET.map(t => (
               <TierPill key={t.id} tier={t} active={activeTier.id===t.id} onClick={() => setActiveTier(t)} layoutId="pill-active-mobile"
                 domRef={el => { pillRefs.current[t.id] = el }} />
             ))}
           </div>
-          <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:26, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:24, lineHeight:1.05 }}>
+          <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:26, letterSpacing: isAR ? 0 : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color:C.white, marginBottom:24, lineHeight:1.05 }}>
             {tier.name}
           </h2>
-          <div style={{ width:36, height:1, background:'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:28 }} />
+          <div style={{ width:36, height:1, background: isAR ? 'linear-gradient(270deg,var(--c-silver3),transparent)' : 'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:28 }} />
           <div style={{ display:'flex', gap:36, marginBottom:28 }}>
             {[{label:tf.passengers,value:tier.capacity?.passengers ?? '—'},{label:tf.luggage,value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
-                <p style={{ fontFamily:FONT_EU, fontSize:26, letterSpacing:'0.05em', color:C.white, lineHeight:1, marginBottom:5 }}>{value}</p>
-                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
+                <p data-latin style={{ fontFamily:FONT_EU, fontSize:26, letterSpacing:'0.05em', color:C.white, lineHeight:1, marginBottom:5 }}>{value}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color:C.silver3 }}>{label}</p>
               </div>
             ))}
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:36 }}>
             {(tier.amenities ?? []).map(a => (
-              <span key={a} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2 }}>{a}</span>
+              <span key={a} style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing: isAR ? 0 : '0.18em', textTransform: isAR ? 'none' : 'uppercase', color:C.silver2 }}>{a}</span>
             ))}
           </div>
           <a href={`/reserver?tier=${tier.id}`}
-            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-bg)', background:'var(--c-silver)', padding:'17px 32px', textDecoration:'none' }}>
+            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:9, letterSpacing: isAR ? 0 : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color:'var(--c-bg)', background:'var(--c-silver)', padding:'17px 32px', textDecoration:'none' }}>
             {tf.book}
           </a>
         </div>
@@ -319,9 +319,9 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
   return (
     <motion.div key={tier.id} initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }} transition={{ duration:0.5 }}
       style={{ display:'grid', gridTemplateColumns:'32% 68%', height:'calc(100dvh - 64px)', overflow:'hidden' }}>
-      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding:'48px 48px 48px 64px', borderRight:'1px solid var(--c-border-faint)', overflowY:'auto', scrollbarWidth:'none' }}>
-        <motion.div initial={{ opacity:0, x:-16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.6, delay:0.1 }}>
-          <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:48 }}>
+      <div style={{ display:'flex', flexDirection:'column', justifyContent:'center', padding: isAR ? '48px 64px 48px 48px' : '48px 48px 48px 64px', borderRight: isAR ? 'none' : '1px solid var(--c-border-faint)', borderLeft: isAR ? '1px solid var(--c-border-faint)' : 'none', overflowY:'auto', scrollbarWidth:'none', direction: isAR ? 'rtl' : 'ltr' }}>
+        <motion.div initial={{ opacity:0, x: isAR ? 16 : -16 }} animate={{ opacity:1, x:0 }} transition={{ duration:0.6, delay:0.1 }}>
+          <div style={{ display:'flex', flexWrap:'wrap', gap:6, marginBottom:48, direction: isAR ? 'rtl' : 'ltr' }}>
             {FLEET.map(t => (
               <TierPill key={t.id} tier={t} active={activeTier.id===t.id} onClick={() => setActiveTier(t)} layoutId="pill-active-desktop" />
             ))}
@@ -329,25 +329,25 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
 
           <AnimatePresence mode="wait">
             <motion.h2 key={tier.id+'-name'} initial={{opacity:0,y:12}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-8}} transition={{duration:0.4}}
-              style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(28px,2.8vw,48px)', letterSpacing:'0.08em', textTransform:'uppercase', color:C.white, marginBottom:14, lineHeight:1.0 }}>
+              style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:'clamp(28px,2.8vw,48px)', letterSpacing: isAR ? 0 : '0.08em', textTransform: isAR ? 'none' : 'uppercase', color:C.white, marginBottom:14, lineHeight:1.0 }}>
               {tier.name}
             </motion.h2>
           </AnimatePresence>
 
           <AnimatePresence mode="wait">
             <motion.p key={vehicleLabel} initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} transition={{duration:0.3}}
-              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--c-silver)', marginBottom:36 }}>
-              {vehicleLabel.toUpperCase()}
+              style={{ fontFamily:FONT_EU, fontSize:10, letterSpacing: isAR ? 0 : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color:'var(--c-silver)', marginBottom:36 }}>
+              {isAR ? vehicleLabel : vehicleLabel.toUpperCase()}
             </motion.p>
           </AnimatePresence>
 
-          <div style={{ width:40, height:1, background:'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:36 }} />
+          <div style={{ width:40, height:1, background: isAR ? 'linear-gradient(270deg,var(--c-silver3),transparent)' : 'linear-gradient(90deg,var(--c-silver3),transparent)', marginBottom:36 }} />
 
           <div style={{ display:'flex', gap:40, marginBottom:36 }}>
             {[{label:tf.passengers,value:tier.capacity?.passengers ?? '—'},{label:tf.luggage,value:tier.capacity?.luggage ?? '—'}].map(({label,value}) => (
               <div key={label}>
-                <p style={{ fontFamily:FONT_EU, fontSize:'clamp(28px,2.5vw,40px)', letterSpacing:'0.04em', color:C.white, lineHeight:1, marginBottom:6 }}>{value}</p>
-                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing:'0.3em', textTransform:'uppercase', color:C.silver3 }}>{label}</p>
+                <p data-latin style={{ fontFamily:FONT_EU, fontSize:'clamp(28px,2.5vw,40px)', letterSpacing:'0.04em', color:C.white, lineHeight:1, marginBottom:6 }}>{value}</p>
+                <p style={{ fontFamily:FONT_EU, fontSize:7, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color:C.silver3 }}>{label}</p>
               </div>
             ))}
           </div>
@@ -355,7 +355,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:48 }}>
             {(tier.amenities ?? []).map(a => (
               <span key={a}
-                style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing:'0.18em', textTransform:'uppercase', color:C.silver2, opacity:0.55, transition:'opacity 0.4s ease', cursor:'default' }}
+                style={{ fontFamily:FONT_EU, fontSize:8, letterSpacing: isAR ? 0 : '0.18em', textTransform: isAR ? 'none' : 'uppercase', color:C.silver2, opacity:0.55, transition:'opacity 0.4s ease', cursor:'default' }}
                 onMouseEnter={e => e.currentTarget.style.opacity=1}
                 onMouseLeave={e => e.currentTarget.style.opacity=0.55}>
                 {a}
@@ -364,7 +364,7 @@ function TierDisplay({ tier, isMobile, activeTier, setActiveTier, tf }) {
           </div>
 
           <a href={`/reserver?tier=${tier.id}`}
-            style={{ display:'inline-block', fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-silver)', background:'transparent', border:'1px solid var(--c-silver3)', padding:'16px 40px', textDecoration:'none', transition:'all 0.4s ease' }}
+            style={{ display:'inline-block', fontFamily:FONT_EU, fontSize:9, letterSpacing: isAR ? 0 : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color:'var(--c-silver)', background:'transparent', border:'1px solid var(--c-silver3)', padding: isAR ? '16px 32px' : '16px 40px', textDecoration:'none', transition:'all 0.4s ease' }}
             onMouseEnter={e => { e.currentTarget.style.background='var(--c-text)'; e.currentTarget.style.borderColor='var(--c-silver2)'; e.currentTarget.style.color='var(--c-hover-text)' }}
             onMouseLeave={e => { e.currentTarget.style.background='transparent'; e.currentTarget.style.borderColor='var(--c-silver3)'; e.currentTarget.style.color='var(--c-silver)' }}>
             {tf.book}
@@ -397,6 +397,7 @@ export default function FlottePage() {
   const isMobile = useIsMobile()
   const { lang } = useLanguage()
   const tf = T[lang].flotte
+  const isAR = lang === 'AR'
 
   useEffect(() => {
     document.title = "La Flotte PRYM \u2014 6 Niveaux d'Excellence | Transport Executive Maroc"
@@ -407,24 +408,24 @@ export default function FlottePage() {
   }, [])
 
   return (
-    <div style={{ background:C.bg, color:C.white, overflowX:'hidden', height:isMobile?'auto':'100dvh', overflow:isMobile?'auto':'hidden' }}>
+    <div style={{ background:C.bg, color:C.white, overflowX:'hidden', height:isMobile?'auto':'100dvh', overflow:isMobile?'auto':'hidden', direction: isAR ? 'rtl' : 'ltr' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
       <div style={{ paddingTop: isMobile ? 48 : 64 }}>
         <AnimatePresence mode="wait">
-          <TierDisplay key={activeTier.id} tier={activeTier} isMobile={isMobile} activeTier={activeTier} setActiveTier={setActiveTier} tf={tf} />
+          <TierDisplay key={activeTier.id} tier={activeTier} isMobile={isMobile} activeTier={activeTier} setActiveTier={setActiveTier} tf={tf} isAR={isAR} />
         </AnimatePresence>
       </div>
 
       {isMobile && (
-        <section style={{ padding:'48px 24px', textAlign:'left', borderTop:'1px solid var(--c-border-faint)', background:'var(--c-surface)' }}>
-          <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing:'0.4em', textTransform:'uppercase', color:C.silver3, marginBottom:16 }}>
+        <section style={{ padding:'48px 24px', textAlign: isAR ? 'right' : 'left', borderTop:'1px solid var(--c-border-faint)', background:'var(--c-surface)', direction: isAR ? 'rtl' : 'ltr' }}>
+          <p style={{ fontFamily:FONT_EU, fontSize:9, letterSpacing: isAR ? 0 : '0.4em', textTransform: isAR ? 'none' : 'uppercase', color:C.silver3, marginBottom:16 }}>
             {tf.corporate}
           </p>
-          <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:20, letterSpacing:'0.1em', textTransform:'uppercase', color:C.white, marginBottom:28 }}>
+          <h2 style={{ fontFamily:FONT_EU, fontWeight:300, fontSize:20, letterSpacing: isAR ? 0 : '0.1em', textTransform: isAR ? 'none' : 'uppercase', color:C.white, marginBottom:28 }}>
             {tf.regularNeeds}
           </h2>
           <a href="/entreprises"
-            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:10, letterSpacing:'0.35em', textTransform:'uppercase', color:'var(--c-silver)', border:'1px solid var(--c-silver3)', padding:'14px 40px', textDecoration:'none' }}>
+            style={{ display:'block', textAlign:'center', fontFamily:FONT_EU, fontSize:10, letterSpacing: isAR ? 0 : '0.35em', textTransform: isAR ? 'none' : 'uppercase', color:'var(--c-silver)', border:'1px solid var(--c-silver3)', padding:'14px 24px', textDecoration:'none' }}>
             {tf.contact}
           </a>
         </section>

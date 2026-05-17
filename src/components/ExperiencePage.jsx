@@ -202,6 +202,7 @@ function SplitSection({ s, isAR, isMobile }) {
         flexDirection: 'column',
         gridTemplateColumns: '1fr 1fr',
         height: '100%',
+        direction: isAR ? 'rtl' : 'ltr',
       }}>
         {/* Left — image placeholder */}
         <div style={{
@@ -332,7 +333,7 @@ export default function ExperiencePage() {
   const tc = (col) => ({ gridColumn: isMobile ? undefined : col })
 
   return (
-    <div style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}>
+    <div style={{ background: 'var(--c-bg)', color: 'var(--c-text)', direction: isAR ? 'rtl' : 'ltr' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}
 
       {/* ── 1 · Hero ─────────────────────────────────────────────────── */}
@@ -391,18 +392,18 @@ export default function ExperiencePage() {
 
       {/* ── 4 · L'Attention ──────────────────────────────────────────── */}
       <Sec isMobile={isMobile}>
-        <div style={{ ...tc('1 / span 5') }}>
+        <div style={{ ...tc('1 / span 5'), order: isAR && !isMobile ? 2 : undefined }}>
           <Narrative n={s[2].n} label={s[2].label} title={s[2].title} body={s[2].body} isAR={isAR} />
         </div>
-        <div style={{ ...tc('7 / span 6'), display: 'flex', alignItems: 'center' }}>
+        <div style={{ ...tc('7 / span 6'), display: 'flex', alignItems: 'center', order: isAR && !isMobile ? 1 : undefined }}>
           <motion.div
-            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: isAR ? -20 : 20 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 32, width: '100%' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 32, width: '100%', direction: isAR ? 'rtl' : 'ltr' }}
           >
             {s[2].details.map((d) => (
               <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver3 }}>
+                <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
                   {d.label}
                 </span>
                 <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line' }}>
@@ -437,14 +438,14 @@ export default function ExperiencePage() {
         </div>
         <div style={{ ...tc('7 / span 6'), display: 'flex', alignItems: 'center' }}>
           <motion.div
-            initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: isAR ? -20 : 20 }} whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1 }}
-            style={{ width: '100%' }}
+            style={{ width: '100%', direction: isAR ? 'rtl' : 'ltr' }}
           >
             <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: 24 }}>
               {s[6].details.map((d) => (
                 <div key={d.label} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: '0.3em', textTransform: 'uppercase', color: C.silver3 }}>
+                  <span style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? 0 : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: C.silver3 }}>
                     {d.label}
                   </span>
                   <p style={{ fontFamily: FONT_SE, fontSize: 'clamp(13px,1.3vw,15px)', color: C.silver2, lineHeight: 1.8, whiteSpace: 'pre-line' }}>

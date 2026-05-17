@@ -40,7 +40,7 @@ function Field({ label, type = 'text', value, onChange, autoComplete, isAR }) {
   )
 }
 
-function MagneticArrow({ status, isMobile }) {
+function MagneticArrow({ status, isMobile, isAR }) {
   const ref = useRef(null)
   const [arrowHover, setArrowHover] = useState(false)
   const x  = useMotionValue(0);  const y  = useMotionValue(0)
@@ -85,7 +85,9 @@ function MagneticArrow({ status, isMobile }) {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             style={{
-              transform: arrowHover ? 'translateX(6px)' : 'translateX(0)',
+              transform: isAR
+                ? (arrowHover ? 'scaleX(-1) translateX(6px)' : 'scaleX(-1)')
+                : (arrowHover ? 'translateX(6px)' : 'translateX(0)'),
               transition: 'transform 0.4s cubic-bezier(0.22,1,0.36,1)',
             }}>
             <path d="M0 5H30M30 5L25.5 1M30 5L25.5 9"
@@ -97,11 +99,11 @@ function MagneticArrow({ status, isMobile }) {
   )
 }
 
-function TabSwitch({ mode, onChange, labels }) {
+function TabSwitch({ mode, onChange, labels, isAR }) {
   const [hovered, setHovered] = useState(null)
   const tabs = [{ id: 'b2c', label: labels.b2c }, { id: 'b2b', label: labels.b2b }]
   return (
-    <div style={{ display: 'flex', gap: '2.4rem' }}>
+    <div style={{ display: 'flex', gap: '2.4rem', direction: isAR ? 'rtl' : 'ltr' }}>
       {tabs.map(tab => {
         const active = mode === tab.id
         return (
@@ -110,7 +112,8 @@ function TabSwitch({ mode, onChange, labels }) {
             onMouseLeave={() => setHovered(null)}
             style={{
               background: 'none', border: 'none', cursor: 'pointer', fontFamily: FONT,
-              fontSize: '0.62rem', letterSpacing: '0.36em', textTransform: 'uppercase',
+              fontSize: '0.62rem', letterSpacing: isAR ? 0 : '0.36em',
+              textTransform: isAR ? 'none' : 'uppercase',
               fontWeight: active ? 400 : 300,
               color: active ? 'var(--c-text)' : (hovered === tab.id ? 'var(--c-text)' : 'var(--c-silver2)'),
               padding: 0, transition: 'color 0.35s',
@@ -156,7 +159,7 @@ function B2CForm({ onSuccess, isMobile, t, isAR }) {
           )}
         </AnimatePresence>
         <div style={{ marginInlineStart: 'auto' }}>
-          <MagneticArrow status={status} isMobile={isMobile} />
+          <MagneticArrow status={status} isMobile={isMobile} isAR={isAR} />
         </div>
       </div>
     </form>
@@ -196,7 +199,7 @@ function B2BForm({ onSuccess, isMobile, t, isAR }) {
           )}
         </AnimatePresence>
         <div style={{ marginInlineStart: 'auto' }}>
-          <MagneticArrow status={status} isMobile={isMobile} />
+          <MagneticArrow status={status} isMobile={isMobile} isAR={isAR} />
         </div>
       </div>
     </form>
@@ -253,7 +256,7 @@ export default function LeadCaptureSection() {
             {t.intro}
           </p>
 
-          <div><TabSwitch mode={mode} onChange={handleModeChange} labels={t.tabs} /></div>
+          <div><TabSwitch mode={mode} onChange={handleModeChange} labels={t.tabs} isAR={isAR} /></div>
 
           {/* Thin separator */}
           <div style={{ width: '100%', height: 1, backgroundColor: 'var(--c-border)' }} />

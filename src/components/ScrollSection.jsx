@@ -7,19 +7,41 @@ const FONT = "'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif"
 
 function WordReveal({ text, lang, delay = 0 }) {
   const [ref, inView] = useInView(0.3)
-  const words = text.split(' ')
-  const isAR  = lang === 'AR'
+  const isAR = lang === 'AR'
 
+  /* Arabic: animate as a single block (same reasoning as ManifestoSection). */
+  if (isAR) {
+    return (
+      <motion.p ref={ref}
+        initial={{ opacity: 0, y: 28, filter: 'blur(10px)' }}
+        animate={inView
+          ? { opacity: 1, y: 0,  filter: 'blur(0px)' }
+          : { opacity: 0, y: 28, filter: 'blur(10px)' }}
+        transition={{ duration: 1.5, delay, ease: [0.22, 1, 0.36, 1] }}
+        style={{
+          margin: 0, fontWeight: 300,
+          fontSize: 'clamp(2.4rem, 7vw, 7.5rem)',
+          color: 'var(--c-text)', lineHeight: 1.1,
+          textAlign: 'center',
+          direction: 'rtl', unicodeBidi: 'plaintext',
+          willChange: 'transform, opacity, filter',
+        }}
+      >
+        {text}
+      </motion.p>
+    )
+  }
+
+  const words = text.split(' ')
   return (
     <p ref={ref} aria-label={text}
       style={{
         margin: 0, fontFamily: FONT, fontWeight: 300,
         fontSize: 'clamp(2.4rem, 7vw, 7.5rem)',
-        letterSpacing: isAR ? '0.04em' : '0.15em',
-        textTransform: isAR ? 'none' : 'uppercase',
+        letterSpacing: '0.15em',
+        textTransform: 'uppercase',
         color: 'var(--c-text)', lineHeight: 1.05,
         display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0 0.32em',
-        direction: isAR ? 'rtl' : 'ltr',
       }}
     >
       {words.map((word, i) => (
@@ -44,12 +66,13 @@ export default function ScrollSection() {
 
   return (
     <section style={{
-      height: '100vh', display: 'flex', flexDirection: 'column',
+      height: '100dvh', display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       padding: '0 clamp(1.5rem, 6vw, 5rem)',
       backgroundColor: 'var(--c-bg)', position: 'relative',
       transition: 'background-color 0.3s ease',
       scrollSnapAlign: 'start', scrollSnapStop: 'always',
+      direction: lang === 'AR' ? 'rtl' : 'ltr',
     }}>
       <div style={{ textAlign: 'center' }}>
         <WordReveal text={t.scroll_line} lang={lang} delay={0} />

@@ -75,6 +75,7 @@ function ScrollProgress() {
 /* ── Landing page ───────────────────────────────────────────────── */
 function LandingPage() {
   const isMobile = useIsMobile()
+  // Note: html[dir] is set by LanguageContext → cascades to all children automatically
   return (
     <div className="grain" style={{ backgroundColor: 'var(--c-bg)', height: '100dvh', overflowY: 'scroll', scrollSnapType: 'y mandatory' }}>
       {isMobile ? <MobileNavbar /> : <DesktopNav />}

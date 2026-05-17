@@ -50,6 +50,7 @@
   --prym-silver:  #6B6867;
   --prym-light:   #1A1A1A;
   --font-prym:    'Eurostile', 'Russo One', 'Helvetica Neue', Arial, sans-serif;
+  --font-ar:      'Cairo', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
   /* ── theme palette — consumed by all page components ── */
   --c-bg:           #FDFBF7;
@@ -253,6 +254,47 @@ h3 { letter-spacing: 0.14em; }
 html.dark .grain::before {
   mix-blend-mode: screen;
   opacity: 0.04;
+}
+
+/* ─── ARABIC RTL — global overrides ────────────────────────────────────── */
+/*
+ * LanguageContext sets html[dir="rtl"] when lang === 'AR'.
+ * We use that to:
+ *   1. Switch to Cairo — the only variable-weight Arabic sans-serif available
+ *   2. Kill letter-spacing (tracking breaks Arabic cursive connections)
+ *   3. Kill text-transform uppercase (Arabic has no case)
+ *
+ * !important is required because all page components use inline style={{}} which
+ * otherwise outranks stylesheet rules regardless of selector specificity.
+ */
+html[dir="rtl"] p,
+html[dir="rtl"] h1,
+html[dir="rtl"] h2,
+html[dir="rtl"] h3,
+html[dir="rtl"] span,
+html[dir="rtl"] a,
+html[dir="rtl"] button,
+html[dir="rtl"] label,
+html[dir="rtl"] input,
+html[dir="rtl"] textarea,
+html[dir="rtl"] select,
+html[dir="rtl"] li {
+  font-family: var(--font-ar) !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+/* Numbers, latin punctuation and decorative glyphs keep their display treatment */
+html[dir="rtl"] [data-latin] {
+  font-family: var(--font-prym) !important;
+  letter-spacing: inherit !important;
+}
+
+/* Placeholder text in AR mode */
+html[dir="rtl"] input::placeholder,
+html[dir="rtl"] textarea::placeholder {
+  font-family: var(--font-ar) !important;
+  letter-spacing: normal !important;
 }
 
 /* ─── GOOGLE MAPS AUTOCOMPLETE DROPDOWN ─────────────────────────────────── */
