@@ -349,8 +349,8 @@ export default function ExperiencePage() {
   const s    = te.sections
 
   useEffect(() => {
-    document.title = "L'Expérience — PRYM Executive Transport"
-  }, [])
+    document.title = te.pageTitle
+  }, [lang, te.pageTitle])
 
   const tc = (col) => ({ gridColumn: isMobile ? undefined : col })
 

@@ -33,7 +33,7 @@ function lsStyle(isAR) {
   }
 }
 
-export function Step4Passenger({ data, onChange, onNext, onBack }) {
+export function Step4Passenger({ data, onChange, onNext, onBack, isSubmitting, bookingError }) {
   const { lang } = useLanguage()
   const tb = T[lang].booking.step4
   const isAR = lang === 'AR'
@@ -82,12 +82,19 @@ export function Step4Passenger({ data, onChange, onNext, onBack }) {
           <span style={{ fontSize: 11, color: 'var(--c-silver2)', lineHeight: 1.6, fontFamily: FONT_SE, fontStyle: 'italic' }}>{tb.consent}</span>
         </label>
       </div>
-      <div style={{ display: 'flex', gap: 12, marginTop: 32 }}>
-        <button onClick={onBack} style={{ ...IS, width: 'auto', padding: '14px 24px', cursor: 'pointer', color: 'var(--c-silver2)' }}>{tb.back}</button>
-        <button onClick={onNext} disabled={!valid}
-          style={{ flex: 1, padding: 14, cursor: valid ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s' }}>
-          {tb.confirm}
-        </button>
+      <div style={{ display: 'flex', gap: 12, marginTop: 32, flexDirection: 'column' }}>
+        {bookingError && (
+          <p style={{ fontFamily: FONT_EU, fontSize: 9, letterSpacing: isAR ? '0.02em' : '0.24em', textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver2)', margin: 0, textAlign: 'center' }}>
+            {tb.bookingError}
+          </p>
+        )}
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button onClick={onBack} disabled={isSubmitting} style={{ ...IS, width: 'auto', padding: '14px 24px', cursor: isSubmitting ? 'default' : 'pointer', color: 'var(--c-silver2)', opacity: isSubmitting ? 0.5 : 1 }}>{tb.back}</button>
+          <button onClick={onNext} disabled={!valid || isSubmitting}
+            style={{ flex: 1, padding: 14, cursor: (valid && !isSubmitting) ? 'pointer' : 'not-allowed', background: valid ? 'var(--c-pill-bg)' : 'transparent', border: `1px solid ${valid ? 'var(--c-pill-border)' : 'var(--c-border-faint)'}`, borderRadius: 0, fontFamily: FONT_EU, fontSize: 10, letterSpacing: isAR ? '0.02em' : '0.3em', textTransform: isAR ? 'none' : 'uppercase', color: valid ? 'var(--c-text)' : 'var(--c-silver3)', transition: 'all 0.3s', opacity: isSubmitting ? 0.7 : 1 }}>
+            {isSubmitting ? tb.confirming : tb.confirm}
+          </button>
+        </div>
       </div>
     </motion.div>
   )

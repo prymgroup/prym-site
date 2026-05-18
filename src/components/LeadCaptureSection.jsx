@@ -127,7 +127,7 @@ function TabSwitch({ mode, onChange, labels, isAR }) {
 }
 
 function B2CForm({ onSuccess, isMobile, t, isAR }) {
-  const [fields, setFields] = useState({ prenom: '', nom: '', email: '' })
+  const [fields, setFields] = useState({ prenom: '', nom: '', email: '', phone: '' })
   const [status, setStatus] = useState('idle')
   const set = key => e => {
     setFields(f => ({ ...f, [key]: e.target.value }))
@@ -135,32 +135,52 @@ function B2CForm({ onSuccess, isMobile, t, isAR }) {
   }
   const handleSubmit = async e => {
     e.preventDefault()
-    if (status === 'loading' || status === 'success') return
-    if (!fields.prenom.trim() || !fields.nom.trim() || !EMAIL_RE.test(fields.email.trim())) {
-      setStatus('error'); setTimeout(() => setStatus('idle'), 2400); return
+    if (status === 'loading') return
+    if (!fields.prenom.trim() || !fields.nom.trim() || !fields.phone.trim() || !EMAIL_RE.test(fields.email.trim())) {
+      setStatus('error'); return
     }
     setStatus('loading')
-    await new Promise(r => setTimeout(r, 1500))
-    setStatus('success'); onSuccess()
+    try {
+      const r = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'b2c', ...fields }),
+      })
+      if (r.ok) { setStatus('success'); onSuccess() }
+      else setStatus('error')
+    } catch { setStatus('error') }
   }
   return (
     <form onSubmit={handleSubmit}
       style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
-      <Field label={t.b2c.prenom} value={fields.prenom} onChange={set('prenom')} autoComplete="given-name"     isAR={isAR} />
-      <Field label={t.b2c.nom}    value={fields.nom}    onChange={set('nom')}    autoComplete="family-name"    isAR={isAR} />
+      <Field label={t.b2c.prenom} value={fields.prenom} onChange={set('prenom')} autoComplete="given-name"  isAR={isAR} />
+      <Field label={t.b2c.nom}    value={fields.nom}    onChange={set('nom')}    autoComplete="family-name" isAR={isAR} />
+      <Field label={t.b2c.phone}  value={fields.phone}  onChange={set('phone')}  autoComplete="tel" type="tel" isAR={isAR} />
       <Field label={t.b2c.email}  value={fields.email}  onChange={set('email')}  autoComplete="email" type="email" isAR={isAR} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: isMobile ? '1.2rem' : '0.6rem' }}>
-        <AnimatePresence>
-          {status === 'error' && (
-            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        <AnimatePresence mode="wait">
+          {status === 'error' ? (
+            <motion.span key="err" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
               {t.error}
+            </motion.span>
+          ) : (
+            <motion.span key="lbl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: isAR ? 0 : '0.28em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
+              {t.submit}
             </motion.span>
           )}
         </AnimatePresence>
         <div style={{ marginInlineStart: 'auto' }}>
           <MagneticArrow status={status} isMobile={isMobile} isAR={isAR} />
         </div>
+      </div>
+      <div style={{ display: 'flex', gap: '1.4rem', flexWrap: 'wrap', paddingTop: '0.6rem' }}>
+        {t.trust.map((item, i) => (
+          <span key={i} style={{ fontFamily: FONT, fontSize: '0.46rem', letterSpacing: isAR ? 0 : '0.18em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
+            — {item}
+          </span>
+        ))}
       </div>
     </form>
   )
@@ -175,32 +195,51 @@ function B2BForm({ onSuccess, isMobile, t, isAR }) {
   }
   const handleSubmit = async e => {
     e.preventDefault()
-    if (status === 'loading' || status === 'success') return
+    if (status === 'loading') return
     if (!EMAIL_RE.test(fields.email.trim()) || !fields.societe.trim() || !fields.fonction.trim()) {
-      setStatus('error'); setTimeout(() => setStatus('idle'), 2400); return
+      setStatus('error'); return
     }
     setStatus('loading')
-    await new Promise(r => setTimeout(r, 1500))
-    setStatus('success'); onSuccess()
+    try {
+      const r = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'b2b', ...fields }),
+      })
+      if (r.ok) { setStatus('success'); onSuccess() }
+      else setStatus('error')
+    } catch { setStatus('error') }
   }
   return (
     <form onSubmit={handleSubmit}
       style={{ display: 'flex', flexDirection: 'column', gap: isMobile ? '2rem' : '0.2rem', width: '100%' }}>
-      <Field label={t.b2b.email}    value={fields.email}    onChange={set('email')}    autoComplete="email" type="email"      isAR={isAR} />
-      <Field label={t.b2b.societe}  value={fields.societe}  onChange={set('societe')}  autoComplete="organization"            isAR={isAR} />
-      <Field label={t.b2b.fonction} value={fields.fonction} onChange={set('fonction')} autoComplete="organization-title"      isAR={isAR} />
+      <Field label={t.b2b.email}    value={fields.email}    onChange={set('email')}    autoComplete="email" type="email"   isAR={isAR} />
+      <Field label={t.b2b.societe}  value={fields.societe}  onChange={set('societe')}  autoComplete="organization"         isAR={isAR} />
+      <Field label={t.b2b.fonction} value={fields.fonction} onChange={set('fonction')} autoComplete="organization-title"   isAR={isAR} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: isMobile ? '1.2rem' : '0.6rem' }}>
-        <AnimatePresence>
-          {status === 'error' && (
-            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        <AnimatePresence mode="wait">
+          {status === 'error' ? (
+            <motion.span key="err" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: '0.28em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
               {t.error}
+            </motion.span>
+          ) : (
+            <motion.span key="lbl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ fontFamily: FONT, fontSize: '0.56rem', letterSpacing: isAR ? 0 : '0.28em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
+              {t.submit}
             </motion.span>
           )}
         </AnimatePresence>
         <div style={{ marginInlineStart: 'auto' }}>
           <MagneticArrow status={status} isMobile={isMobile} isAR={isAR} />
         </div>
+      </div>
+      <div style={{ display: 'flex', gap: '1.4rem', flexWrap: 'wrap', paddingTop: '0.6rem' }}>
+        {t.trust.map((item, i) => (
+          <span key={i} style={{ fontFamily: FONT, fontSize: '0.46rem', letterSpacing: isAR ? 0 : '0.18em', color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase' }}>
+            — {item}
+          </span>
+        ))}
       </div>
     </form>
   )
@@ -263,16 +302,35 @@ export default function LeadCaptureSection() {
 
           <AnimatePresence mode="wait">
             {success ? (
-              <motion.p key="success"
+              <motion.div key="success"
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
                 transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  fontFamily: FONT, fontSize: '0.72rem', letterSpacing: '0.38em',
+                style={{ padding: '1.4rem 0', textAlign: 'center' }}>
+                <p style={{
+                  fontFamily: FONT, fontSize: '0.72rem', letterSpacing: isAR ? 0 : '0.38em',
                   color: 'var(--c-text)', textTransform: isAR ? 'none' : 'uppercase',
-                  textAlign: 'center', padding: '1.4rem 0', margin: 0,
+                  margin: '0 0 0.5rem',
                 }}>
-                {t.success}
-              </motion.p>
+                  {t.successTitle}
+                </p>
+                <p style={{
+                  fontFamily: FONT, fontSize: '0.56rem', letterSpacing: isAR ? 0 : '0.18em',
+                  color: 'var(--c-silver2)', textTransform: isAR ? 'none' : 'uppercase',
+                  lineHeight: 1.7, margin: '0 0 1.4rem',
+                }}>
+                  {t.successBody}
+                </p>
+                <a href="/afterteasing"
+                  style={{
+                    fontFamily: FONT, fontSize: '0.52rem', letterSpacing: isAR ? 0 : '0.28em',
+                    textTransform: isAR ? 'none' : 'uppercase', color: 'var(--c-silver2)',
+                    textDecoration: 'none', display: 'inline-block', transition: 'color 0.3s',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-text)' }}
+                  onMouseLeave={e => { e.currentTarget.style.color = 'var(--c-silver2)' }}>
+                  {t.successCta}
+                </a>
+              </motion.div>
             ) : (
               <motion.div key={mode}
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}

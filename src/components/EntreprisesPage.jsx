@@ -303,6 +303,22 @@ export default function EntreprisesPage() {
           }}>
           {te.hero.body}
         </motion.p>
+
+        {/* Hero CTA */}
+        <motion.a initial={{opacity:0}} animate={{opacity:1}} transition={{delay:1.1,duration:0.8}}
+          href="#contact"
+          style={{
+            fontFamily:FONT_EU, fontSize: isRTL ? 12 : 8,
+            letterSpacing: isRTL ? 0 : '0.32em',
+            textTransform: isRTL ? 'none' : 'uppercase',
+            color:C.silver2, textDecoration:'none',
+            marginTop:'clamp(20px,3vh,32px)', display:'inline-block',
+            position:'relative', zIndex:1, transition:'color 0.3s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-text)' }}
+          onMouseLeave={e => { e.currentTarget.style.color = C.silver2 }}>
+          {te.hero.cta}
+        </motion.a>
       </section>
 
       {/* ── 2 · Avantages ─────────────────────────────────────────────
@@ -408,7 +424,7 @@ export default function EntreprisesPage() {
       </section>
 
       {/* ── 5 · Form ─────────────────────────────────────────────────── */}
-      <section style={{
+      <section id="contact" style={{
         ...SNAP,
         padding: `clamp(72px,10vh,96px) ${GUTTER} clamp(32px,4vh,48px)`,
         borderTop: '1px solid var(--c-border)',

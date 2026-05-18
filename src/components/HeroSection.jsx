@@ -65,6 +65,41 @@ export default function HeroSection() {
         >
           {t.tagline}
         </motion.p>
+
+        {/* CTA buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            display: 'flex', gap: 'clamp(14px, 2.5vw, 24px)', alignItems: 'center',
+            marginTop: 'clamp(1.8rem, 3.5vh, 2.6rem)',
+            flexDirection: isAR ? 'row-reverse' : 'row',
+          }}
+        >
+          <a href="/reserver"
+            style={{
+              fontFamily: FONT, fontSize: 'clamp(0.52rem, 0.9vw, 0.62rem)',
+              letterSpacing: isAR ? 0 : '0.36em', textTransform: isAR ? 'none' : 'uppercase',
+              textDecoration: 'none', color: 'var(--c-bg)', background: 'var(--c-text)',
+              padding: '0.75rem 1.7rem', display: 'inline-block', transition: 'opacity 0.3s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.opacity = '0.82' }}
+            onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
+          >
+            {t.cta_book}
+          </a>
+          <a href="/experience"
+            style={{
+              fontFamily: FONT, fontSize: 'clamp(0.5rem, 0.86vw, 0.6rem)',
+              letterSpacing: isAR ? 0 : '0.28em', textTransform: isAR ? 'none' : 'uppercase',
+              textDecoration: 'none', color: C.soft, transition: 'color 0.3s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--c-text)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = C.soft }}
+          >
+            {t.cta_discover}
+          </a>
+        </motion.div>
       </motion.div>
 
       {/* Scroll indicator */}

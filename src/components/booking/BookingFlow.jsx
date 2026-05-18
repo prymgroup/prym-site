@@ -319,6 +319,8 @@ export default function BookingFlow() {
   const [selectedModel, setSelectedModel] = useState((urlTier ?? FLEET[1]).models?.[0] || null)
   const [passenger, setPassenger] = useState({})
   const [ref, setRef] = useState(null)
+  const [submitting, setSubmitting] = useState(false)
+  const [bookingError, setBookingError] = useState(false)
   const isMobile = useIsMobile()
 
   const preselected = !!urlTier
@@ -385,10 +387,20 @@ export default function BookingFlow() {
               {step===2 && mode==='transfer' && <motion.div key="s2a" style={{flex:1}}><Step2aTransfer data={transfer} onChange={setTransfer} onNext={() => setStep(preselected ? 4 : 3)} onBack={() => setStep(1)} isLoaded={isLoaded} /></motion.div>}
               {step===2 && mode==='disposal' && <motion.div key="s2b" style={{flex:1}}><Step2bDisposal data={disposal} onChange={setDisposal} onNext={() => setStep(preselected ? 4 : 3)} onBack={() => setStep(1)} isLoaded={isLoaded} /></motion.div>}
               {step===4 && <motion.div key="s4" style={{flex:1}}><Step4Passenger data={passenger} onChange={setPassenger}
+                isSubmitting={submitting}
+                bookingError={bookingError}
                 onNext={async () => {
                   const r = genRef(); setRef(r)
-                  try { await fetch('/api/reservation', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode, tier, transfer, disposal, passenger, reference: r }) }) } catch(e) { console.error(e) }
-                  setStep(5)
+                  setSubmitting(true); setBookingError(false)
+                  try {
+                    const res = await fetch('/api/reservation', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mode, tier, transfer, disposal, passenger, reference: r }) })
+                    if (!res.ok) throw new Error('API error')
+                    setStep(5)
+                  } catch(e) {
+                    console.error(e)
+                    setBookingError(true)
+                    setSubmitting(false)
+                  }
                 }}
                 onBack={() => setStep(preselected ? 2 : 3)} /></motion.div>}
               {step===5 && <motion.div key="s5" style={{flex:1,display:'flex',alignItems:'center'}}><Step5Confirm reference={ref} mode={mode} tier={tier} passenger={passenger} onReset={reset} /></motion.div>}
